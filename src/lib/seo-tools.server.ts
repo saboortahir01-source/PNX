@@ -56,7 +56,7 @@ export async function fetchPage(rawUrl: string): Promise<FetchPageResult> {
 
   const headingOrder: { tag: string; text: string }[] = [];
   $("h1, h2, h3, h4").each((_, el) => {
-    const tag = (el as cheerio.Element).tagName?.toLowerCase() || "";
+    const tag = ((el as { tagName?: string }).tagName || "").toLowerCase();
     const text = $(el).text().trim();
     if (text) headingOrder.push({ tag, text: text.slice(0, 120) });
   });
