@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Plus, Trash2, MessageSquare, Sparkle } from "lucide-react";
+import { Plus, Trash2, MessageSquare } from "lucide-react";
 import type { Thread } from "@/lib/threads";
 import { cn } from "@/lib/utils";
+import pnxLogo from "@/assets/pnx-logo.png";
 
 type Props = {
   threads: Thread[];
@@ -14,17 +15,14 @@ export function ThreadSidebar({ threads, activeId, onNew, onDelete }: Props) {
   const navigate = useNavigate();
   return (
     <aside className="relative flex h-full w-72 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 opacity-60" style={{ background: "radial-gradient(400px 200px at 30% 0%, oklch(0.58 0.14 165 / 0.18), transparent 70%)" }} />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 opacity-70" style={{ background: "radial-gradient(400px 200px at 30% 0%, oklch(0.66 0.18 265 / 0.25), transparent 70%)" }} />
       <div className="relative flex items-center gap-3 px-5 py-5">
-        <div
-          className="flex size-9 items-center justify-center rounded-lg text-sidebar-primary-foreground shadow-[0_4px_16px_-4px_oklch(0.58_0.14_165/0.6)]"
-          style={{ background: "var(--gradient-brand)" }}
-        >
-          <Sparkle className="size-4" strokeWidth={2.5} />
+        <div className="flex size-10 items-center justify-center rounded-xl bg-white/5 p-1 ring-1 ring-white/10 backdrop-blur">
+          <img src={pnxLogo} alt="PNX" className="size-8 object-contain" />
         </div>
         <div className="flex flex-col leading-tight">
-          <span className="font-serif text-lg tracking-tight">Atlas</span>
-          <span className="text-[10px] uppercase tracking-[0.18em] text-sidebar-foreground/50">SEO Intelligence</span>
+          <span className="text-lg font-semibold tracking-tight">PNX</span>
+          <span className="text-[10px] uppercase tracking-[0.22em] text-sidebar-foreground/50">SEO Intelligence</span>
         </div>
       </div>
       <div className="relative px-3 pb-3">
