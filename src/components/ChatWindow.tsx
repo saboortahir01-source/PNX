@@ -33,7 +33,7 @@ import {
   ToolInput,
   ToolOutput,
 } from "@/components/ai-elements/tool";
-import { ArrowUpRight, Gauge, Youtube, Search, PenLine, Paperclip, X } from "lucide-react";
+import { ArrowUpRight, Gauge, Youtube as YoutubeIcon, Search, PenLine, Paperclip, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import pnxLogo from "@/assets/pnx-logo.png";
 
