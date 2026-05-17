@@ -56,7 +56,7 @@ type Props = {
   onMessagesChange: (messages: UIMessage[]) => void;
 };
 
-const SUGGESTIONS: { icon: typeof Gauge; label: string; prompt: string; tint: string }[] = [
+const SUGGESTIONS: { icon: React.ComponentType<{ className?: string; size?: number; strokeWidth?: number }>; label: string; prompt: string; tint: string }[] = [
   {
     icon: Gauge,
     label: "SEO Audit",
