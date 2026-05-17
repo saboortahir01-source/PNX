@@ -64,7 +64,7 @@ const SUGGESTIONS: { icon: typeof Gauge; label: string; prompt: string; tint: st
     tint: "from-indigo-500/15 to-blue-500/10 text-indigo-600 dark:text-indigo-300",
   },
   {
-    icon: Youtube,
+    icon: YoutubeIcon,
     label: "Optimised YouTube Channel",
     prompt: "Optimise my YouTube channel for SEO — give me title, description, tags and thumbnail strategy",
     tint: "from-red-500/15 to-rose-500/10 text-red-600 dark:text-red-400",
