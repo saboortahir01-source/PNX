@@ -278,7 +278,3 @@ function AttachmentChips() {
   );
 }
 
-function ConversationEmptyState() {
-  return null;
-}
-void ConversationEmptyState;
