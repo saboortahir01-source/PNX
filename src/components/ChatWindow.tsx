@@ -59,25 +59,25 @@ type Props = {
 const SUGGESTIONS: { icon: React.ComponentType<{ className?: string; size?: number; strokeWidth?: number }>; label: string; prompt: string; tint: string }[] = [
   {
     icon: Gauge,
-    label: "SEO Audit",
+    label: "SEO Audit Tool",
     prompt: "Run a full on-page SEO audit on https://example.com",
     tint: "from-indigo-500/15 to-blue-500/10 text-indigo-600 dark:text-indigo-300",
   },
   {
     icon: YoutubeIcon,
-    label: "Optimised YouTube Channel",
+    label: "YouTube SEO Optimisation",
     prompt: "Optimise my YouTube channel for SEO — give me title, description, tags and thumbnail strategy",
     tint: "from-red-500/15 to-rose-500/10 text-red-600 dark:text-red-400",
   },
   {
     icon: Search,
-    label: "Keywords Research",
+    label: "Keyword Research Tool",
     prompt: "Give me 20 high-intent keywords for a project management SaaS, clustered by search intent",
     tint: "from-violet-500/15 to-purple-500/10 text-violet-600 dark:text-violet-300",
   },
   {
     icon: PenLine,
-    label: "Content Strategy",
+    label: "AI Content Strategy",
     prompt: "Build a 3-month SEO content strategy for a yoga studio in Austin — topics, formats and cadence",
     tint: "from-emerald-500/15 to-teal-500/10 text-emerald-600 dark:text-emerald-300",
   },
@@ -126,17 +126,21 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
               <div className="glass mb-6 flex size-16 items-center justify-center rounded-2xl shadow-[var(--shadow-elegant)]">
                 <img src={pnxLogo} alt="PNX logo" className="size-12 object-contain drop-shadow" loading="eager" />
               </div>
-              <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-5xl">
-                How can{" "}
+              <h1 className="text-balance text-3xl font-extrabold tracking-tight text-foreground sm:text-[2.6rem] sm:leading-[1.15]">
+                PNX —{" "}
                 <span className="bg-gradient-to-r from-[color:var(--brand)] to-[color:var(--brand-2,oklch(0.7_0.16_305))] bg-clip-text text-transparent">
-                  PNX
-                </span>{" "}
-                help you rank?
+                  Agentic SEO Co-Pilot
+                </span>
+                . AI Audits, Keyword Research &amp; SERP Analysis.
               </h1>
-              <p className="mt-3 max-w-lg text-balance text-[14px] leading-relaxed text-muted-foreground sm:text-[15px]">
-                Your autonomous SEO co-pilot — audit pages, optimise channels, research keywords and craft winning content strategies.
+              <p className="mt-3 max-w-xl text-balance text-[14px] leading-relaxed text-muted-foreground sm:text-[15px]">
+                Autonomous on-page SEO audits, AI keyword clustering, competitor SERP analysis,
+                and content strategy — all in one free SEO AI agent.
               </p>
-              <div className="mt-8 grid w-full max-w-2xl gap-3 sm:mt-10 sm:grid-cols-2">
+              <h2 className="mt-8 text-xs font-semibold uppercase tracking-widest text-muted-foreground/70 sm:mt-10">
+                Start with an AI SEO Tool
+              </h2>
+              <div className="mt-3 grid w-full max-w-2xl gap-3 sm:grid-cols-2">
                 {SUGGESTIONS.map((s) => {
                   const Icon = s.icon;
                   return (
@@ -151,12 +155,12 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                         </div>
                         <ArrowUpRight className="size-4 text-muted-foreground/50 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
                       </div>
-                      <div className="text-[13.5px] font-semibold tracking-tight text-foreground">
+                      <h3 className="text-[13.5px] font-semibold tracking-tight text-foreground">
                         {s.label}
-                      </div>
-                      <div className="text-[12.5px] leading-snug text-muted-foreground">
+                      </h3>
+                      <p className="text-[12.5px] leading-snug text-muted-foreground">
                         {s.prompt}
-                      </div>
+                      </p>
                     </button>
                   );
                 })}

@@ -19,11 +19,11 @@ export const Route = createFileRoute("/chat/$threadId")({
   component: ChatPage,
   head: () => ({
     meta: [
-      { title: "SEO AI Agent" },
+      { title: "PNX SEO AI Agent | On-Page Audits, Keyword Research & SERP Analysis" },
       {
         name: "description",
         content:
-          "Chat with an SEO expert AI. Audit URLs, generate content, cluster keywords, and analyze SERPs.",
+          "Chat with PNX, your free AI SEO agent. Run on-page SEO audits, cluster keywords, analyse SERP competitors, and generate content strategies instantly.",
       },
     ],
   }),
