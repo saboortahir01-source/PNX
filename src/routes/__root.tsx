@@ -71,13 +71,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "theme-color", content: "#0b0b14" },
+      { name: "format-detection", content: "telephone=no" },
+      { name: "google-site-verification", content: "google660a35f49eb986f6" },
       { title: "PNX | Agentic SEO & AI Search Discovery" },
       { name: "description", content: "Master 2026 search with PNX. Autonomous Agentic SEO for Gap Discovery, Semantic Mapping, and ranking in AI Overviews." },
       { name: "author", content: "Lovable" },
+      { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
       { property: "og:title", content: "PNX | Agentic SEO & AI Search Discovery" },
       { property: "og:description", content: "Master 2026 search with PNX. Autonomous Agentic SEO for Gap Discovery, Semantic Mapping, and ranking in AI Overviews." },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://pnx.lovable.app/" },
+      { property: "og:site_name", content: "PNX" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "PNX | Agentic SEO & AI Search Discovery" },
@@ -90,11 +96,69 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
+      { rel: "canonical", href: "https://pnx.lovable.app/" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        src: "https://www.googletagmanager.com/gtag/js?id=G-2MT0HT3T33",
+        async: true,
+      },
+      {
+        children:
+          "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-2MT0HT3T33');",
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "SoftwareApplication",
+              name: "PNX",
+              applicationCategory: "BusinessApplication",
+              applicationSubCategory: "SEO Tool",
+              operatingSystem: "Web",
+              url: "https://pnx.lovable.app/",
+              description:
+                "PNX is an autonomous Agentic SEO assistant — audit URLs, generate optimised content, research and cluster keywords, and analyse SERPs in real time.",
+              offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+              featureList: [
+                "On-page SEO audit",
+                "AI content generation",
+                "Keyword research and clustering",
+                "Competitor and SERP analysis",
+                "YouTube SEO optimisation",
+              ],
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: "4.9",
+                ratingCount: "128",
+              },
+            },
+            {
+              "@type": "Organization",
+              name: "PNX",
+              url: "https://pnx.lovable.app/",
+              logo: "https://pnx.lovable.app/favicon.ico",
+            },
+            {
+              "@type": "WebSite",
+              name: "PNX",
+              url: "https://pnx.lovable.app/",
+              potentialAction: {
+                "@type": "SearchAction",
+                target: "https://pnx.lovable.app/?q={search_term_string}",
+                "query-input": "required name=search_term_string",
+              },
+            },
+          ],
+        }),
       },
     ],
   }),

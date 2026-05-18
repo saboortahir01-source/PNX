@@ -120,30 +120,30 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
       style={{ backgroundImage: "var(--gradient-surface)" }}
     >
       <Conversation className="flex-1">
-        <ConversationContent className="mx-auto w-full max-w-3xl">
+        <ConversationContent className="prose-img-rounded mx-auto w-full max-w-3xl px-3 sm:px-6">
           {messages.length === 0 ? (
-            <div className="flex h-full flex-col items-center justify-center px-4 py-16 text-center">
-              <div className="mb-6 flex size-16 items-center justify-center rounded-2xl bg-card shadow-[var(--shadow-elegant)] ring-1 ring-border">
-                <img src={pnxLogo} alt="PNX" className="size-12 object-contain drop-shadow" />
+            <div className="flex h-full flex-col items-center justify-center px-2 py-10 text-center sm:py-16">
+              <div className="glass mb-6 flex size-16 items-center justify-center rounded-2xl shadow-[var(--shadow-elegant)]">
+                <img src={pnxLogo} alt="PNX logo" className="size-12 object-contain drop-shadow" loading="eager" />
               </div>
-              <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+              <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-5xl">
                 How can{" "}
                 <span className="bg-gradient-to-r from-[color:var(--brand)] to-[color:var(--brand-2,oklch(0.7_0.16_305))] bg-clip-text text-transparent">
                   PNX
                 </span>{" "}
                 help you rank?
               </h1>
-              <p className="mt-4 max-w-lg text-balance text-[15px] leading-relaxed text-muted-foreground">
+              <p className="mt-3 max-w-lg text-balance text-[14px] leading-relaxed text-muted-foreground sm:text-[15px]">
                 Your autonomous SEO co-pilot — audit pages, optimise channels, research keywords and craft winning content strategies.
               </p>
-              <div className="mt-10 grid w-full max-w-2xl gap-3 sm:grid-cols-2">
+              <div className="mt-8 grid w-full max-w-2xl gap-3 sm:mt-10 sm:grid-cols-2">
                 {SUGGESTIONS.map((s) => {
                   const Icon = s.icon;
                   return (
                     <button
                       key={s.prompt}
                       onClick={() => handleSuggestion(s.prompt)}
-                      className="group relative flex flex-col gap-3 overflow-hidden rounded-2xl border border-border bg-card/80 p-4 text-left shadow-[var(--shadow-soft)] backdrop-blur transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand)]/40 hover:shadow-[var(--shadow-elegant)]"
+                      className="glass group relative flex flex-col gap-3 overflow-hidden rounded-2xl p-4 text-left shadow-[var(--shadow-soft)] transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand)]/40 hover:shadow-[var(--shadow-elegant)] active:translate-y-0"
                     >
                       <div className="flex items-center justify-between">
                         <div className={cn("flex size-10 items-center justify-center rounded-xl bg-gradient-to-br ring-1 ring-border/60", s.tint)}>
@@ -225,11 +225,11 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
         <ConversationScrollButton />
       </Conversation>
 
-      <div className="px-4 pb-5 pt-3">
+      <div className="px-3 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-2 sm:px-4 sm:pb-5 sm:pt-3">
         <div className="mx-auto w-full max-w-3xl">
           <PromptInput
             onSubmit={handleSubmit}
-            className="rounded-3xl border border-border/70 bg-card/95 shadow-[var(--shadow-elegant)] backdrop-blur transition-all focus-within:border-[color:var(--brand)]/40 focus-within:shadow-[0_0_0_4px_color-mix(in_oklab,var(--brand)_12%,transparent)]"
+            className="glass rounded-3xl shadow-[var(--shadow-elegant)] transition-all focus-within:border-[color:var(--brand)]/40 focus-within:shadow-[0_0_0_4px_color-mix(in_oklab,var(--brand)_12%,transparent)]"
             multiple
             maxFiles={5}
           >
