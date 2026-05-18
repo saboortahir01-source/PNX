@@ -3,6 +3,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { UIMessage } from "ai";
 import { ChatWindow } from "@/components/ChatWindow";
 import { ThreadSidebar } from "@/components/ThreadSidebar";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { Menu } from "lucide-react";
+import pnxLogo from "@/assets/pnx-logo.png";
 import {
   createThread,
   deriveTitle,
@@ -120,14 +124,43 @@ function ChatPage() {
   }
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-background">
-      <ThreadSidebar
-        threads={threads}
-        activeId={threadId}
-        onNew={handleNew}
-        onDelete={handleDelete}
-      />
+    <div className="flex h-[100dvh] w-screen overflow-hidden bg-background">
+      <div className="hidden md:flex">
+        <ThreadSidebar
+          threads={threads}
+          activeId={threadId}
+          onNew={handleNew}
+          onDelete={handleDelete}
+        />
+      </div>
       <main className="flex h-full min-w-0 flex-1 flex-col">
+        {/* Mobile top bar */}
+        <header className="flex items-center justify-between gap-2 border-b border-border/60 px-3 py-2.5 md:hidden glass">
+          <Sheet>
+            <SheetTrigger
+              aria-label="Open conversations"
+              className="inline-flex size-9 items-center justify-center rounded-xl border border-border/60 bg-card/70 text-foreground"
+            >
+              <Menu className="size-4" />
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[19rem] border-r-0 p-0">
+              <VisuallyHidden>
+                <SheetTitle>Conversations</SheetTitle>
+              </VisuallyHidden>
+              <ThreadSidebar
+                threads={threads}
+                activeId={threadId}
+                onNew={handleNew}
+                onDelete={handleDelete}
+              />
+            </SheetContent>
+          </Sheet>
+          <div className="flex items-center gap-2">
+            <img src={pnxLogo} alt="PNX" className="size-7 rounded-lg" />
+            <span className="text-sm font-semibold tracking-tight">PNX</span>
+          </div>
+          <div className="size-9" aria-hidden />
+        </header>
         <ChatWindow
           key={threadId}
           threadId={threadId}
