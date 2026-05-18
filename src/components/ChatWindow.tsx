@@ -59,25 +59,25 @@ type Props = {
 const SUGGESTIONS: { icon: React.ComponentType<{ className?: string; size?: number; strokeWidth?: number }>; label: string; prompt: string; tint: string }[] = [
   {
     icon: Gauge,
-    label: "SEO Audit",
+    label: "SEO Audit Tool",
     prompt: "Run a full on-page SEO audit on https://example.com",
     tint: "from-indigo-500/15 to-blue-500/10 text-indigo-600 dark:text-indigo-300",
   },
   {
     icon: YoutubeIcon,
-    label: "Optimised YouTube Channel",
+    label: "YouTube SEO Optimisation",
     prompt: "Optimise my YouTube channel for SEO — give me title, description, tags and thumbnail strategy",
     tint: "from-red-500/15 to-rose-500/10 text-red-600 dark:text-red-400",
   },
   {
     icon: Search,
-    label: "Keywords Research",
+    label: "Keyword Research Tool",
     prompt: "Give me 20 high-intent keywords for a project management SaaS, clustered by search intent",
     tint: "from-violet-500/15 to-purple-500/10 text-violet-600 dark:text-violet-300",
   },
   {
     icon: PenLine,
-    label: "Content Strategy",
+    label: "AI Content Strategy",
     prompt: "Build a 3-month SEO content strategy for a yoga studio in Austin — topics, formats and cadence",
     tint: "from-emerald-500/15 to-teal-500/10 text-emerald-600 dark:text-emerald-300",
   },
