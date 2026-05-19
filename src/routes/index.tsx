@@ -159,7 +159,7 @@ function LandingPage() {
         {/* Founder strip */}
         <section className="mx-auto max-w-6xl px-4 py-16">
           <div className="glass-card p-6 sm:p-10 flex flex-col sm:flex-row items-center gap-6">
-            <img src="/saboor-tahir.jpg" alt="Saboor Tahir, founder of PNX" width={96} height={96} className="rounded-full border" />
+            <img src="/saboor-tahir.png" alt="Saboor Tahir, founder of PNX" width={96} height={96} className="rounded-full border object-cover size-24" />
             <div className="text-center sm:text-left">
               <h2 className="text-xl font-semibold">Built by Saboor Tahir</h2>
               <p className="mt-1 text-sm text-muted-foreground max-w-xl">PNX is an independent project. No VC pressure to upsell you. Just a free, fast, agentic SEO tool you can actually trust. <Link to="/about" className="underline">Read the story →</Link></p>
