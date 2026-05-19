@@ -61,9 +61,9 @@ export const Route = createFileRoute("/blog/$slug")({
 
 function BlogPostPage() {
   const { post } = Route.useLoaderData();
-  const related = post.related
-    .map((s: string) => POSTS.find((p) => p.slug === s))
-    .filter((p): p is BlogPost => Boolean(p));
+  const related: BlogPost[] = post.related
+    .map((s: string) => POSTS.find((p: BlogPost) => p.slug === s))
+    .filter((p: BlogPost | undefined): p is BlogPost => Boolean(p));
   return (
     <div className="min-h-[100dvh] flex flex-col">
       <SiteHeader />
