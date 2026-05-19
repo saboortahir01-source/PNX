@@ -1,6 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -188,6 +189,45 @@
   .prose img,
   .prose-img-rounded img {
     border-radius: 1rem;
+  }
+  .cta-glass-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 1.75rem 0;
+  }
+  .cta-glass {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.4rem;
+    border-radius: 999px;
+    font-weight: 600;
+    background: linear-gradient(135deg, oklch(0.66 0.18 265 / 0.18), oklch(0.7 0.16 305 / 0.18));
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid color-mix(in oklab, oklch(0.66 0.18 265) 35%, transparent);
+    color: oklch(0.3 0.1 270);
+    box-shadow: 0 8px 24px -8px oklch(0.5 0.2 270 / 0.35);
+    transition: transform .2s ease, box-shadow .2s ease;
+    text-decoration: none;
+  }
+  .cta-glass:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 32px -10px oklch(0.5 0.2 270 / 0.45);
+  }
+  .glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: 1.25rem;
+    box-shadow: var(--shadow-elegant);
+  }
+  .text-gradient-brand {
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 }
 
