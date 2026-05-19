@@ -3,13 +3,13 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { POSTS } from "@/lib/blog-posts";
 import pnxLogo from "@/assets/pnx-logo.png";
-import { Gauge, Search, Sparkles, BarChart3, Youtube, PenLine, Bot, ShieldCheck, Zap, Globe } from "lucide-react";
+import { Gauge, Search, Sparkles, BarChart3, Play, PenLine, Bot, ShieldCheck, Zap, Globe } from "lucide-react";
 
 const TOOLS = [
   { icon: Gauge, title: "Free SEO Audit Tool", desc: "Full on-page & technical SEO audit in 30 seconds.", href: "/blog/free-ai-seo-audit-tool" },
   { icon: Search, title: "AI Keyword Research", desc: "Free keyword research tool with intent clustering.", href: "/blog/ai-keyword-research-free" },
   { icon: BarChart3, title: "SERP Analysis", desc: "Live SEO competitor analysis & content gap finder.", href: "/blog/free-competitor-analysis-tool" },
-  { icon: Youtube, title: "YouTube SEO", desc: "Free YouTube SEO analyzer & keyword research.", href: "/blog/free-youtube-seo-tools" },
+  { icon: Play, title: "YouTube SEO", desc: "Free YouTube SEO analyzer & keyword research.", href: "/blog/free-youtube-seo-tools" },
   { icon: PenLine, title: "AI Content Generator", desc: "SERP-aware AI content generation for SEO.", href: "/blog/ai-content-generator-for-seo" },
   { icon: Bot, title: "AI SEO Strategist", desc: "Agentic SEO that plans, executes and reports.", href: "/blog/ai-seo-strategist-vs-traditional-seo" },
 ] as const;
