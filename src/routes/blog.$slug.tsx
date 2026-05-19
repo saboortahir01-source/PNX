@@ -3,7 +3,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { getPost, POSTS } from "@/lib/blog-posts";
+import { getPost, POSTS, type BlogPost } from "@/lib/blog-posts";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
@@ -61,7 +61,9 @@ export const Route = createFileRoute("/blog/$slug")({
 
 function BlogPostPage() {
   const { post } = Route.useLoaderData();
-  const related = post.related.map((s) => POSTS.find((p) => p.slug === s)).filter(Boolean);
+  const related = post.related
+    .map((s: string) => POSTS.find((p) => p.slug === s))
+    .filter((p): p is BlogPost => Boolean(p));
   return (
     <div className="min-h-[100dvh] flex flex-col">
       <SiteHeader />
@@ -98,7 +100,7 @@ function BlogPostPage() {
           <section className="mt-16">
             <h2 className="text-xl font-semibold">Related guides</h2>
             <div className="mt-4 grid sm:grid-cols-2 gap-3">
-              {related.map((r) => r && (
+              {related.map((r: BlogPost) => (
                 <Link key={r.slug} to="/blog/$slug" params={{ slug: r.slug }} className="glass-card p-4 hover:-translate-y-0.5 transition-transform">
                   <div className="text-xs text-muted-foreground">{r.category}</div>
                   <div className="mt-1 font-semibold text-sm">{r.title}</div>
