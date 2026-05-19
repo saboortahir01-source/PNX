@@ -10,18 +10,27 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ChatRouteImport } from './routes/chat'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ChatThreadIdRouteImport } from './routes/chat.$threadId'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -44,6 +53,16 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -55,9 +74,14 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChatThreadIdRoute = ChatThreadIdRouteImport.update({
-  id: '/chat/$threadId',
-  path: '/chat/$threadId',
-  getParentRoute: () => rootRouteImport,
+  id: '/$threadId',
+  path: '/$threadId',
+  getParentRoute: () => ChatRoute,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BlogRoute,
 } as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
@@ -68,35 +92,47 @@ const ApiChatRoute = ApiChatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/blog': typeof BlogRouteWithChildren
+  '/chat': typeof ChatRouteWithChildren
   '/contact': typeof ContactRoute
   '/disclaimer': typeof DisclaimerRoute
   '/faq': typeof FaqRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/api/chat': typeof ApiChatRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/chat/$threadId': typeof ChatThreadIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/blog': typeof BlogRouteWithChildren
+  '/chat': typeof ChatRouteWithChildren
   '/contact': typeof ContactRoute
   '/disclaimer': typeof DisclaimerRoute
   '/faq': typeof FaqRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/api/chat': typeof ApiChatRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/chat/$threadId': typeof ChatThreadIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/blog': typeof BlogRouteWithChildren
+  '/chat': typeof ChatRouteWithChildren
   '/contact': typeof ContactRoute
   '/disclaimer': typeof DisclaimerRoute
   '/faq': typeof FaqRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/api/chat': typeof ApiChatRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/chat/$threadId': typeof ChatThreadIdRoute
 }
 export interface FileRouteTypes {
@@ -104,47 +140,61 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/blog'
+    | '/chat'
     | '/contact'
     | '/disclaimer'
     | '/faq'
     | '/privacy'
+    | '/sitemap.xml'
     | '/terms'
     | '/api/chat'
+    | '/blog/$slug'
     | '/chat/$threadId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/blog'
+    | '/chat'
     | '/contact'
     | '/disclaimer'
     | '/faq'
     | '/privacy'
+    | '/sitemap.xml'
     | '/terms'
     | '/api/chat'
+    | '/blog/$slug'
     | '/chat/$threadId'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/blog'
+    | '/chat'
     | '/contact'
     | '/disclaimer'
     | '/faq'
     | '/privacy'
+    | '/sitemap.xml'
     | '/terms'
     | '/api/chat'
+    | '/blog/$slug'
     | '/chat/$threadId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  BlogRoute: typeof BlogRouteWithChildren
+  ChatRoute: typeof ChatRouteWithChildren
   ContactRoute: typeof ContactRoute
   DisclaimerRoute: typeof DisclaimerRoute
   FaqRoute: typeof FaqRoute
   PrivacyRoute: typeof PrivacyRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   ApiChatRoute: typeof ApiChatRoute
-  ChatThreadIdRoute: typeof ChatThreadIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -154,6 +204,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -184,6 +241,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -200,10 +271,17 @@ declare module '@tanstack/react-router' {
     }
     '/chat/$threadId': {
       id: '/chat/$threadId'
-      path: '/chat/$threadId'
+      path: '/$threadId'
       fullPath: '/chat/$threadId'
       preLoaderRoute: typeof ChatThreadIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ChatRoute
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof BlogRoute
     }
     '/api/chat': {
       id: '/api/chat'
@@ -215,16 +293,38 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface BlogRouteChildren {
+  BlogSlugRoute: typeof BlogSlugRoute
+}
+
+const BlogRouteChildren: BlogRouteChildren = {
+  BlogSlugRoute: BlogSlugRoute,
+}
+
+const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
+
+interface ChatRouteChildren {
+  ChatThreadIdRoute: typeof ChatThreadIdRoute
+}
+
+const ChatRouteChildren: ChatRouteChildren = {
+  ChatThreadIdRoute: ChatThreadIdRoute,
+}
+
+const ChatRouteWithChildren = ChatRoute._addFileChildren(ChatRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  BlogRoute: BlogRouteWithChildren,
+  ChatRoute: ChatRouteWithChildren,
   ContactRoute: ContactRoute,
   DisclaimerRoute: DisclaimerRoute,
   FaqRoute: FaqRoute,
   PrivacyRoute: PrivacyRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   ApiChatRoute: ApiChatRoute,
-  ChatThreadIdRoute: ChatThreadIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
