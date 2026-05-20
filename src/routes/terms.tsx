@@ -56,7 +56,7 @@ function TermsPage() {
         <p>These Terms are governed by the laws of the jurisdiction in which Saboor Tahir resides, without regard to conflict-of-laws rules.</p>
 
         <h2>10. Contact</h2>
-        <p><a href="mailto:hello@pnx.lovable.app">hello@pnx.lovable.app</a></p>
+        <p><a href="mailto:saboortahir01@gmail.com">saboortahir01@gmail.com</a></p>
       </main>
       <SiteFooter />
     </div>
