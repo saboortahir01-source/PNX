@@ -13,6 +13,21 @@ const FAQ = [
   { q: "Can I trust the data?", a: "PNX fetches live page and SERP data, parses it, and surfaces sources. Always validate critical decisions with your own analytics." },
 ];
 
+const GOOGLE_FAQ = [
+  { q: "Which Google APIs does PNX use?", a: "Google Search Console, Google Analytics 4, Google Drive, Google Sheets, Blogger and the YouTube Data API. Each is only called when you explicitly connect that account." },
+  { q: "Is PNX verified by Google?", a: "PNX is preparing for Google OAuth 2.0 verification. See the full breakdown on our Google OAuth Verification & API Transparency Hub." },
+  { q: "Does PNX store my Google data?", a: "No. Google API responses are processed in memory for your request and discarded. Nothing is retained on our servers." },
+  { q: "Will my Google data be used for advertising?", a: "Never. PNX adheres to Google API Services User Data Policy Limited Use requirements — no ads, no resale, no human review except with your explicit consent or for security/legal reasons." },
+  { q: "How do I revoke PNX's access to my Google account?", a: "Go to myaccount.google.com/permissions, find PNX in the list and click Remove Access. Revocation is immediate." },
+  { q: "What scopes does PNX request?", a: "Only the minimum needed: webmasters.readonly, analytics.readonly, drive.file, spreadsheets, blogger, and youtube.readonly. The exact scope is shown on Google's consent screen before you approve." },
+  { q: "Is the contact form secure?", a: "Yes. The whole site is served over HTTPS. The form opens your local email app via mailto — no data is posted to any third-party server." },
+  { q: "Where is my chat history stored?", a: "Entirely in your browser's localStorage. Clear browser storage to wipe it; we have no copy." },
+  { q: "Can I use PNX on mobile?", a: "Yes — PNX is mobile-first, fast, and works fully on phones and tablets." },
+  { q: "How fast is PNX?", a: "PNX runs on edge infrastructure and serves cached static assets, so most pages load in under a second on a good connection." },
+];
+
+const ALL_FAQ = [...FAQ, ...GOOGLE_FAQ];
+
 export const Route = createFileRoute("/faq")({
   component: FaqPage,
   head: () => ({
@@ -29,7 +44,7 @@ export const Route = createFileRoute("/faq")({
       children: JSON.stringify({
         "@context": "https://schema.org",
         "@type": "FAQPage",
-        mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+        mainEntity: ALL_FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
       }),
     }],
   }),
@@ -42,8 +57,20 @@ function FaqPage() {
       <main className="mx-auto max-w-3xl px-4 py-12">
         <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">Frequently asked questions</h1>
         <p className="mt-3 text-muted-foreground">Short answers. Honest ones.</p>
+        <h2 className="mt-10 text-xs font-semibold uppercase tracking-widest text-muted-foreground/70">About PNX</h2>
         <div className="mt-10 space-y-3">
           {FAQ.map((f) => (
+            <details key={f.q} className="glass-card p-5 group">
+              <summary className="cursor-pointer font-semibold list-none flex justify-between items-center">
+                <span>{f.q}</span><span className="text-muted-foreground group-open:rotate-45 transition-transform">+</span>
+              </summary>
+              <p className="mt-3 text-sm text-muted-foreground">{f.a}</p>
+            </details>
+          ))}
+        </div>
+        <h2 className="mt-12 text-xs font-semibold uppercase tracking-widest text-muted-foreground/70">Google APIs, OAuth &amp; security</h2>
+        <div className="mt-4 space-y-3">
+          {GOOGLE_FAQ.map((f) => (
             <details key={f.q} className="glass-card p-5 group">
               <summary className="cursor-pointer font-semibold list-none flex justify-between items-center">
                 <span>{f.q}</span><span className="text-muted-foreground group-open:rotate-45 transition-transform">+</span>
