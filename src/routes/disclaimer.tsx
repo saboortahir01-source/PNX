@@ -42,7 +42,7 @@ function DisclaimerPage() {
         <p>This site may display third-party ads (e.g. Google AdSense). Ads are clearly distinguishable from editorial content.</p>
 
         <h2>Contact</h2>
-        <p><a href="mailto:hello@pnx.lovable.app">hello@pnx.lovable.app</a></p>
+        <p><a href="mailto:saboortahir01@gmail.com">saboortahir01@gmail.com</a></p>
       </main>
       <SiteFooter />
     </div>

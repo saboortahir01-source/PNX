@@ -27,6 +27,46 @@ const footer = (related: string[]) =>
 
 export const POSTS: BlogPost[] = [
   {
+    slug: "google-oauth-2-verification-explained",
+    title: "Understanding Google OAuth 2.0 Verification for PNX Users",
+    description: "Plain-English guide to Google OAuth 2.0 verification: what it is, why PNX is going through it, which scopes we request, and how your data stays safe.",
+    keyword: "Google OAuth 2.0 verification",
+    category: "Security & Trust",
+    readTime: "8 min",
+    publishedAt: TODAY,
+    updatedAt: TODAY,
+    excerpt: "Everything PNX users need to know about Google OAuth verification — scopes, Limited Use compliance, and how to revoke access.",
+    body:
+      `## What is Google OAuth 2.0 verification?\n\nGoogle OAuth 2.0 is the protocol that lets you grant a third-party app (like **PNX**) limited access to your Google data — your Search Console rankings, your GA4 analytics, a specific Google Sheet — *without* ever sharing your password. **Verification** is Google's review process that confirms an app actually does what it claims, and that it complies with the [Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy), including **Limited Use** requirements.\n\n` +
+      intro("Google OAuth 2.0 verification", "Verification = Google personally checking that PNX is safe to connect to your Google account.") +
+      `## Why PNX is going through verification\n\nPNX is rolling out integrations with six Google APIs:\n\n- **Search Console** — read your aggregated search performance\n- **Google Analytics 4** — read your aggregated traffic & conversions\n- **Google Drive** — read/write only files you pick\n- **Google Sheets** — import keyword lists, export reports\n- **Blogger** — analyse and publish posts\n- **YouTube Data API v3** — read public video data for YouTube SEO\n\nSeveral of these are **sensitive or restricted scopes**, which require formal Google verification, an OAuth consent screen review, and a public demo video.\n\n## The scopes we request (and why)\n\n| API | Scope | Why we need it |\n|---|---|---|\n| Search Console | webmasters.readonly | Read-only rankings for the [free SEO audit tool](/blog/free-ai-seo-audit-tool) |\n| GA4 | analytics.readonly | Correlate SEO work with real engagement |\n| Drive | drive.file | Access only files you pick — never your full Drive |\n| Sheets | spreadsheets | Import keyword lists & export results |\n| Blogger | blogger | One-click publishing of optimised drafts |\n| YouTube Data | youtube.readonly | Power [free YouTube SEO tools](/blog/free-youtube-seo-tools) |\n\nFull breakdown: [Google OAuth & API Transparency Hub](/google-oauth-verification).\n\n## Limited Use, in plain English\n\nWhen we say PNX follows **Limited Use**, we mean four hard rules:\n\n1. We only use your Google data to power user-facing PNX features you asked for.\n2. We do not transfer it to anyone except as needed to provide that feature.\n3. We do not use it for ads.\n4. Humans don't read it — except with your explicit consent, for security investigations, or to comply with the law.\n\n## How to revoke PNX's access\n\nAt any moment, go to [myaccount.google.com/permissions](https://myaccount.google.com/permissions), find **PNX**, and click **Remove access**. We immediately lose the ability to call any Google API on your behalf — your data on Google is untouched.\n\n## What this means for you\n\n- You can connect Google to PNX with confidence knowing it's reviewed.\n- You see Google's own consent screen — we never bypass it.\n- You can disconnect any time, no email required.\n\nWant to see PNX in action before connecting Google? [Launch PNX free](/chat) — every tool works without a Google account too.\n` +
+      cta("See Full Transparency Hub", "Open the Google OAuth verification hub") +
+      footer(["pnx-google-search-console-seo", "free-ai-seo-audit-tool", "free-youtube-seo-tools"]),
+    ctaLabel: "Read the Transparency Hub",
+    ctaPrompt: "Explain how PNX uses Google OAuth to power SEO audits",
+    related: ["pnx-google-search-console-seo", "free-ai-seo-audit-tool", "free-youtube-seo-tools"],
+  },
+  {
+    slug: "pnx-google-search-console-seo",
+    title: "How PNX Uses Google Search Console Data to Boost Your SEO",
+    description: "PNX reads your Search Console performance (read-only) to surface ranking wins, keyword gaps and content opportunities — no PII, no storage, no daily limits.",
+    keyword: "Google Search Console SEO",
+    category: "Search Console",
+    readTime: "7 min",
+    publishedAt: TODAY,
+    updatedAt: TODAY,
+    excerpt: "Connect Search Console once and PNX turns raw query data into a prioritized SEO action plan — for free.",
+    body:
+      `## Why Search Console is the most underused SEO data source\n\nEvery site owner gets free, first-party search data from **Google Search Console (GSC)** — queries, impressions, clicks, average position. Almost nobody acts on it because the dashboard is slow and the export is ugly. PNX fixes that by reading your GSC data (read-only) and turning it into a prioritized plan.\n\n` +
+      intro("Google Search Console SEO", "GSC is the only source of real Google query data for your site. PNX makes it actionable.") +
+      `## What PNX accesses (and what it doesn't)\n\n- **Scope:** \`webmasters.readonly\` — read-only, nothing is changed in your account.\n- **Data:** aggregated queries, impressions, clicks, position. **No PII.**\n- **Storage:** zero. Everything is processed in memory for your request and discarded. See the full [Google OAuth & API Transparency Hub](/google-oauth-verification).\n\n## 5 things PNX does with your Search Console data\n\n1. **Striking-distance keywords** — surfaces queries ranking positions 5–15 with rising impressions. These are the fastest wins.\n2. **Content gap mapping** — pairs your top queries with the [SERP competitor analysis](/blog/free-competitor-analysis-tool) tool to show what's missing on your page.\n3. **Cannibalisation detection** — flags two URLs ranking for the same query and suggests a merge or canonical.\n4. **Lost-rankings alerts** — diffs current vs prior-period position to catch silent drops early.\n5. **Title/snippet rewriting** — combines low-CTR queries with the [AI content generator](/blog/ai-content-generator-for-seo) to ship a new title in one click.\n\n## PNX + Search Console vs paid alternatives\n\n| Capability | PNX (Free) | Ahrefs Site Explorer | Semrush Position Tracking |\n|---|---|---|---|\n| Real Google query data | ✅ (your GSC) | ❌ (modelled) | ❌ (modelled) |\n| Striking-distance report | ✅ | ✅ | ✅ |\n| Cannibalisation finder | ✅ | Limited | ✅ |\n| AI rewrite of titles | ✅ | ❌ | Add-on |\n| Price | Free | $99+/mo | $139+/mo |\n\n## How to connect (when it's available)\n\n1. Open the [PNX chat](/chat) and pick **Run Search Console Audit**.\n2. You'll see a just-in-time notice: *"PNX needs read-only access to your Search Console to analyze your rankings. We never store your data."*\n3. Click through Google's own consent screen and approve.\n4. PNX runs the audit and returns a structured plan — usually under 30 seconds.\n\n## Revoking access\n\nGo to [myaccount.google.com/permissions](https://myaccount.google.com/permissions) → PNX → **Remove access**. Done.\n\nPair this with [AI keyword research](/blog/ai-keyword-research-free) and the [free SEO audit tool](/blog/free-ai-seo-audit-tool) for a complete SEO loop.\n` +
+      cta("Run a GSC-Powered Audit", "Use my Search Console data to find striking-distance keywords") +
+      footer(["google-oauth-2-verification-explained", "free-ai-seo-audit-tool", "ai-keyword-research-free"]),
+    ctaLabel: "Connect Search Console",
+    ctaPrompt: "Use Search Console to surface my striking-distance keywords",
+    related: ["google-oauth-2-verification-explained", "free-ai-seo-audit-tool", "ai-keyword-research-free"],
+  },
+  {
     slug: "free-agentic-seo-tool",
     title: "Free Agentic SEO Tool: How PNX Replaces a $200/mo SEO Stack",
     description: "PNX is a 100% free agentic SEO tool that audits pages, researches keywords, and analyses SERPs autonomously. See how it compares to paid tools.",
