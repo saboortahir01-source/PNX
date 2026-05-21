@@ -51,7 +51,7 @@ function LandingPage() {
               PNX is your AI SEO strategist. Run on-page audits, AI keyword research, SERP competitor analysis, YouTube SEO and AI content generation — all in one chat, completely free.
             </p>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-              <Link to="/chat" className="cta-glass">Launch PNX Free →</Link>
+              <Link to="/chat" className="cta-glass" aria-label="Launch PNX Chat — free AI SEO agent">Launch PNX Chat →</Link>
               <Link to="/blog" className="px-5 py-2.5 rounded-full text-sm font-medium border hover:bg-accent">Read the SEO blog</Link>
             </div>
             <div className="mt-10 flex justify-center">
@@ -171,7 +171,7 @@ function LandingPage() {
         <section className="mx-auto max-w-3xl px-4 pb-20 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Ready to rank?</h2>
           <p className="mt-3 text-muted-foreground">Launch PNX and run your first SEO audit in under a minute.</p>
-          <div className="mt-6"><Link to="/chat" className="cta-glass">Start Free — No Signup →</Link></div>
+          <div className="mt-6"><Link to="/chat" className="cta-glass" aria-label="Start the free PNX SEO agent">Start Free SEO Agent →</Link></div>
         </section>
       </main>
       <SiteFooter />
