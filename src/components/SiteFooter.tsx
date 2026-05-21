@@ -18,11 +18,12 @@ export function SiteFooter() {
         <div>
           <h4 className="text-sm font-semibold mb-3">Tools</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/chat" className="hover:text-foreground">SEO Audit</Link></li>
-            <li><Link to="/chat" className="hover:text-foreground">Keyword Research</Link></li>
-            <li><Link to="/chat" className="hover:text-foreground">SERP Analysis</Link></li>
-            <li><Link to="/chat" className="hover:text-foreground">YouTube SEO</Link></li>
-            <li><Link to="/chat" className="hover:text-foreground">AI Content</Link></li>
+            <li><Link to="/blog/$slug" params={{ slug: "free-ai-seo-audit-tool" }} className="hover:text-foreground">SEO Audit</Link></li>
+            <li><Link to="/blog/$slug" params={{ slug: "ai-keyword-research-free" }} className="hover:text-foreground">Keyword Research</Link></li>
+            <li><Link to="/blog/$slug" params={{ slug: "free-competitor-analysis-tool" }} className="hover:text-foreground">SERP Analysis</Link></li>
+            <li><Link to="/blog/$slug" params={{ slug: "free-youtube-seo-tools" }} className="hover:text-foreground">YouTube SEO</Link></li>
+            <li><Link to="/blog/$slug" params={{ slug: "ai-content-generator-for-seo" }} className="hover:text-foreground">AI Content</Link></li>
+            <li><Link to="/chat" className="hover:text-foreground font-medium">Launch PNX Chat →</Link></li>
           </ul>
         </div>
         <div>

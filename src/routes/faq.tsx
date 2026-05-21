@@ -79,7 +79,7 @@ function FaqPage() {
             </details>
           ))}
         </div>
-        <div className="mt-10"><Link to="/chat" className="cta-glass">Try PNX Free →</Link></div>
+        <div className="mt-10"><Link to="/chat" className="cta-glass" aria-label="Launch PNX Chat — free AI SEO agent">Launch PNX Chat →</Link></div>
       </main>
       <SiteFooter />
     </div>

@@ -25,7 +25,7 @@ export function SiteHeader() {
           {NAV.map((n) => (
             <Link key={n.to} to={n.to} className="px-3 py-1.5 rounded-md hover:bg-accent text-foreground/80 hover:text-foreground" activeProps={{ className: "px-3 py-1.5 rounded-md bg-accent text-foreground font-medium" }}>{n.label}</Link>
           ))}
-          <Link to="/chat" className="ml-2 cta-glass !py-1.5 !px-4 !text-sm">Launch PNX</Link>
+          <Link to="/chat" className="ml-2 cta-glass !py-1.5 !px-4 !text-sm" aria-label="Launch PNX Chat — free AI SEO agent">Launch PNX Chat</Link>
         </nav>
         <button className="md:hidden p-2 -mr-2" onClick={() => setOpen((v) => !v)} aria-label="Menu">
           {open ? <X size={20} /> : <Menu size={20} />}
@@ -37,7 +37,7 @@ export function SiteHeader() {
             {NAV.map((n) => (
               <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="px-3 py-2 rounded-md hover:bg-accent">{n.label}</Link>
             ))}
-            <Link to="/chat" onClick={() => setOpen(false)} className="cta-glass mt-2 self-start">Launch PNX</Link>
+            <Link to="/chat" onClick={() => setOpen(false)} className="cta-glass mt-2 self-start" aria-label="Launch PNX Chat — free AI SEO agent">Launch PNX Chat</Link>
           </nav>
         </div>
       )}

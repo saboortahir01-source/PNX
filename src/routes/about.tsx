@@ -66,7 +66,7 @@ function AboutPage() {
         <h2 className="mt-10 text-2xl font-semibold">Why free?</h2>
         <p className="mt-3 text-muted-foreground">PNX is funded by the founder and runs efficiently on Lovable AI Gateway. The cost savings are passed back to you. There is no daily cap, no premium tier hiding the good stuff.</p>
 
-        <div className="mt-10"><Link to="/chat" className="cta-glass">Try PNX Free →</Link></div>
+        <div className="mt-10"><Link to="/chat" className="cta-glass" aria-label="Launch PNX Chat — free AI SEO agent">Launch PNX Chat →</Link></div>
       </main>
       <SiteFooter />
     </div>
