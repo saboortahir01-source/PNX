@@ -1,4 +1,22 @@
+# Allow all search engines (Google, Bing, DuckDuckGo, Yandex, Baidu, etc.)
 User-agent: *
+Allow: /
+Crawl-delay: 0
+
+# Explicit allow for major crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: Baiduspider
 Allow: /
 
 Sitemap: https://pnx.lovable.app/sitemap.xml
