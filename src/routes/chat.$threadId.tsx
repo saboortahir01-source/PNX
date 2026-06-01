@@ -5,7 +5,8 @@ import { ChatWindow } from "@/components/ChatWindow";
 import { ThreadSidebar } from "@/components/ThreadSidebar";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { Menu } from "lucide-react";
+import { Menu, Home } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import pnxLogo from "@/assets/pnx-logo.png";
 import {
   createThread,
@@ -117,8 +118,16 @@ function ChatPage() {
 
   if (!threads || !activeThread) {
     return (
-      <div className="flex h-screen items-center justify-center bg-background text-muted-foreground">
-        Loading...
+      <div
+        className="flex h-screen flex-col items-center justify-center gap-4 bg-background"
+        style={{ backgroundImage: "var(--gradient-surface)" }}
+        role="status"
+        aria-label="Loading conversation"
+      >
+        <div className="glass flex size-16 items-center justify-center rounded-2xl shadow-[var(--shadow-elegant)]">
+          <img src={pnxLogo} alt="PNX" className="size-12 object-contain animate-pulse" />
+        </div>
+        <p className="text-sm text-muted-foreground">Loading your SEO workspace…</p>
       </div>
     );
   }
@@ -159,7 +168,13 @@ function ChatPage() {
             <img src={pnxLogo} alt="PNX" className="size-7 rounded-lg" />
             <span className="text-sm font-semibold tracking-tight">PNX</span>
           </div>
-          <div className="size-9" aria-hidden />
+          <Link
+            to="/"
+            aria-label="Back to home"
+            className="inline-flex size-9 items-center justify-center rounded-xl border border-border/60 bg-card/70 text-foreground"
+          >
+            <Home className="size-4" />
+          </Link>
         </header>
         <ChatWindow
           key={threadId}

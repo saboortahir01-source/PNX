@@ -3,6 +3,68 @@ import * as cheerio from "cheerio";
 const UA =
   "Mozilla/5.0 (compatible; LovableSEOAgent/1.0; +https://lovable.dev)";
 
+// SSRF protection: only allow http(s) on public hostnames.
+// Blocks loopback, private RFC1918, link-local, cloud metadata, and
+// internal-only TLDs to prevent server-side request forgery via
+// user-supplied URLs in the SEO agent's fetch tool.
+const BLOCKED_HOSTS = new Set([
+  "localhost",
+  "ip6-localhost",
+  "ip6-loopback",
+  "broadcasthost",
+  "metadata.google.internal",
+  "metadata.goog",
+]);
+
+function isBlockedIPv4(host: string): boolean {
+  const m = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (!m) return false;
+  const [a, b] = [Number(m[1]), Number(m[2])];
+  if (a === 10) return true;
+  if (a === 127) return true;
+  if (a === 0) return true;
+  if (a === 169 && b === 254) return true; // link-local + AWS/GCP metadata
+  if (a === 172 && b >= 16 && b <= 31) return true;
+  if (a === 192 && b === 168) return true;
+  if (a === 100 && b >= 64 && b <= 127) return true; // CGNAT
+  if (a >= 224) return true; // multicast / reserved
+  return false;
+}
+
+function isBlockedIPv6(host: string): boolean {
+  const h = host.replace(/^\[|\]$/g, "").toLowerCase();
+  if (!h.includes(":")) return false;
+  if (h === "::1" || h === "::" ) return true;
+  if (h.startsWith("fe80:") || h.startsWith("fc") || h.startsWith("fd")) return true;
+  if (h.startsWith("::ffff:")) {
+    const v4 = h.slice(7);
+    return isBlockedIPv4(v4);
+  }
+  return false;
+}
+
+function assertSafeUrl(raw: string): URL {
+  let u: URL;
+  try {
+    u = new URL(raw);
+  } catch {
+    throw new Error("Invalid URL");
+  }
+  if (u.protocol !== "http:" && u.protocol !== "https:") {
+    throw new Error("Only http(s) URLs are allowed");
+  }
+  const host = u.hostname.toLowerCase();
+  if (!host) throw new Error("Missing hostname");
+  if (BLOCKED_HOSTS.has(host)) throw new Error("Blocked hostname");
+  if (host.endsWith(".local") || host.endsWith(".internal") || host.endsWith(".localhost")) {
+    throw new Error("Internal hostnames are not allowed");
+  }
+  if (isBlockedIPv4(host) || isBlockedIPv6(host)) {
+    throw new Error("Private or loopback addresses are not allowed");
+  }
+  return u;
+}
+
 export type FetchPageResult = {
   url: string;
   finalUrl: string;
@@ -31,13 +93,28 @@ export type FetchPageResult = {
 
 export async function fetchPage(rawUrl: string): Promise<FetchPageResult> {
   const url = normalizeUrl(rawUrl);
-  const res = await fetch(url, {
-    redirect: "follow",
+  const parsed = assertSafeUrl(url);
+  const res = await fetch(parsed.toString(), {
+    redirect: "manual",
     headers: { "User-Agent": UA, Accept: "text/html,*/*" },
   });
-  const finalUrl = res.url || url;
-  const statusCode = res.status;
-  const html = await res.text();
+  // Manually follow redirects (max 5) re-validating each hop to prevent
+  // SSRF via open redirect.
+  let current = res;
+  let finalUrl = parsed.toString();
+  for (let i = 0; i < 5 && current.status >= 300 && current.status < 400; i++) {
+    const loc = current.headers.get("location");
+    if (!loc) break;
+    const next = new URL(loc, finalUrl);
+    assertSafeUrl(next.toString());
+    finalUrl = next.toString();
+    current = await fetch(finalUrl, {
+      redirect: "manual",
+      headers: { "User-Agent": UA, Accept: "text/html,*/*" },
+    });
+  }
+  const statusCode = current.status;
+  const html = await current.text();
   const $ = cheerio.load(html);
 
   const og: Record<string, string> = {};
