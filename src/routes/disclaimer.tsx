@@ -9,6 +9,8 @@ export const Route = createFileRoute("/disclaimer")({
       { title: "Disclaimer — PNX Free Agentic SEO Tool" },
       { name: "description", content: "PNX disclaimer: AI-generated SEO insights are guidance, not guarantees. Always validate with your own analytics." },
       { property: "og:title", content: "Disclaimer — PNX" },
+      { property: "og:description", content: "PNX disclaimer — AI-generated SEO insights are guidance, not guarantees. Validate with your own analytics." },
+      { property: "og:type", content: "website" },
       { property: "og:url", content: "https://pnx.lovable.app/disclaimer" },
     ],
     links: [{ rel: "canonical", href: "https://pnx.lovable.app/disclaimer" }],

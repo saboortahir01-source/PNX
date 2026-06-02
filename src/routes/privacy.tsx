@@ -9,6 +9,8 @@ export const Route = createFileRoute("/privacy")({
       { title: "Privacy Policy — PNX Free Agentic SEO Tool" },
       { name: "description", content: "How PNX handles your data, including Google API integrations (Search Console, GA4, Drive, Sheets, Blogger, YouTube). Limited Use compliant." },
       { property: "og:title", content: "Privacy Policy — PNX" },
+      { property: "og:description", content: "How PNX handles your data and Google API integrations (GSC, GA4, Drive, Sheets, Blogger, YouTube). Limited Use compliant." },
+      { property: "og:type", content: "website" },
       { property: "og:url", content: "https://pnx.lovable.app/privacy" },
     ],
     links: [{ rel: "canonical", href: "https://pnx.lovable.app/privacy" }],

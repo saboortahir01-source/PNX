@@ -1,0 +1,32 @@
+# PNX
+
+> PNX is a free agentic SEO tool by Saboor Tahir — AI SEO audits, keyword research, SERP analysis, YouTube SEO and AI content generation. 100% free, no daily limits, no signup.
+
+## Pages
+
+- [Home](/): Free agentic SEO tool overview and feature grid.
+- [About](/about): Founder bio (Saboor Tahir) and the mission behind PNX.
+- [Contact](/contact): How to reach the PNX team.
+- [FAQ](/faq): Common questions about PNX, pricing, limits, and data use.
+- [Blog](/blog): Free SEO guides on agentic SEO, audits, keyword research, SERP and YouTube SEO.
+- [Launch PNX Chat](/chat): Free AI SEO agent — on-page audits, keyword research, SERP analysis.
+- [Google OAuth & API Transparency Hub](/google-oauth-verification): Scopes, Limited Use compliance, data handling.
+
+## Blog
+
+- [Free Agentic SEO Tool](/blog/free-agentic-seo-tool): What an agentic SEO tool is and why PNX is free.
+- [Free AI SEO Audit Tool](/blog/free-ai-seo-audit-tool): How to run a complete on-page + technical SEO audit for free.
+- [AI Keyword Research Free](/blog/ai-keyword-research-free): Free keyword research with intent clustering.
+- [Free YouTube SEO Tools](/blog/free-youtube-seo-tools): YouTube SEO analyzer and keyword research.
+- [YouTube SEO Keywords Guide](/blog/youtube-seo-keywords-guide): Finding and ranking for YouTube SEO keywords.
+- [Free Competitor Analysis Tool](/blog/free-competitor-analysis-tool): SERP competitor analysis and content gap finding.
+- [AI Content Generator for SEO](/blog/ai-content-generator-for-seo): SERP-aware AI content generation.
+- [AI SEO Strategist vs Traditional SEO](/blog/ai-seo-strategist-vs-traditional-seo): Where agentic SEO beats classic SEO workflows.
+- [Google OAuth 2.0 Verification Explained](/blog/google-oauth-2-verification-explained): Plain-English guide to PNX's Google verification.
+- [PNX + Google Search Console SEO](/blog/pnx-google-search-console-seo): How PNX uses GSC data to surface ranking wins.
+
+## Optional
+
+- [Privacy](/privacy): Data handling and Google API Limited Use compliance.
+- [Terms](/terms): Terms of service.
+- [Disclaimer](/disclaimer): AI guidance disclaimer.

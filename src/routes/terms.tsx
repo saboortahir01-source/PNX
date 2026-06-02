@@ -9,6 +9,8 @@ export const Route = createFileRoute("/terms")({
       { title: "Terms of Service — PNX Free Agentic SEO Tool" },
       { name: "description", content: "PNX Terms of Service. Use the free agentic SEO tool responsibly. No abuse, no scraping at scale, no illegal use." },
       { property: "og:title", content: "Terms of Service — PNX" },
+      { property: "og:description", content: "PNX Terms of Service — use the free agentic SEO tool responsibly. No abuse, no scraping at scale, no illegal use." },
+      { property: "og:type", content: "website" },
       { property: "og:url", content: "https://pnx.lovable.app/terms" },
     ],
     links: [{ rel: "canonical", href: "https://pnx.lovable.app/terms" }],

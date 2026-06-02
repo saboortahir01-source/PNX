@@ -20,12 +20,17 @@ export const Route = createFileRoute("/chat/$threadId")({
   component: ChatPage,
   head: () => ({
     meta: [
-      { title: "PNX SEO AI Agent | On-Page Audits, Keyword Research & SERP Analysis" },
+      { title: "PNX SEO AI Agent Chat — Free Audits" },
       {
         name: "description",
         content:
           "Chat with PNX, your free AI SEO agent. Run on-page SEO audits, cluster keywords, analyse SERP competitors, and generate content strategies instantly.",
       },
+      { property: "og:title", content: "PNX SEO AI Agent Chat" },
+      { property: "og:description", content: "Chat with PNX — run free AI SEO audits, keyword research, SERP analysis and content strategies." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://pnx.lovable.app/chat" },
+      { name: "robots", content: "noindex, follow" },
     ],
   }),
 });
@@ -143,6 +148,7 @@ function ChatPage() {
         />
       </div>
       <main className="flex h-full min-w-0 flex-1 flex-col">
+        <h1 className="sr-only">PNX AI SEO Agent Chat</h1>
         {/* Mobile top bar */}
         <header className="flex items-center justify-between gap-2 border-b border-border/60 px-3 py-2.5 md:hidden glass">
           <Sheet>
