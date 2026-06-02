@@ -16,9 +16,11 @@ export const Route = createFileRoute("/blog/$slug")({
     const p = loaderData?.post;
     const url = `https://pnx.lovable.app/blog/${params.slug}`;
     if (!p) return { meta: [{ title: "Article — PNX" }] };
+    // Keep combined title under 60 chars: prefer no suffix when long, else add " — PNX".
+    const fullTitle = p.title.length <= 53 ? `${p.title} — PNX` : p.title;
     return {
       meta: [
-        { title: `${p.title} | PNX SEO Blog` },
+        { title: fullTitle },
         { name: "description", content: p.description },
         { name: "keywords", content: p.keyword },
         { property: "og:title", content: p.title },

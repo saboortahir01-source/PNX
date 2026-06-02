@@ -7,11 +7,12 @@ export const Route = createFileRoute("/blog")({
   component: BlogIndex,
   head: () => ({
     meta: [
-      { title: "PNX SEO Blog — Free Agentic SEO, AI Content & YouTube SEO Guides" },
+      { title: "PNX SEO Blog — Agentic SEO & AI Guides" },
       { name: "description", content: "Free SEO guides: agentic SEO, AI SEO audits, free keyword research, SERP analysis, YouTube SEO, AI content generation. Practical, ranked, no fluff." },
       { property: "og:title", content: "PNX SEO Blog" },
       { property: "og:description", content: "Free, practical SEO guides by Saboor Tahir." },
       { property: "og:url", content: "https://pnx.lovable.app/blog" },
+      { property: "og:type", content: "website" },
     ],
     links: [{ rel: "canonical", href: "https://pnx.lovable.app/blog" }],
     scripts: [{

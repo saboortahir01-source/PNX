@@ -18,7 +18,7 @@ export const Route = createFileRoute("/")({
   component: LandingPage,
   head: () => ({
     meta: [
-      { title: "PNX — Free Agentic SEO Tool | AI Audits, Keyword Research & SERP Analysis" },
+      { title: "PNX — Free Agentic SEO Tool & AI Audits" },
       { name: "description", content: "PNX is a 100% free agentic SEO tool. Run AI SEO audits, free keyword research, SERP analysis, YouTube SEO and AI content generation. No limits, no signup." },
       { name: "keywords", content: "free agentic SEO tool, AI SEO strategist, free SEO audit tool, AI keyword research, free keyword research tool, SERP analysis, SEO competitor analysis, free YouTube SEO tools, YouTube SEO analyzer, AI content generator for SEO, technical SEO" },
       { property: "og:title", content: "PNX — Free Agentic SEO Tool" },
@@ -26,7 +26,10 @@ export const Route = createFileRoute("/")({
       { property: "og:url", content: "https://pnx.lovable.app/" },
       { property: "og:type", content: "website" },
     ],
-    links: [{ rel: "canonical", href: "https://pnx.lovable.app/" }],
+    links: [
+      { rel: "canonical", href: "https://pnx.lovable.app/" },
+      { rel: "preload", as: "image", href: "/favicon.png", fetchpriority: "high" },
+    ],
   }),
 });
 
@@ -55,7 +58,7 @@ function LandingPage() {
               <Link to="/blog" className="px-5 py-2.5 rounded-full text-sm font-medium border hover:bg-accent">Read the SEO blog</Link>
             </div>
             <div className="mt-10 flex justify-center">
-              <img src={pnxLogo} alt="PNX agentic SEO tool" width={120} height={120} className="rounded-3xl glass p-3" />
+              <img src={pnxLogo} alt="PNX agentic SEO tool" width={120} height={120} fetchPriority="high" decoding="async" className="rounded-3xl glass p-3" />
             </div>
           </div>
         </section>
