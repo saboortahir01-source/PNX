@@ -15,8 +15,18 @@ export const Route = createFileRoute("/contact")({
       { property: "og:title", content: "Contact PNX" },
       { property: "og:description", content: "Reach Saboor Tahir & the PNX team." },
       { property: "og:url", content: "https://pnx.lovable.app/contact" },
+      { property: "og:locale", content: "en_US" },
     ],
-    links: [{ rel: "canonical", href: "https://pnx.lovable.app/contact" }],
+    links: [
+      { rel: "canonical", href: "https://pnx.lovable.app/contact" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://pnx.lovable.app/contact" },
+      { rel: "alternate", hrefLang: "en", href: "https://pnx.lovable.app/contact" },
+      { rel: "alternate", hrefLang: "en-US", href: "https://pnx.lovable.app/contact" },
+      { rel: "alternate", hrefLang: "en-GB", href: "https://pnx.lovable.app/contact" },
+      { rel: "alternate", hrefLang: "en-CA", href: "https://pnx.lovable.app/contact" },
+      { rel: "alternate", hrefLang: "en-AU", href: "https://pnx.lovable.app/contact" },
+      { rel: "alternate", hrefLang: "en-IN", href: "https://pnx.lovable.app/contact" },
+    ],
     scripts: [{
       type: "application/ld+json",
       children: JSON.stringify({
