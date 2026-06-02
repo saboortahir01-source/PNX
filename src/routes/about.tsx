@@ -11,8 +11,18 @@ export const Route = createFileRoute("/about")({
       { property: "og:title", content: "About PNX — by Saboor Tahir" },
       { property: "og:description", content: "Independent. Free. Unlimited. The story behind PNX, the free agentic SEO tool." },
       { property: "og:url", content: "https://pnx.lovable.app/about" },
+      { property: "og:locale", content: "en_US" },
     ],
-    links: [{ rel: "canonical", href: "https://pnx.lovable.app/about" }],
+    links: [
+      { rel: "canonical", href: "https://pnx.lovable.app/about" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://pnx.lovable.app/about" },
+      { rel: "alternate", hrefLang: "en", href: "https://pnx.lovable.app/about" },
+      { rel: "alternate", hrefLang: "en-US", href: "https://pnx.lovable.app/about" },
+      { rel: "alternate", hrefLang: "en-GB", href: "https://pnx.lovable.app/about" },
+      { rel: "alternate", hrefLang: "en-CA", href: "https://pnx.lovable.app/about" },
+      { rel: "alternate", hrefLang: "en-AU", href: "https://pnx.lovable.app/about" },
+      { rel: "alternate", hrefLang: "en-IN", href: "https://pnx.lovable.app/about" },
+    ],
     scripts: [{
       type: "application/ld+json",
       children: JSON.stringify({

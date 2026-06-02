@@ -12,8 +12,18 @@ export const Route = createFileRoute("/disclaimer")({
       { property: "og:description", content: "PNX disclaimer — AI-generated SEO insights are guidance, not guarantees. Validate with your own analytics." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://pnx.lovable.app/disclaimer" },
+      { property: "og:locale", content: "en_US" },
     ],
-    links: [{ rel: "canonical", href: "https://pnx.lovable.app/disclaimer" }],
+    links: [
+      { rel: "canonical", href: "https://pnx.lovable.app/disclaimer" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://pnx.lovable.app/disclaimer" },
+      { rel: "alternate", hrefLang: "en", href: "https://pnx.lovable.app/disclaimer" },
+      { rel: "alternate", hrefLang: "en-US", href: "https://pnx.lovable.app/disclaimer" },
+      { rel: "alternate", hrefLang: "en-GB", href: "https://pnx.lovable.app/disclaimer" },
+      { rel: "alternate", hrefLang: "en-CA", href: "https://pnx.lovable.app/disclaimer" },
+      { rel: "alternate", hrefLang: "en-AU", href: "https://pnx.lovable.app/disclaimer" },
+      { rel: "alternate", hrefLang: "en-IN", href: "https://pnx.lovable.app/disclaimer" },
+    ],
   }),
 });
 

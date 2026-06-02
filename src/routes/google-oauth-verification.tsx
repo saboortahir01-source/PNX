@@ -21,8 +21,18 @@ export const Route = createFileRoute("/google-oauth-verification")({
       { property: "og:title", content: "Google OAuth Verification — PNX" },
       { property: "og:description", content: "Full transparency on PNX's Google API integrations." },
       { property: "og:url", content: "https://pnx.lovable.app/google-oauth-verification" },
+      { property: "og:locale", content: "en_US" },
     ],
-    links: [{ rel: "canonical", href: "https://pnx.lovable.app/google-oauth-verification" }],
+    links: [
+      { rel: "canonical", href: "https://pnx.lovable.app/google-oauth-verification" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://pnx.lovable.app/google-oauth-verification" },
+      { rel: "alternate", hrefLang: "en", href: "https://pnx.lovable.app/google-oauth-verification" },
+      { rel: "alternate", hrefLang: "en-US", href: "https://pnx.lovable.app/google-oauth-verification" },
+      { rel: "alternate", hrefLang: "en-GB", href: "https://pnx.lovable.app/google-oauth-verification" },
+      { rel: "alternate", hrefLang: "en-CA", href: "https://pnx.lovable.app/google-oauth-verification" },
+      { rel: "alternate", hrefLang: "en-AU", href: "https://pnx.lovable.app/google-oauth-verification" },
+      { rel: "alternate", hrefLang: "en-IN", href: "https://pnx.lovable.app/google-oauth-verification" },
+    ],
     scripts: [{
       type: "application/ld+json",
       children: JSON.stringify({

@@ -84,6 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://pnx.lovable.app/" },
       { property: "og:site_name", content: "PNX" },
+      { property: "og:locale", content: "en_US" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "PNX | Agentic SEO & AI Search Discovery" },
@@ -104,6 +105,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap",
       },
+      // Hreflang for international SEO — x-default catches all languages/regions
+      { rel: "alternate", hrefLang: "x-default", href: "https://pnx.lovable.app/" },
+      { rel: "alternate", hrefLang: "en", href: "https://pnx.lovable.app/" },
+      { rel: "alternate", hrefLang: "en-US", href: "https://pnx.lovable.app/" },
+      { rel: "alternate", hrefLang: "en-GB", href: "https://pnx.lovable.app/" },
+      { rel: "alternate", hrefLang: "en-CA", href: "https://pnx.lovable.app/" },
+      { rel: "alternate", hrefLang: "en-AU", href: "https://pnx.lovable.app/" },
+      { rel: "alternate", hrefLang: "en-IN", href: "https://pnx.lovable.app/" },
     ],
     scripts: [
       {

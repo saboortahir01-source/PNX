@@ -37,8 +37,18 @@ export const Route = createFileRoute("/faq")({
       { property: "og:title", content: "PNX FAQ" },
       { property: "og:description", content: "Pricing, limits, what PNX can do, and how it stays free." },
       { property: "og:url", content: "https://pnx.lovable.app/faq" },
+      { property: "og:locale", content: "en_US" },
     ],
-    links: [{ rel: "canonical", href: "https://pnx.lovable.app/faq" }],
+    links: [
+      { rel: "canonical", href: "https://pnx.lovable.app/faq" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://pnx.lovable.app/faq" },
+      { rel: "alternate", hrefLang: "en", href: "https://pnx.lovable.app/faq" },
+      { rel: "alternate", hrefLang: "en-US", href: "https://pnx.lovable.app/faq" },
+      { rel: "alternate", hrefLang: "en-GB", href: "https://pnx.lovable.app/faq" },
+      { rel: "alternate", hrefLang: "en-CA", href: "https://pnx.lovable.app/faq" },
+      { rel: "alternate", hrefLang: "en-AU", href: "https://pnx.lovable.app/faq" },
+      { rel: "alternate", hrefLang: "en-IN", href: "https://pnx.lovable.app/faq" },
+    ],
     scripts: [{
       type: "application/ld+json",
       children: JSON.stringify({

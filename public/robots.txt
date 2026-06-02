@@ -1,22 +1,89 @@
-# Allow all search engines (Google, Bing, DuckDuckGo, Yandex, Baidu, etc.)
+# Allow ALL search engines globally
 User-agent: *
 Allow: /
 Crawl-delay: 0
 
-# Explicit allow for major crawlers
+# Google crawlers
 User-agent: Googlebot
 Allow: /
-
-User-agent: Bingbot
+User-agent: Googlebot-Image
+Allow: /
+User-agent: Googlebot-Video
+Allow: /
+User-agent: Googlebot-News
+Allow: /
+User-agent: Googlebot-Mobile
 Allow: /
 
+# Bing / Microsoft
+User-agent: Bingbot
+Allow: /
+User-agent: BingPreview
+Allow: /
+User-agent: msnbot
+Allow: /
+
+# DuckDuckGo
 User-agent: DuckDuckBot
 Allow: /
 
+# Yandex
 User-agent: YandexBot
 Allow: /
+User-agent: YandexImages
+Allow: /
 
+# Baidu
 User-agent: Baiduspider
 Allow: /
 
+# Apple
+User-agent: Applebot
+Allow: /
+
+# Yahoo
+User-agent: Slurp
+Allow: /
+
+# Facebook
+User-agent: facebookexternalhit
+Allow: /
+
+# Twitter / X
+User-agent: Twitterbot
+Allow: /
+
+# LinkedIn
+User-agent: LinkedInBot
+Allow: /
+
+# OpenAI / ChatGPT
+User-agent: GPTBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic / Claude
+User-agent: Anthropic-ai
+Allow: /
+User-agent: Claude-Web
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+# Common social / AI crawlers
+User-agent: WhatsApp
+Allow: /
+User-agent: TelegramBot
+Allow: /
+User-agent: Slackbot
+Allow: /
+User-agent: Discordbot
+Allow: /
+
+# Sitemap
 Sitemap: https://pnx.lovable.app/sitemap.xml

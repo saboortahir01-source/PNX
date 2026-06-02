@@ -27,10 +27,20 @@ export const Route = createFileRoute("/blog/$slug")({
         { property: "og:description", content: p.description },
         { property: "og:type", content: "article" },
         { property: "og:url", content: url },
+        { property: "og:locale", content: "en_US" },
         { property: "article:author", content: "Saboor Tahir" },
         { property: "article:published_time", content: p.publishedAt },
       ],
-      links: [{ rel: "canonical", href: url }],
+      links: [
+        { rel: "canonical", href: url },
+        { rel: "alternate", hrefLang: "x-default", href: url },
+        { rel: "alternate", hrefLang: "en", href: url },
+        { rel: "alternate", hrefLang: "en-US", href: url },
+        { rel: "alternate", hrefLang: "en-GB", href: url },
+        { rel: "alternate", hrefLang: "en-CA", href: url },
+        { rel: "alternate", hrefLang: "en-AU", href: url },
+        { rel: "alternate", hrefLang: "en-IN", href: url },
+      ],
       scripts: [{
         type: "application/ld+json",
         children: JSON.stringify({

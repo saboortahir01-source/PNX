@@ -25,10 +25,18 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Free AI SEO audits, keyword research, SERP analysis & YouTube SEO. No limits, no signup." },
       { property: "og:url", content: "https://pnx.lovable.app/" },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "en_US" },
     ],
     links: [
       { rel: "canonical", href: "https://pnx.lovable.app/" },
       { rel: "preload", as: "image", href: "/favicon.png", fetchpriority: "high" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://pnx.lovable.app/" },
+      { rel: "alternate", hrefLang: "en", href: "https://pnx.lovable.app/" },
+      { rel: "alternate", hrefLang: "en-US", href: "https://pnx.lovable.app/" },
+      { rel: "alternate", hrefLang: "en-GB", href: "https://pnx.lovable.app/" },
+      { rel: "alternate", hrefLang: "en-CA", href: "https://pnx.lovable.app/" },
+      { rel: "alternate", hrefLang: "en-AU", href: "https://pnx.lovable.app/" },
+      { rel: "alternate", hrefLang: "en-IN", href: "https://pnx.lovable.app/" },
     ],
   }),
 });
