@@ -5,6 +5,18 @@ import pnxLogo from "@/assets/pnx-logo.png";
 
 export const Route = createFileRoute("/chat/")({
   component: ChatIndex,
+  head: () => ({
+    meta: [
+      { title: "Launch PNX SEO Agent — Free AI Chat" },
+      { name: "description", content: "Launch the free PNX AI SEO agent — on-page audits, keyword research, SERP analysis and content strategy in one chat." },
+      { property: "og:title", content: "Launch PNX SEO Agent" },
+      { property: "og:description", content: "Launch the free PNX AI SEO agent for audits, keyword research and SERP analysis." },
+      { property: "og:url", content: "https://pnx.lovable.app/chat" },
+      { property: "og:type", content: "website" },
+      { name: "robots", content: "noindex, follow" },
+    ],
+    links: [{ rel: "canonical", href: "https://pnx.lovable.app/chat" }],
+  }),
 });
 
 function ChatIndex() {
