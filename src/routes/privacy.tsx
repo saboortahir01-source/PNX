@@ -12,8 +12,18 @@ export const Route = createFileRoute("/privacy")({
       { property: "og:description", content: "How PNX handles your data and Google API integrations (GSC, GA4, Drive, Sheets, Blogger, YouTube). Limited Use compliant." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://pnx.lovable.app/privacy" },
+      { property: "og:locale", content: "en_US" },
     ],
-    links: [{ rel: "canonical", href: "https://pnx.lovable.app/privacy" }],
+    links: [
+      { rel: "canonical", href: "https://pnx.lovable.app/privacy" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://pnx.lovable.app/privacy" },
+      { rel: "alternate", hrefLang: "en", href: "https://pnx.lovable.app/privacy" },
+      { rel: "alternate", hrefLang: "en-US", href: "https://pnx.lovable.app/privacy" },
+      { rel: "alternate", hrefLang: "en-GB", href: "https://pnx.lovable.app/privacy" },
+      { rel: "alternate", hrefLang: "en-CA", href: "https://pnx.lovable.app/privacy" },
+      { rel: "alternate", hrefLang: "en-AU", href: "https://pnx.lovable.app/privacy" },
+      { rel: "alternate", hrefLang: "en-IN", href: "https://pnx.lovable.app/privacy" },
+    ],
   }),
 });
 

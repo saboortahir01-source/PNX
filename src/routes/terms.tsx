@@ -12,8 +12,18 @@ export const Route = createFileRoute("/terms")({
       { property: "og:description", content: "PNX Terms of Service — use the free agentic SEO tool responsibly. No abuse, no scraping at scale, no illegal use." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://pnx.lovable.app/terms" },
+      { property: "og:locale", content: "en_US" },
     ],
-    links: [{ rel: "canonical", href: "https://pnx.lovable.app/terms" }],
+    links: [
+      { rel: "canonical", href: "https://pnx.lovable.app/terms" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://pnx.lovable.app/terms" },
+      { rel: "alternate", hrefLang: "en", href: "https://pnx.lovable.app/terms" },
+      { rel: "alternate", hrefLang: "en-US", href: "https://pnx.lovable.app/terms" },
+      { rel: "alternate", hrefLang: "en-GB", href: "https://pnx.lovable.app/terms" },
+      { rel: "alternate", hrefLang: "en-CA", href: "https://pnx.lovable.app/terms" },
+      { rel: "alternate", hrefLang: "en-AU", href: "https://pnx.lovable.app/terms" },
+      { rel: "alternate", hrefLang: "en-IN", href: "https://pnx.lovable.app/terms" },
+    ],
   }),
 });
 
