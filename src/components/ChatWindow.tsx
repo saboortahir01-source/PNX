@@ -11,6 +11,7 @@ import {
   MessageContent,
   MessageResponse,
 } from "@/components/ai-elements/message";
+import { toast } from "sonner";
 import {
   PromptInput,
   PromptInputBody,
@@ -33,7 +34,7 @@ import {
   ToolInput,
   ToolOutput,
 } from "@/components/ai-elements/tool";
-import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, X, type LucideProps } from "lucide-react";
+import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, X, Copy, RefreshCw, Share2, ThumbsUp, ThumbsDown, type LucideProps } from "lucide-react";
 import { cn } from "@/lib/utils";
 import pnxLogo from "@/assets/pnx-logo.png";
 
@@ -84,7 +85,7 @@ const SUGGESTIONS: { icon: React.ComponentType<{ className?: string; size?: numb
 ];
 
 export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Props) {
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, regenerate } = useChat({
     id: threadId,
     messages: initialMessages,
     transport: new DefaultChatTransport({ api: "/api/chat" }),
@@ -113,6 +114,40 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
   };
 
   const isBusy = status === "submitted" || status === "streaming";
+
+  const getMessageText = (m: UIMessage) =>
+    m.parts.map((p) => (p.type === "text" ? p.text : "")).join("");
+
+  const handleCopy = async (m: UIMessage) => {
+    try {
+      await navigator.clipboard.writeText(getMessageText(m));
+      toast.success("Copied to clipboard");
+    } catch {
+      toast.error("Copy failed");
+    }
+  };
+
+  const handleShare = async (m: UIMessage) => {
+    const text = getMessageText(m);
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({ title: "PNX SEO insight", text, url: window.location.href });
+        return;
+      } catch {
+        /* fallthrough to copy */
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(`${text}\n\n— via PNX ${window.location.href}`);
+      toast.success("Link & message copied — share anywhere");
+    } catch {
+      toast.error("Share failed");
+    }
+  };
+
+  const handleFeedback = (kind: "up" | "down") => {
+    toast.success(kind === "up" ? "Thanks for the feedback!" : "Got it — we'll improve.");
+  };
 
   return (
     <div
@@ -167,7 +202,7 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
               </div>
             </div>
           ) : (
-            messages.map((m) => (
+            messages.map((m, idx) => (
               <Message key={m.id} from={m.role}>
                 <MessageContent>
                   {m.parts.map((part, i) => {
@@ -215,6 +250,52 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                     return null;
                   })}
                 </MessageContent>
+                {m.role === "assistant" && !isBusy && (
+                  <div className="mt-1 flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+                    <button
+                      onClick={() => handleCopy(m)}
+                      className="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
+                      aria-label="Copy"
+                      title="Copy"
+                    >
+                      <Copy className="size-3.5" />
+                    </button>
+                    {idx === messages.length - 1 && (
+                      <button
+                        onClick={() => regenerate()}
+                        className="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
+                        aria-label="Regenerate"
+                        title="Regenerate"
+                      >
+                        <RefreshCw className="size-3.5" />
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleShare(m)}
+                      className="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
+                      aria-label="Share"
+                      title="Share"
+                    >
+                      <Share2 className="size-3.5" />
+                    </button>
+                    <button
+                      onClick={() => handleFeedback("up")}
+                      className="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
+                      aria-label="Helpful"
+                      title="Helpful"
+                    >
+                      <ThumbsUp className="size-3.5" />
+                    </button>
+                    <button
+                      onClick={() => handleFeedback("down")}
+                      className="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
+                      aria-label="Not helpful"
+                      title="Not helpful"
+                    >
+                      <ThumbsDown className="size-3.5" />
+                    </button>
+                  </div>
+                )}
               </Message>
             ))
           )}
