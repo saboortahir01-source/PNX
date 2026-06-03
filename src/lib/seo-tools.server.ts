@@ -266,3 +266,52 @@ export async function webSearch(
   });
   return results;
 }
+
+export type ImageResult = {
+  title: string;
+  image: string;
+  thumbnail: string;
+  source: string;
+  url: string;
+};
+
+// DuckDuckGo image search (two-step: get vqd token, then JSON endpoint).
+export async function imageSearch(query: string, limit = 6): Promise<ImageResult[]> {
+  try {
+    const tokenRes = await fetch(
+      `https://duckduckgo.com/?q=${encodeURIComponent(query)}&iax=images&ia=images`,
+      { headers: { "User-Agent": UA, Accept: "text/html" } },
+    );
+    const tokenHtml = await tokenRes.text();
+    const m = tokenHtml.match(/vqd=["']?([\d-]+)["']?/);
+    if (!m) return [];
+    const vqd = m[1];
+    const res = await fetch(
+      `https://duckduckgo.com/i.js?l=us-en&o=json&q=${encodeURIComponent(query)}&vqd=${vqd}&f=,,,,,&p=1`,
+      {
+        headers: {
+          "User-Agent": UA,
+          Accept: "application/json",
+          Referer: "https://duckduckgo.com/",
+        },
+      },
+    );
+    if (!res.ok) return [];
+    const json = (await res.json()) as { results?: Array<Record<string, string>> };
+    const out: ImageResult[] = [];
+    for (const r of json.results ?? []) {
+      if (out.length >= limit) break;
+      if (!r.image || !r.url) continue;
+      out.push({
+        title: r.title ?? "",
+        image: r.image,
+        thumbnail: r.thumbnail ?? r.image,
+        source: r.source ?? "",
+        url: r.url,
+      });
+    }
+    return out;
+  } catch {
+    return [];
+  }
+}

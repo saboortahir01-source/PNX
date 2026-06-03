@@ -302,7 +302,7 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
           {status === "submitted" && (
             <Message from="assistant">
               <MessageContent>
-                <Shimmer>Thinking...</Shimmer>
+                <Shimmer>🧠 Thinking…</Shimmer>
               </MessageContent>
             </Message>
           )}
