@@ -5,7 +5,7 @@ import { ChatWindow } from "@/components/ChatWindow";
 import { ThreadSidebar } from "@/components/ThreadSidebar";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { Menu, Home } from "lucide-react";
+import { Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import pnxLogo from "@/assets/pnx-logo.png";
 import {
@@ -39,6 +39,7 @@ function ChatPage() {
   const { threadId } = useParams({ from: "/chat/$threadId" });
   const navigate = useNavigate();
   const [threads, setThreads] = useState<Thread[] | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Bootstrap from localStorage
   useEffect(() => {
@@ -139,48 +140,68 @@ function ChatPage() {
 
   return (
     <div className="flex h-[100dvh] w-screen overflow-hidden bg-background">
-      <div className="hidden md:flex">
-        <ThreadSidebar
-          threads={threads}
-          activeId={threadId}
-          onNew={handleNew}
-          onDelete={handleDelete}
-        />
-      </div>
+      {sidebarOpen && (
+        <div className="hidden md:flex">
+          <ThreadSidebar
+            threads={threads}
+            activeId={threadId}
+            onNew={handleNew}
+            onDelete={handleDelete}
+          />
+        </div>
+      )}
       <main className="flex h-full min-w-0 flex-1 flex-col">
         <h1 className="sr-only">PNX AI SEO Agent Chat</h1>
-        {/* Mobile top bar */}
-        <header className="flex items-center justify-between gap-2 border-b border-border/60 px-3 py-2.5 md:hidden glass">
-          <Sheet>
-            <SheetTrigger
-              aria-label="Open conversations"
-              className="inline-flex size-9 items-center justify-center rounded-xl border border-border/60 bg-card/70 text-foreground"
-            >
-              <Menu className="size-4" />
-            </SheetTrigger>
-            <SheetContent side="left" className="w-[19rem] border-r-0 p-0">
-              <VisuallyHidden>
-                <SheetTitle>Conversations</SheetTitle>
-              </VisuallyHidden>
-              <ThreadSidebar
-                threads={threads}
-                activeId={threadId}
-                onNew={handleNew}
-                onDelete={handleDelete}
-              />
-            </SheetContent>
-          </Sheet>
+        {/* Unified top bar — visible on desktop & mobile so users know they're on PNX */}
+        <header className="flex items-center justify-between gap-2 border-b border-border/60 px-3 py-2.5 glass">
           <div className="flex items-center gap-2">
-            <img src={pnxLogo} alt="PNX" className="size-7 rounded-lg" />
-            <span className="text-sm font-semibold tracking-tight">PNX</span>
+            {/* Desktop sidebar toggle */}
+            <button
+              onClick={() => setSidebarOpen((v) => !v)}
+              aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+              className="hidden md:inline-flex size-9 items-center justify-center rounded-xl border border-border/60 bg-card/70 text-foreground transition-colors hover:bg-accent"
+            >
+              {sidebarOpen ? <PanelLeftClose className="size-4" /> : <PanelLeftOpen className="size-4" />}
+            </button>
+            {/* Mobile sidebar trigger */}
+            <Sheet>
+              <SheetTrigger
+                aria-label="Open conversations"
+                className="md:hidden inline-flex size-9 items-center justify-center rounded-xl border border-border/60 bg-card/70 text-foreground"
+              >
+                <Menu className="size-4" />
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[19rem] border-r-0 p-0">
+                <VisuallyHidden>
+                  <SheetTitle>Conversations</SheetTitle>
+                </VisuallyHidden>
+                <ThreadSidebar
+                  threads={threads}
+                  activeId={threadId}
+                  onNew={handleNew}
+                  onDelete={handleDelete}
+                />
+              </SheetContent>
+            </Sheet>
+            <Link to="/" className="flex items-center gap-2" aria-label="PNX home">
+              <img src={pnxLogo} alt="PNX" className="size-7 rounded-lg" />
+              <span className="text-sm font-semibold tracking-tight">PNX</span>
+              <span className="hidden sm:inline text-[10px] font-medium uppercase tracking-widest text-muted-foreground">SEO Agent</span>
+            </Link>
           </div>
-          <Link
-            to="/"
-            aria-label="Back to home"
-            className="inline-flex size-9 items-center justify-center rounded-xl border border-border/60 bg-card/70 text-foreground"
-          >
-            <Home className="size-4" />
-          </Link>
+          <nav className="flex items-center gap-1 text-sm">
+            <Link to="/" className="hidden sm:inline-flex px-3 py-1.5 rounded-md hover:bg-accent text-foreground/80">Home</Link>
+            <Link to="/blog" className="hidden sm:inline-flex px-3 py-1.5 rounded-md hover:bg-accent text-foreground/80">Blog</Link>
+            <Link to="/about" className="hidden md:inline-flex px-3 py-1.5 rounded-md hover:bg-accent text-foreground/80">About</Link>
+            <Link to="/faq" className="hidden md:inline-flex px-3 py-1.5 rounded-md hover:bg-accent text-foreground/80">FAQ</Link>
+            <button
+              onClick={handleNew}
+              className="ml-1 cta-glass !py-1.5 !px-3 !text-xs"
+              aria-label="New chat"
+            >
+              + New
+            </button>
+          </nav>
         </header>
         <ChatWindow
           key={threadId}
