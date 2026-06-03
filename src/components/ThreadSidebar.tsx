@@ -14,8 +14,15 @@ type Props = {
 export function ThreadSidebar({ threads, activeId, onNew, onDelete }: Props) {
   const navigate = useNavigate();
   return (
-    <aside className="relative flex h-full w-72 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 opacity-70" style={{ background: "radial-gradient(400px 200px at 30% 0%, oklch(0.66 0.18 265 / 0.25), transparent 70%)" }} />
+    <aside
+      className="relative flex h-full w-72 flex-col border-r border-sidebar-border text-sidebar-foreground"
+      style={{
+        background: "color-mix(in oklab, white 55%, transparent)",
+        backdropFilter: "saturate(180%) blur(22px)",
+        WebkitBackdropFilter: "saturate(180%) blur(22px)",
+      }}
+    >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 opacity-60" style={{ background: "radial-gradient(400px 200px at 30% 0%, oklch(0.66 0.18 265 / 0.18), transparent 70%)" }} />
       <div className="relative flex items-center gap-3 px-5 py-5">
         <Link to="/" className="flex items-center gap-3" aria-label="PNX home">
           <div className="flex size-10 items-center justify-center rounded-xl bg-white/5 p-1 ring-1 ring-white/10 backdrop-blur">
