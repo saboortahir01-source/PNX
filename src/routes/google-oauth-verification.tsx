@@ -17,7 +17,7 @@ export const Route = createFileRoute("/google-oauth-verification")({
   head: () => ({
     meta: [
       { title: "Google OAuth Verification & API Transparency Hub — PNX" },
-      { name: "description", content: "PNX's transparency hub for Google OAuth 2.0 verification. Scopes requested, data handling, Limited Use compliance and demo video for Search Console, GA4, Drive, Sheets, Blogger and YouTube." },
+      { name: "description", content: "PNX's Google OAuth 2.0 transparency hub: scopes, data handling, Limited Use compliance and demo video." },
       { property: "og:title", content: "Google OAuth Verification — PNX" },
       { property: "og:description", content: "Full transparency on PNX's Google API integrations." },
       { property: "og:url", content: "https://pnx.lovable.app/google-oauth-verification" },

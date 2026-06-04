@@ -17,7 +17,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 glass">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2 font-semibold tracking-tight">
-          <img src={pnxLogo} alt="PNX logo" width={28} height={28} className="rounded-md" />
+          <img src={pnxLogo} alt="PNX AI SEO platform" width={28} height={28} className="rounded-md" />
           <span className="text-base">PNX</span>
           <span className="hidden sm:inline text-[11px] font-medium text-muted-foreground ml-1 rounded-full border px-2 py-0.5">Free · No limits</span>
         </Link>
