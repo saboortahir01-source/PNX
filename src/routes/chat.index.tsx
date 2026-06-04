@@ -33,10 +33,11 @@ function ChatIndex() {
       role="status"
       aria-label="Loading PNX SEO agent"
     >
+      <h1 className="sr-only">Starting PNX agentic SEO tool</h1>
       <div className="glass flex size-20 items-center justify-center rounded-2xl shadow-[var(--shadow-elegant)]">
         <img
           src={pnxLogo}
-          alt="PNX"
+          alt="PNX agentic SEO tool"
           className="size-14 object-contain animate-pulse"
           loading="eager"
         />

@@ -26,7 +26,7 @@ export function ThreadSidebar({ threads, activeId, onNew, onDelete }: Props) {
       <div className="relative flex items-center gap-3 px-5 py-5">
         <Link to="/" className="flex items-center gap-3" aria-label="PNX home">
           <div className="flex size-10 items-center justify-center rounded-xl bg-white/5 p-1 ring-1 ring-white/10 backdrop-blur">
-            <img src={pnxLogo} alt="PNX" className="size-8 object-contain" />
+            <img src={pnxLogo} alt="PNX agentic SEO tool" className="size-8 object-contain" />
           </div>
           <div className="flex flex-col leading-tight">
             <span className="text-lg font-semibold tracking-tight">PNX</span>

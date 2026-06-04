@@ -133,7 +133,7 @@ function ChatPage() {
         aria-label="Loading conversation"
       >
         <div className="glass flex size-16 items-center justify-center rounded-2xl shadow-[var(--shadow-elegant)]">
-          <img src={pnxLogo} alt="PNX" className="size-12 object-contain animate-pulse" />
+          <img src={pnxLogo} alt="PNX agentic SEO tool" className="size-12 object-contain animate-pulse" />
         </div>
         <p className="text-sm text-muted-foreground">Loading your SEO workspace…</p>
       </div>
@@ -186,7 +186,7 @@ function ChatPage() {
               </SheetContent>
             </Sheet>
             <Link to="/" className="flex items-center gap-2" aria-label="PNX home">
-              <img src={pnxLogo} alt="PNX" className="size-7 rounded-lg" />
+              <img src={pnxLogo} alt="PNX agentic SEO tool" className="size-7 rounded-lg" />
               <span className="text-sm font-semibold tracking-tight">PNX</span>
               <span className="hidden sm:inline text-[10px] font-medium uppercase tracking-widest text-muted-foreground">SEO Agent</span>
             </Link>

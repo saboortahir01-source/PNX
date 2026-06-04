@@ -159,7 +159,7 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
           {messages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center px-2 py-10 text-center sm:py-16">
               <div className="glass mb-6 flex size-16 items-center justify-center rounded-2xl shadow-[var(--shadow-elegant)]">
-                <img src={pnxLogo} alt="PNX logo" className="size-12 object-contain drop-shadow" loading="eager" />
+                <img src={pnxLogo} alt="PNX AI SEO platform" className="size-12 object-contain drop-shadow" loading="eager" />
               </div>
               <h1 className="text-balance text-3xl font-extrabold tracking-tight text-foreground sm:text-[2.6rem] sm:leading-[1.15]">
                 PNX —{" "}

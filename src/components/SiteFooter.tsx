@@ -7,7 +7,7 @@ export function SiteFooter() {
       <div className="mx-auto max-w-6xl px-4 py-12 grid gap-10 md:grid-cols-4">
         <div className="md:col-span-2">
           <div className="flex items-center gap-2 font-semibold">
-            <img src={pnxLogo} alt="PNX logo" width={28} height={28} className="rounded-md" />
+            <img src={pnxLogo} alt="PNX AI SEO platform" width={28} height={28} className="rounded-md" />
             PNX
           </div>
           <p className="mt-3 max-w-sm text-sm text-muted-foreground">
