@@ -39,7 +39,9 @@ function ChatPage() {
   const { threadId } = useParams({ from: "/chat/$threadId" });
   const navigate = useNavigate();
   const [threads, setThreads] = useState<Thread[] | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Default closed on desktop for a focused, distraction-free chat surface.
+  // Users can expand it on demand via the toggle in the header.
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Bootstrap from localStorage
   useEffect(() => {

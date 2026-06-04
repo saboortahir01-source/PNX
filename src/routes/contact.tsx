@@ -2,9 +2,18 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Mail } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
-const EMAIL = "saboortahir01@gmail.com";
+// Email is split + base64-encoded so the raw string never appears verbatim
+// in the rendered HTML or in JSON-LD. It is reassembled in the browser only
+// when the user clicks reveal or submits the form. This blocks naive scrapers
+// while keeping the address usable for real visitors.
+const EMAIL_USER_B64 = "c2Fib29ydGFoaXIwMQ=="; // saboortahir01
+const EMAIL_DOMAIN_B64 = "Z21haWwuY29t"; // gmail.com
+const decodeEmail = () => {
+  if (typeof atob === "undefined") return "";
+  return `${atob(EMAIL_USER_B64)}@${atob(EMAIL_DOMAIN_B64)}`;
+};
 
 export const Route = createFileRoute("/contact")({
   component: ContactPage,
@@ -33,7 +42,16 @@ export const Route = createFileRoute("/contact")({
         "@context": "https://schema.org",
         "@type": "ContactPage",
         url: "https://pnx.lovable.app/contact",
-        mainEntity: { "@type": "Organization", name: "PNX", email: EMAIL },
+        // Intentionally omit the email from JSON-LD to avoid handing it to scrapers.
+        mainEntity: {
+          "@type": "Organization",
+          name: "PNX",
+          contactPoint: {
+            "@type": "ContactPoint",
+            contactType: "customer support",
+            url: "https://pnx.lovable.app/contact",
+          },
+        },
       }),
     }],
   }),
@@ -41,19 +59,35 @@ export const Route = createFileRoute("/contact")({
 
 function ContactPage() {
   const [sent, setSent] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+  const [email, setEmail] = useState("");
+
+  // Decode the address only in the browser, after hydration, so the raw
+  // string is never present in the server-rendered HTML.
+  useEffect(() => {
+    setEmail(decodeEmail());
+  }, []);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const data = new FormData(form);
     const name = String(data.get("name") || "").trim().slice(0, 100);
-    const email = String(data.get("email") || "").trim().slice(0, 200);
+    const fromEmail = String(data.get("email") || "").trim().slice(0, 200);
     const message = String(data.get("message") || "").trim().slice(0, 2000);
-    if (!name || !email || !message) return;
+    if (!name || !fromEmail || !message) return;
+    // Basic client-side email shape check before opening the mail client.
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fromEmail)) return;
+    const target = email || decodeEmail();
     const subject = encodeURIComponent(`PNX contact from ${name}`);
-    const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
-    window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
+    const body = encodeURIComponent(`${message}\n\n— ${name} (${fromEmail})`);
+    window.location.href = `mailto:${target}?subject=${subject}&body=${body}`;
     setSent(true);
+  };
+
+  const revealEmail = () => {
+    if (!email) setEmail(decodeEmail());
+    setRevealed(true);
   };
 
   return (
@@ -68,14 +102,28 @@ function ContactPage() {
           <div>
             <h2 className="text-xl font-semibold">Saboor Tahir</h2>
             <p className="text-sm text-muted-foreground">Founder, PNX</p>
-            <a
-              href={`mailto:${EMAIL}`}
-              rel="noopener"
-              className="cta-glass mt-4 inline-flex"
-              aria-label="Email Saboor Tahir directly"
-            >
-              <Mail size={16}/> {EMAIL}
-            </a>
+            {revealed && email ? (
+              <a
+                href={`mailto:${email}`}
+                rel="noopener nofollow"
+                className="cta-glass mt-4 inline-flex"
+                aria-label="Email Saboor Tahir directly"
+              >
+                <Mail size={16} /> {email}
+              </a>
+            ) : (
+              <button
+                type="button"
+                onClick={revealEmail}
+                className="cta-glass mt-4 inline-flex"
+                aria-label="Reveal contact email"
+              >
+                <Mail size={16} /> Reveal email address
+              </button>
+            )}
+            <p className="mt-2 text-[11px] text-muted-foreground">
+              The email is hidden from scrapers and only decoded in your browser on demand.
+            </p>
           </div>
         </div>
 
@@ -124,8 +172,7 @@ function ContactPage() {
           <button type="submit" className="cta-glass self-start">Send →</button>
           {sent && (
             <p className="text-xs text-emerald-600">
-              Opening your email app… If nothing happens, write to{" "}
-              <a className="underline" href={`mailto:${EMAIL}`}>{EMAIL}</a>.
+              Opening your email app… If nothing happens, click “Reveal email address” above to copy it manually.
             </p>
           )}
         </form>
