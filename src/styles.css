@@ -229,9 +229,79 @@
     background-clip: text;
     color: transparent;
   }
+  .msym {
+    font-family: "Material Symbols Outlined";
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: "liga";
+    -webkit-font-smoothing: antialiased;
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    vertical-align: -3px;
+  }
+  .msym-filled { font-variation-settings: "FILL" 1, "wght" 500, "GRAD" 0, "opsz" 24; }
 }
 
 .dark {
   --glass-bg: color-mix(in oklab, oklch(0.14 0.02 250) 55%, transparent);
   --glass-border: color-mix(in oklab, white 10%, transparent);
+}
+
+/* Mobile keyboard / safe-area helpers for chat surfaces */
+.chat-shell {
+  /* Use the visual viewport height when available so iOS keyboards
+     don't push the composer off-screen. */
+  height: 100dvh;
+  height: 100svh;
+}
+
+/* Conversation timeline rail */
+.timeline-rail {
+  position: fixed;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 30;
+  padding: 8px 4px;
+  border-radius: 999px;
+  background: color-mix(in oklab, white 35%, transparent);
+  backdrop-filter: saturate(160%) blur(10px);
+  -webkit-backdrop-filter: saturate(160%) blur(10px);
+  border: 1px solid color-mix(in oklab, white 50%, transparent);
+  transition: opacity .2s ease;
+}
+.dark .timeline-rail {
+  background: color-mix(in oklab, oklch(0.14 0.02 250) 45%, transparent);
+  border-color: color-mix(in oklab, white 10%, transparent);
+}
+.timeline-mark {
+  height: 2px;
+  width: 14px;
+  border-radius: 999px;
+  background: color-mix(in oklab, currentColor 25%, transparent);
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: width .15s ease, background-color .15s ease;
+}
+.timeline-mark:hover { width: 22px; background: color-mix(in oklab, var(--brand) 60%, transparent); }
+.timeline-mark.user { opacity: 0.7; }
+.timeline-mark.active {
+  width: 24px;
+  background: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand) 15%, transparent);
+}
+@media (max-width: 640px) {
+  .timeline-rail { right: 4px; padding: 6px 3px; }
+  .timeline-mark { width: 10px; }
+  .timeline-mark.active { width: 16px; }
+  .timeline-rail.kbd-hidden { opacity: 0; pointer-events: none; }
 }

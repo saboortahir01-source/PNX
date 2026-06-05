@@ -52,7 +52,12 @@ export function ensureBootstrap(): { threads: Thread[]; activeId: string } {
     saveThreads([t]);
     return { threads: [t], activeId: t.id };
   }
-  return { threads, activeId: threads[0].id };
+  // Prefer the most recently updated thread that actually has messages,
+  // so "Launch PNX" resumes the last real conversation instead of dropping
+  // the user into a stale empty "New conversation" placeholder.
+  const sorted = [...threads].sort((a, b) => b.updatedAt - a.updatedAt);
+  const withMessages = sorted.find((t) => t.messages.length > 0);
+  return { threads, activeId: (withMessages ?? sorted[0]).id };
 }
 
 export function deriveTitle(messages: UIMessage[]): string | null {
