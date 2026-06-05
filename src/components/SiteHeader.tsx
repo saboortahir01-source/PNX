@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
 import pnxLogo from "@/assets/pnx-logo.png";
 
 const NAV = [
@@ -28,7 +27,7 @@ export function SiteHeader() {
           <Link to="/chat" className="ml-2 cta-glass !py-1.5 !px-4 !text-sm" aria-label="Launch PNX Chat — free AI SEO agent">Launch PNX Chat</Link>
         </nav>
         <button className="md:hidden p-2 -mr-2" onClick={() => setOpen((v) => !v)} aria-label="Menu">
-          {open ? <X size={20} /> : <Menu size={20} />}
+          <span className="msym text-[22px]">{open ? "close" : "menu"}</span>
         </button>
       </div>
       {open && (

@@ -50,41 +50,41 @@ function LandingPage() {
         {/* Hero */}
         <section className="relative overflow-hidden">
           <div className="absolute inset-0 -z-10" style={{ background: "var(--gradient-surface)" }} />
-          <div className="mx-auto max-w-6xl px-4 py-16 sm:py-24 text-center">
-            <div className="inline-flex items-center gap-2 glass rounded-full px-3 py-1 text-xs text-muted-foreground">
-              <ShieldCheck size={14} className="text-emerald-500" /> 100% Free · No daily limits · No signup
+          <div className="mx-auto max-w-6xl px-4 py-10 sm:py-24 text-center">
+            <div className="inline-flex items-center gap-2 glass rounded-full px-3 py-1 text-[11px] sm:text-xs text-muted-foreground">
+              <ShieldCheck size={12} className="text-emerald-500" /> 100% Free · No limits · No signup
             </div>
-            <h1 className="mt-5 text-4xl sm:text-6xl font-bold tracking-tight leading-[1.05]">
+            <h1 className="mt-4 text-[1.85rem] leading-[1.1] sm:text-6xl sm:leading-[1.05] font-bold tracking-tight text-balance">
               The <span className="text-gradient-brand">Free Agentic SEO Tool</span><br className="hidden sm:block" />
               that replaces a $200/mo stack
             </h1>
-            <p className="mt-5 max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground">
-              PNX is your AI SEO strategist. Run on-page audits, AI keyword research, SERP competitor analysis, YouTube SEO and AI content generation — all in one chat, completely free.
+            <p className="mt-4 max-w-2xl mx-auto text-[14px] leading-relaxed sm:text-lg text-muted-foreground">
+              PNX is your AI SEO strategist. Audits, keyword research, SERP analysis, YouTube SEO &amp; AI content — all in one chat.
             </p>
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-              <Link to="/chat" className="cta-glass" aria-label="Launch PNX Chat — free AI SEO agent">Launch PNX Chat →</Link>
-              <Link to="/blog" className="px-5 py-2.5 rounded-full text-sm font-medium border hover:bg-accent">Read the SEO blog</Link>
+            <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3">
+              <Link to="/chat" className="cta-glass w-full sm:w-auto justify-center !py-3 sm:!py-3 !text-sm" aria-label="Launch PNX Chat — free AI SEO agent">Launch PNX Chat →</Link>
+              <Link to="/blog" className="w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-full text-sm font-medium border hover:bg-accent text-center">Read the SEO blog</Link>
             </div>
-            <div className="mt-10 flex justify-center">
-              <img src={pnxLogo} alt="PNX agentic SEO tool" width={120} height={120} fetchPriority="high" decoding="async" className="rounded-3xl glass p-3" />
+            <div className="mt-8 sm:mt-10 flex justify-center">
+              <img src={pnxLogo} alt="PNX agentic SEO tool" width={96} height={96} fetchPriority="high" decoding="async" className="size-20 sm:size-[120px] rounded-3xl glass p-3" />
             </div>
           </div>
         </section>
 
         {/* Tools grid */}
-        <section className="mx-auto max-w-6xl px-4 py-16">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">All your SEO tools, in one free agent</h2>
-            <p className="mt-3 text-muted-foreground">Every tool below is unlimited and free, powered by AI.</p>
+        <section className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
+          <div className="text-center mb-7 sm:mb-10">
+            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight">All your SEO tools, in one free agent</h2>
+            <p className="mt-2 text-sm sm:text-base text-muted-foreground">Every tool below is unlimited and free, powered by AI.</p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {TOOLS.map((t) => (
-              <Link key={t.title} to={t.href} className="glass-card p-5 hover:-translate-y-0.5 transition-transform">
-                <div className="size-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-300">
-                  <t.icon size={20} />
+              <Link key={t.title} to={t.href} className="glass-card p-4 sm:p-5 hover:-translate-y-0.5 transition-transform">
+                <div className="size-9 sm:size-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-300">
+                  <t.icon size={18} />
                 </div>
-                <h3 className="mt-4 font-semibold">{t.title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{t.desc}</p>
+                <h3 className="mt-3 sm:mt-4 text-[13.5px] sm:text-base font-semibold leading-tight">{t.title}</h3>
+                <p className="mt-1 text-[12px] sm:text-sm text-muted-foreground leading-snug">{t.desc}</p>
               </Link>
             ))}
           </div>
