@@ -189,6 +189,11 @@
   .prose img,
   .prose-img-rounded img {
     border-radius: 1rem;
+    max-height: 22rem;
+    width: auto;
+    object-fit: cover;
+    margin-inline: auto;
+    box-shadow: 0 4px 18px -8px oklch(0.18 0.02 250 / 0.18);
   }
   .cta-glass-wrap {
     display: flex;
