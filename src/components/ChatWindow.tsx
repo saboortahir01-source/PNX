@@ -34,9 +34,10 @@ import {
   ToolInput,
   ToolOutput,
 } from "@/components/ai-elements/tool";
-import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, X, Copy, RefreshCw, Share2, ThumbsUp, ThumbsDown, type LucideProps } from "lucide-react";
+import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, X, Copy, RefreshCw, Share2, ThumbsUp, ThumbsDown, Download, type LucideProps } from "lucide-react";
 import { cn } from "@/lib/utils";
 import pnxLogo from "@/assets/pnx-logo.png";
+import { ConversationTimeline } from "@/components/ConversationTimeline";
 
 const YoutubeIcon = (props: LucideProps) => (
   <svg
@@ -98,8 +99,13 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages, threadId]);
 
+  // Auto-focus the composer only on non-touch devices. On phones, re-focusing
+  // after every reply pops the keyboard back up and steals the screen.
   useEffect(() => {
-    if (status !== "streaming") textareaRef.current?.focus();
+    if (status === "streaming" || status === "submitted") return;
+    if (typeof window === "undefined") return;
+    const isTouch = window.matchMedia("(pointer: coarse)").matches;
+    if (!isTouch) textareaRef.current?.focus();
   }, [status, threadId]);
 
   const handleSubmit = (msg: PromptInputMessage) => {
@@ -107,6 +113,10 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
     const files = msg.files ?? [];
     if (!text && files.length === 0) return;
     sendMessage({ text: text ?? "", files });
+    // Dismiss the mobile keyboard so the reply is visible immediately.
+    if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
+      textareaRef.current?.blur();
+    }
   };
 
   const handleSuggestion = (text: string) => {
@@ -149,11 +159,44 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
     toast.success(kind === "up" ? "Thanks for the feedback!" : "Got it — we'll improve.");
   };
 
+  const handleDownloadPdf = async (m: UIMessage) => {
+    const content = getMessageText(m);
+    if (!content.trim()) {
+      toast.error("Nothing to export");
+      return;
+    }
+    const firstUser = messages.find((x) => x.role === "user");
+    const titleSource = firstUser ? getMessageText(firstUser) : "PNX SEO Report";
+    const title = titleSource.slice(0, 120).replace(/\s+/g, " ").trim() || "PNX SEO Report";
+    const t = toast.loading("Generating PDF…");
+    try {
+      const res = await fetch("/api/export-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${title.slice(0, 50)}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success("PDF downloaded", { id: t });
+    } catch {
+      toast.error("PDF export failed", { id: t });
+    }
+  };
+
   return (
     <div
-      className="flex h-full min-h-0 flex-col"
+      className="chat-shell flex min-h-0 flex-col relative"
       style={{ backgroundImage: "var(--gradient-surface)" }}
     >
+      <ConversationTimeline messages={messages} />
       <Conversation className="flex-1">
         <ConversationContent className="prose-img-rounded mx-auto w-full max-w-3xl px-3 sm:px-6">
           {messages.length === 0 ? (
@@ -203,7 +246,7 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
             </div>
           ) : (
             messages.map((m, idx) => (
-              <Message key={m.id} from={m.role}>
+              <Message key={m.id} from={m.role} id={`msg-${m.id}`}>
                 <MessageContent>
                   {m.parts.map((part, i) => {
                     if (part.type === "text") {
@@ -277,6 +320,14 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                       title="Share"
                     >
                       <Share2 className="size-3.5" />
+                    </button>
+                    <button
+                      onClick={() => handleDownloadPdf(m)}
+                      className="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
+                      aria-label="Download as PDF"
+                      title="Download as PDF"
+                    >
+                      <Download className="size-3.5" />
                     </button>
                     <button
                       onClick={() => handleFeedback("up")}
