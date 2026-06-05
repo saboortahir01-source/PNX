@@ -130,8 +130,9 @@ export const Route = createFileRoute("/api/export-pdf")({
         });
 
         const bytes = await pdf.save();
+        const buf = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
         const safeName = title.replace(/[^a-z0-9-_ ]/gi, "").slice(0, 60).trim() || "PNX-SEO-Report";
-        return new Response(bytes, {
+        return new Response(buf, {
           status: 200,
           headers: {
             "Content-Type": "application/pdf",
