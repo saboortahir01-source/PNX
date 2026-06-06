@@ -365,7 +365,7 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
         <div className="mx-auto w-full max-w-3xl">
           <PromptInput
             onSubmit={handleSubmit}
-            className="glass rounded-3xl shadow-[var(--shadow-elegant)] transition-all focus-within:border-[color:var(--brand)]/40 focus-within:shadow-[0_0_0_4px_color-mix(in_oklab,var(--brand)_12%,transparent)]"
+            className="glass rounded-3xl shadow-[var(--shadow-elegant)] transition-all focus-within:border-border focus-within:shadow-[var(--shadow-elegant)]"
             multiple
             maxFiles={5}
           >
@@ -375,7 +375,7 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                 ref={textareaRef}
                 placeholder="Ask SEO Questions"
                 disabled={isBusy}
-                className="min-h-14 text-[14px]"
+                className="min-h-14 text-[15px] sm:text-[16px]"
               />
             </PromptInputBody>
             <PromptInputFooter className="justify-between">

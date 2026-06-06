@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { ensureBootstrap } from "@/lib/threads";
+import { createThread, loadThreads, saveThreads } from "@/lib/threads";
 import pnxLogo from "@/assets/pnx-logo.png";
 
 export const Route = createFileRoute("/chat/")({
@@ -23,8 +23,12 @@ function ChatIndex() {
   const navigate = useNavigate();
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const { activeId } = ensureBootstrap();
-    navigate({ to: "/chat/$threadId", params: { threadId: activeId }, replace: true });
+    // Always start a fresh chat when the user lands on /chat.
+    // Previous conversations stay accessible from the sidebar history.
+    const existing = loadThreads();
+    const t = createThread();
+    saveThreads([t, ...existing]);
+    navigate({ to: "/chat/$threadId", params: { threadId: t.id }, replace: true });
   }, [navigate]);
   return (
     <div
