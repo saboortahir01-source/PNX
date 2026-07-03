@@ -9,3 +9,14 @@ export const createLovableAiGatewayProvider = (lovableApiKey: string) =>
       "X-Lovable-AIG-SDK": "vercel-ai-sdk",
     },
   });
+
+// Direct Google Gemini via its OpenAI-compatible endpoint.
+// Primary path — cheaper/faster than routing through the gateway.
+export const createGeminiDirectProvider = (geminiApiKey: string) =>
+  createOpenAICompatible({
+    name: "gemini-direct",
+    baseURL: "https://generativelanguage.googleapis.com/v1beta/openai",
+    headers: {
+      Authorization: `Bearer ${geminiApiKey}`,
+    },
+  });
