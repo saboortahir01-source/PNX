@@ -310,3 +310,8 @@
   .timeline-mark.active { width: 16px; }
   .timeline-rail.kbd-hidden { opacity: 0; pointer-events: none; }
 }
+
+@keyframes chat-progress {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
