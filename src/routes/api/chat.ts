@@ -8,7 +8,7 @@ import {
   type UIMessage,
 } from "ai";
 import { z } from "zod";
-import { createLovableAiGatewayProvider } from "@/lib/ai-gateway";
+import { createGeminiDirectProvider, createLovableAiGatewayProvider } from "@/lib/ai-gateway";
 import { fetchPage, webSearch, imageSearch } from "@/lib/seo-tools.server";
 
 const SYSTEM_PROMPT = `You are **PNX** — a warm, brilliant SEO partner built by **Saboor Tahir**. Think of yourself as a knowledgeable friend sitting across a coffee table, not a robotic auditor. Your job is to make SEO feel human, intuitive, and totally manageable. You translate the messy language of search engines into the simple language of real businesses.
@@ -125,13 +125,22 @@ export const Route = createFileRoute("/api/chat")({
         };
         const messages = Array.isArray(body.messages) ? body.messages : [];
 
-        const key = process.env.LOVABLE_API_KEY;
-        if (!key) {
-          return new Response("Missing LOVABLE_API_KEY", { status: 500 });
-        }
+        // Primary: direct Google Gemini API (user-provided key, cheaper/faster).
+        // Fallback: Lovable AI Gateway when Gemini key is missing or Gemini errors.
+        const geminiKey = process.env.GEMINI_API_KEY;
+        const lovableKey = process.env.LOVABLE_API_KEY;
 
-        const gateway = createLovableAiGatewayProvider(key);
-        const model = gateway("google/gemini-3-flash-preview");
+        let model;
+        if (geminiKey) {
+          const gemini = createGeminiDirectProvider(geminiKey);
+          // Gemini 3.5 Flash — strong reasoning, low latency.
+          model = gemini("gemini-3.5-flash");
+        } else if (lovableKey) {
+          const gateway = createLovableAiGatewayProvider(lovableKey);
+          model = gateway("google/gemini-3-flash-preview");
+        } else {
+          return new Response("Missing GEMINI_API_KEY and LOVABLE_API_KEY", { status: 500 });
+        }
 
         const tools = {
           fetch_page: tool({
@@ -224,6 +233,9 @@ export const Route = createFileRoute("/api/chat")({
           tools,
           stopWhen: stepCountIs(50),
           messages: await convertToModelMessages(messages),
+          onError: (err) => {
+            console.error("[chat] streamText error", err);
+          },
         });
 
         return result.toUIMessageStreamResponse({ originalMessages: messages });
