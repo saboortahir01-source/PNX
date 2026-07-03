@@ -357,10 +357,10 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
               </Message>
             ))
           )}
-          {(status === "submitted" || status === "streaming") && (
+          {status === "submitted" && (
             <Message from="assistant">
               <MessageContent>
-                <ChatProgress status={status} />
+                <ChatProgress status="submitted" />
               </MessageContent>
             </Message>
           )}
