@@ -26,7 +26,7 @@ import {
   usePromptInputAttachments,
   type PromptInputMessage,
 } from "@/components/ai-elements/prompt-input";
-import { Shimmer } from "@/components/ai-elements/shimmer";
+import { ChatProgress } from "@/components/ChatProgress";
 import {
   Tool,
   ToolContent,
@@ -90,6 +90,13 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
     id: threadId,
     messages: initialMessages,
     transport: new DefaultChatTransport({ api: "/api/chat" }),
+    onError: (err) => {
+      const msg =
+        err instanceof Error && err.message
+          ? err.message.slice(0, 140)
+          : "Something went wrong. Please try again.";
+      toast.error(msg);
+    },
   });
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -350,10 +357,10 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
               </Message>
             ))
           )}
-          {status === "submitted" && (
+          {(status === "submitted" || status === "streaming") && (
             <Message from="assistant">
               <MessageContent>
-                <Shimmer>Analysing…</Shimmer>
+                <ChatProgress status={status} />
               </MessageContent>
             </Message>
           )}
