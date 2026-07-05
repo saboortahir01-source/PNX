@@ -1,0 +1,142 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "pnx-seo-mcp",
+      "version": "0.1.0",
+      "title": "PNX — SEO Agent"
+    },
+    "tools": [
+      {
+        "name": "audit_page",
+        "title": "Audit a web page for SEO",
+        "description": "Fetch a live URL and return its on-page SEO signals: title, meta description, H1/H2 headings, Open Graph, JSON-LD types, word count, internal/external links, and images.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 2048,
+              "description": "Full URL of the page to audit, including https://"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "web_search",
+        "title": "Search the web",
+        "description": "Run a live web search and return the top organic results (title, URL, snippet). Use for competitor research, SERP checks, and keyword discovery.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": false,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": "Search query"
+            },
+            "limit": {
+              "default": 8,
+              "description": "Number of results to return (1-10)",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10
+            }
+          },
+          "required": [
+            "query"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "analyze_serp",
+        "title": "Analyze SERP top results",
+        "description": "Search a query and fetch on-page SEO data for the top N results (max 5). Returns title, meta, H1, top H2s, word count, and JSON-LD types per result.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": false,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": "Search query to analyze"
+            },
+            "topN": {
+              "default": 3,
+              "description": "How many top results to analyze (1-5)",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            }
+          },
+          "required": [
+            "query"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "image_search",
+        "title": "Search the web for images",
+        "description": "Find images for a query — useful for people, brands, products, or visual references. Returns image URLs, source pages, and thumbnails.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": false,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": "Image search query"
+            },
+            "limit": {
+              "default": 4,
+              "description": "Number of images (1-8)",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 8
+            }
+          },
+          "required": [
+            "query"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
