@@ -18,10 +18,10 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ChatRouteImport } from './routes/chat'
-import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ChatIndexRouteImport } from './routes/chat.index'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as ChatThreadIdRouteImport } from './routes/chat.$threadId'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ApiExportPdfRouteImport } from './routes/api/export-pdf'
@@ -75,11 +75,6 @@ const ChatRoute = ChatRouteImport.update({
   path: '/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlogRoute = BlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -95,15 +90,20 @@ const ChatIndexRoute = ChatIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ChatRoute,
 } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChatThreadIdRoute = ChatThreadIdRouteImport.update({
   id: '/$threadId',
   path: '/$threadId',
   getParentRoute: () => ChatRoute,
 } as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => BlogRoute,
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiExportPdfRoute = ApiExportPdfRouteImport.update({
   id: '/api/export-pdf',
@@ -137,7 +137,6 @@ const Char91DotmcpChar93InvokeToolToolRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/blog': typeof BlogRouteWithChildren
   '/chat': typeof ChatRouteWithChildren
   '/contact': typeof ContactRoute
   '/disclaimer': typeof DisclaimerRoute
@@ -153,13 +152,13 @@ export interface FileRoutesByFullPath {
   '/api/export-pdf': typeof ApiExportPdfRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/chat/$threadId': typeof ChatThreadIdRoute
+  '/blog/': typeof BlogIndexRoute
   '/chat/': typeof ChatIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/disclaimer': typeof DisclaimerRoute
   '/faq': typeof FaqRoute
@@ -174,6 +173,7 @@ export interface FileRoutesByTo {
   '/api/export-pdf': typeof ApiExportPdfRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/chat/$threadId': typeof ChatThreadIdRoute
+  '/blog': typeof BlogIndexRoute
   '/chat': typeof ChatIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
@@ -181,7 +181,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/blog': typeof BlogRouteWithChildren
   '/chat': typeof ChatRouteWithChildren
   '/contact': typeof ContactRoute
   '/disclaimer': typeof DisclaimerRoute
@@ -197,6 +196,7 @@ export interface FileRoutesById {
   '/api/export-pdf': typeof ApiExportPdfRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/chat/$threadId': typeof ChatThreadIdRoute
+  '/blog/': typeof BlogIndexRoute
   '/chat/': typeof ChatIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
@@ -205,7 +205,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/blog'
     | '/chat'
     | '/contact'
     | '/disclaimer'
@@ -221,13 +220,13 @@ export interface FileRouteTypes {
     | '/api/export-pdf'
     | '/blog/$slug'
     | '/chat/$threadId'
+    | '/blog/'
     | '/chat/'
     | '/.mcp/invoke-tool/$tool'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/blog'
     | '/contact'
     | '/disclaimer'
     | '/faq'
@@ -242,13 +241,13 @@ export interface FileRouteTypes {
     | '/api/export-pdf'
     | '/blog/$slug'
     | '/chat/$threadId'
+    | '/blog'
     | '/chat'
     | '/.mcp/invoke-tool/$tool'
   id:
     | '__root__'
     | '/'
     | '/about'
-    | '/blog'
     | '/chat'
     | '/contact'
     | '/disclaimer'
@@ -264,6 +263,7 @@ export interface FileRouteTypes {
     | '/api/export-pdf'
     | '/blog/$slug'
     | '/chat/$threadId'
+    | '/blog/'
     | '/chat/'
     | '/.mcp/invoke-tool/$tool'
   fileRoutesById: FileRoutesById
@@ -271,7 +271,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  BlogRoute: typeof BlogRouteWithChildren
   ChatRoute: typeof ChatRouteWithChildren
   ContactRoute: typeof ContactRoute
   DisclaimerRoute: typeof DisclaimerRoute
@@ -285,6 +284,8 @@ export interface RootRouteChildren {
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiExportPdfRoute: typeof ApiExportPdfRoute
+  BlogSlugRoute: typeof BlogSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 
@@ -353,13 +354,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blog': {
-      id: '/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof BlogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -381,6 +375,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChatIndexRouteImport
       parentRoute: typeof ChatRoute
     }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/chat/$threadId': {
       id: '/chat/$threadId'
       path: '/$threadId'
@@ -390,10 +391,10 @@ declare module '@tanstack/react-router' {
     }
     '/blog/$slug': {
       id: '/blog/$slug'
-      path: '/$slug'
+      path: '/blog/$slug'
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
-      parentRoute: typeof BlogRoute
+      parentRoute: typeof rootRouteImport
     }
     '/api/export-pdf': {
       id: '/api/export-pdf'
@@ -433,16 +434,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface BlogRouteChildren {
-  BlogSlugRoute: typeof BlogSlugRoute
-}
-
-const BlogRouteChildren: BlogRouteChildren = {
-  BlogSlugRoute: BlogSlugRoute,
-}
-
-const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
-
 interface ChatRouteChildren {
   ChatThreadIdRoute: typeof ChatThreadIdRoute
   ChatIndexRoute: typeof ChatIndexRoute
@@ -458,7 +449,6 @@ const ChatRouteWithChildren = ChatRoute._addFileChildren(ChatRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  BlogRoute: BlogRouteWithChildren,
   ChatRoute: ChatRouteWithChildren,
   ContactRoute: ContactRoute,
   DisclaimerRoute: DisclaimerRoute,
@@ -473,6 +463,8 @@ const rootRouteChildren: RootRouteChildren = {
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   ApiChatRoute: ApiChatRoute,
   ApiExportPdfRoute: ApiExportPdfRoute,
+  BlogSlugRoute: BlogSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
 export const routeTree = rootRouteImport
