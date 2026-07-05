@@ -135,7 +135,7 @@ export const POSTS: BlogPost[] = [
     readTime: "10 min",
     publishedAt: TODAY,
     updatedAt: TODAY,
-    excerpt: "Ignore the "200 ranking factors" myth. In 2026 there are about eight that actually matter — for both Google and AI answer engines.",
+    excerpt: `Ignore the "200 ranking factors" myth. In 2026 there are about eight that actually matter — for both Google and AI answer engines.`,
     body:
       `## The 8 factors that really move rankings in 2026\n\nEvery year someone republishes "Google's 200 ranking factors." Most are guesswork. After analysing thousands of pages, the signals that consistently correlate with movement — across Google *and* AI answer engines — collapse into eight.\n\n` +
       intro("AI search ranking factors", "Fewer, deeper signals now beat surface-level optimisation.") +
@@ -175,7 +175,7 @@ export const POSTS: BlogPost[] = [
     readTime: "10 min",
     publishedAt: TODAY,
     updatedAt: TODAY,
-    excerpt: "Programmatic SEO isn't dead — but the "spin 10,000 pages from a template" version is. Here's the version that still works in 2026.",
+    excerpt: `Programmatic SEO isn't dead — but the "spin 10,000 pages from a template" version is. Here's the version that still works in 2026.`,
     body:
       `## What programmatic SEO is (and isn't)\n\n**Programmatic SEO** means using a template + a dataset to publish many pages that each target a specific long-tail query. Done well, it's how sites like Zapier ("connect X to Y") or G2 ("best CRM for [industry]") own thousands of SERPs.\n\nDone badly, it's how sites get hit by Google's *scaled content abuse* update in March 2024 — and every update since.\n\n` +
       intro("programmatic SEO with AI", "The template is easy. The data and quality gates are what separate ranking pages from penalties.") +
