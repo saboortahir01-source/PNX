@@ -104,73 +104,61 @@ export function ThreadSidebar({ threads, activeId, onNew, onDelete }: Props) {
 
   return (
     <aside
-      className="pnx-sidebar relative flex h-full w-[288px] flex-col overflow-hidden"
+      className="pnx-sidebar relative flex h-full w-[272px] flex-col overflow-hidden"
       style={{
-        background:
-          "radial-gradient(120% 60% at 0% 0%, rgba(139,92,246,0.22), transparent 55%)," +
-          "radial-gradient(90% 55% at 100% 100%, rgba(34,211,238,0.16), transparent 60%)," +
-          "linear-gradient(180deg,#0b0a1a 0%,#0a0715 60%,#08050f 100%)",
-        boxShadow: "inset -1px 0 0 rgba(255,255,255,0.06), 24px 0 60px -30px rgba(139,92,246,0.45)",
+        background: "#0b0a14",
+        boxShadow: "inset -1px 0 0 rgba(255,255,255,0.06)",
         fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
         color: "#e7e4f5",
       }}
     >
-      {/* Aurora orbs */}
-      <div aria-hidden className="pointer-events-none absolute -top-24 -left-16 h-56 w-56 rounded-full opacity-70 blur-3xl"
-        style={{ background: "radial-gradient(circle, rgba(217,70,239,0.55), transparent 65%)" }} />
-      <div aria-hidden className="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full opacity-60 blur-3xl"
-        style={{ background: "radial-gradient(circle, rgba(34,211,238,0.45), transparent 65%)" }} />
-
-      {/* Brand */}
-      <div className="relative flex items-center gap-3 px-4 py-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+      {/* Brand — simple, clear, ChatGPT-style */}
+      <div
+        className="relative flex items-center gap-2.5 px-4 py-3.5"
+        style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}
+      >
         <Link to="/" className="flex items-center gap-2.5" aria-label="PNX home">
-          <div className="relative flex size-10 items-center justify-center rounded-xl"
-            style={{
-              background: "conic-gradient(from 210deg,#a855f7,#ec4899,#22d3ee,#a855f7)",
-              boxShadow: "0 8px 24px -6px rgba(168,85,247,0.55), inset 0 0 0 1px rgba(255,255,255,0.15)",
-            }}>
-            <div className="flex size-[34px] items-center justify-center rounded-[10px]" style={{ background: "#0b0a1a" }}>
-              <img src={pnxLogo} alt="PNX" className="size-5 object-contain" />
-            </div>
+          <div
+            className="flex size-8 items-center justify-center rounded-lg"
+            style={{ background: "#ffffff" }}
+          >
+            <img src={pnxLogo} alt="PNX" className="size-6 object-contain" />
           </div>
-          <div className="flex flex-col leading-tight">
-            <span className="text-base font-bold tracking-tight" style={{
-              background: "linear-gradient(135deg,#fff 20%,#c4b5fd 60%,#67e8f9)",
-              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-            }}>PNX</span>
-            <span className="text-[9px] font-semibold uppercase tracking-[0.22em]" style={{ color: "#a8a2c9" }}>SEO Intelligence</span>
+          <div className="flex items-baseline gap-1.5 leading-none">
+            <span className="text-[15px] font-semibold tracking-tight" style={{ color: "#ffffff" }}>
+              PNX
+            </span>
+            <span className="text-[11px]" style={{ color: "#8a86a6" }}>Sonar</span>
           </div>
         </Link>
-        <span className="ml-auto rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest"
-          style={{
-            color: "#f5d0fe",
-            background: "linear-gradient(135deg, rgba(217,70,239,0.18), rgba(34,211,238,0.18))",
-            border: "1px solid rgba(217,70,239,0.35)",
-          }}>Pro</span>
+        <span
+          className="ml-auto rounded-md px-1.5 py-0.5 text-[9.5px] font-semibold uppercase tracking-widest"
+          style={{ color: "#c4b5fd", background: "rgba(168,85,247,0.14)" }}
+        >
+          Free
+        </span>
       </div>
 
-      {/* NEW AUDIT */}
-      <div className="relative px-4 pt-4 pb-3">
+      {/* New chat — flat, unmistakable primary action */}
+      <div className="relative px-3 pt-3 pb-2">
         <button
           onClick={onNew}
-          className="pnx-cta group relative flex w-full items-center justify-center gap-2 rounded-xl"
+          className="pnx-cta group relative flex w-full items-center gap-2 rounded-lg"
           style={{
-            height: "46px",
-            background: "linear-gradient(135deg,#a855f7 0%,#d946ef 45%,#22d3ee 100%)",
+            height: "40px",
+            padding: "0 12px",
+            background: "rgba(255,255,255,0.05)",
             color: "#ffffff",
             fontSize: "13px",
-            fontWeight: 700,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            border: 0,
+            fontWeight: 500,
+            border: "1px solid rgba(255,255,255,0.10)",
             cursor: "pointer",
-            transition: "all 300ms ease",
-            boxShadow: "0 10px 30px -10px rgba(217,70,239,0.7), inset 0 1px 0 rgba(255,255,255,0.3)",
+            transition: "background 180ms ease",
           }}
-          aria-label="Start a new SEO audit (Ctrl+N)"
+          aria-label="Start a new chat"
         >
-          <MSym name="add_circle" style={{ fontSize: 22 }} />
-          New Audit
+          <MSym name="edit_square" style={{ fontSize: 18 }} />
+          New chat
         </button>
       </div>
 
@@ -357,23 +345,14 @@ export function ThreadSidebar({ threads, activeId, onNew, onDelete }: Props) {
 
       <style>{`
         .pnx-sidebar .pnx-row { color:#e7e4f5; background:transparent; border:0; cursor:pointer; }
-        .pnx-sidebar .pnx-row:hover {
-          background: linear-gradient(135deg, rgba(168,85,247,0.10), rgba(34,211,238,0.08));
-          box-shadow: inset 0 0 0 1px rgba(217,70,239,0.28);
-        }
-        .pnx-sidebar .pnx-row.is-active {
-          background: linear-gradient(135deg, rgba(168,85,247,0.22), rgba(217,70,239,0.14) 55%, rgba(34,211,238,0.14));
-          box-shadow: inset 2px 0 0 0 #d946ef, inset 0 0 0 1px rgba(217,70,239,0.35), 0 6px 20px -10px rgba(217,70,239,0.6);
-        }
-        .pnx-sidebar .pnx-cta:hover {
-          box-shadow: 0 14px 40px -10px rgba(217,70,239,0.85), inset 0 1px 0 rgba(255,255,255,0.4);
-          transform: translateY(-1px) scale(1.01); filter: brightness(1.08);
-        }
-        .pnx-sidebar .pnx-add:hover { background: rgba(217,70,239,0.15); }
-        @keyframes pnxPulse { 0%,100%{opacity:.85;transform:scale(1);} 50%{opacity:1;transform:scale(1.3);} }
+        .pnx-sidebar .pnx-row:hover { background: rgba(255,255,255,0.05); }
+        .pnx-sidebar .pnx-row.is-active { background: rgba(168,85,247,0.14); box-shadow: inset 2px 0 0 0 #a855f7; }
+        .pnx-sidebar .pnx-cta:hover { background: rgba(255,255,255,0.09); }
+        .pnx-sidebar .pnx-add:hover { background: rgba(255,255,255,0.06); }
+        @keyframes pnxPulse { 0%,100%{opacity:.85;} 50%{opacity:1;} }
         .pnx-sidebar .pnx-pulse { animation: pnxPulse 2.4s ease-in-out infinite; }
         .pnx-sidebar ::-webkit-scrollbar { width: 6px; }
-        .pnx-sidebar ::-webkit-scrollbar-thumb { background: linear-gradient(180deg,#a855f7,#22d3ee); border-radius: 999px; }
+        .pnx-sidebar ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.10); border-radius: 999px; }
       `}</style>
     </aside>
   );
@@ -381,18 +360,10 @@ export function ThreadSidebar({ threads, activeId, onNew, onDelete }: Props) {
 
 function SectionHeader({ icon, label, action }: { icon: string; label: string; action?: React.ReactNode }) {
   return (
-    <div className="mt-2 flex items-center justify-between px-4 py-2.5">
-      <div className="flex items-center gap-2">
-        <MSym name={icon} style={{ fontSize: 16, color: "#c4b5fd" }} />
-        <span
-          className="text-[10px] font-semibold uppercase tracking-[0.22em]"
-          style={{
-            background: "linear-gradient(90deg,#f5d0fe,#c4b5fd 50%,#67e8f9)",
-            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-          }}
-        >
-          {label}
-        </span>
+    <div className="mt-3 flex items-center justify-between px-4 py-1.5">
+      <div className="flex items-center gap-1.5">
+        <MSym name={icon} style={{ fontSize: 14, color: "#8a86a6" }} />
+        <span className="text-[11px] font-medium" style={{ color: "#8a86a6" }}>{label}</span>
       </div>
       {action}
     </div>
