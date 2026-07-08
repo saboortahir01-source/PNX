@@ -8,7 +8,7 @@ import {
   type UIMessage,
 } from "ai";
 import { z } from "zod";
-import { createGeminiDirectProvider, createLovableAiGatewayProvider } from "@/lib/ai-gateway";
+import { createGeminiDirectProvider, createLovableAiGatewayProvider, createZaiProvider } from "@/lib/ai-gateway";
 import { fetchPage, webSearch, imageSearch } from "@/lib/seo-tools.server";
 
 const SYSTEM_PROMPT = `You are **PNX** — a warm, brilliant SEO partner built by **Saboor Tahir**. Think of yourself as a knowledgeable friend sitting across a coffee table, not a robotic auditor. Your job is to make SEO feel human, intuitive, and totally manageable. You translate the messy language of search engines into the simple language of real businesses.
@@ -116,31 +116,71 @@ If you didn't use sources, leave the section out entirely. Never paste raw JSON.
 - Never repeat the user's question back. Lead with the answer.
 - Black-hat tactics: call out the risk plainly and refuse to recommend.`;
 
+// ── PNX Sonar sub-agent personas ────────────────────────────────────────────
+// Appended to the base prompt when the user picks a Sonar mode from the composer.
+const SONAR_TECHNICAL_ADDON = `
+
+---
+
+# PNX Sonar — Technical Mode (PER 1.0)
+
+You are now operating as **PNX Sonar's Technical Guardian**. Your job on this turn is a **deep technical & on-page audit**:
+
+- If a URL is present, ALWAYS call \`fetch_page\` first — never audit from memory.
+- Cover: title tag, meta description, canonical, headings hierarchy, schema/JSON-LD, Open Graph, alt text coverage, internal/external link balance, word count vs top competitors, Core Web Vitals hints (from HTML size + resource shape).
+- Map the primary keyword to search intent (informational / transactional / navigational / commercial).
+- End with a **Technical Content Brief** section (H2), structured for a writer to follow: target keyword, intent, recommended H1/H2 outline, entities to mention, schema types to add.`;
+
+const SONAR_STRATEGIC_ADDON = `
+
+---
+
+# PNX Sonar — Strategic Mode (PER 2.0)
+
+You are now operating as **PNX Sonar's Scraper, Humanizer & Strategist**. Your job on this turn is real-world intelligence + a humanized play:
+
+- Use \`web_search\` and \`analyze_serp\` to see what actually ranks for the query, including Reddit / Quora / YouTube / community results.
+- **Strategic Opportunity Check:** if the top SERP is dominated by social signals (forums, videos, community threads) rather than polished blogs/articles, flag this as a **content-gap opportunity** and design content that fills it.
+- Inject Experience & E-E-A-T: quote or paraphrase real user pain-points, questions, and language from those social sources.
+- End with a **Content Play** section (H2): angle, hook, working title, target reader, structure, tone samples, and 3 "authentic" quotes/ideas pulled from the social sources.`;
+
 export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       POST: async ({ request }: { request: Request }) => {
         const body = (await request.json().catch(() => ({}))) as {
           messages?: UIMessage[];
+          mode?: "auto" | "technical" | "strategic";
         };
         const messages = Array.isArray(body.messages) ? body.messages : [];
+        const mode = body.mode ?? "auto";
 
-        // Primary: direct Google Gemini API (user-provided key, cheaper/faster).
-        // Fallback: Lovable AI Gateway when Gemini key is missing or Gemini errors.
+        // PNX Sonar routing:
+        //   • strategic → z.ai GLM-4.5-Flash (humanization / social synthesis)
+        //   • technical / auto → direct Gemini (fast structured reasoning)
+        //   • last-resort → Lovable AI Gateway
         const geminiKey = process.env.GEMINI_API_KEY;
         const lovableKey = process.env.LOVABLE_API_KEY;
+        const zaiKey = process.env.ZAI_API_KEY;
 
         let model;
-        if (geminiKey) {
+        if (mode === "strategic" && zaiKey) {
+          const zai = createZaiProvider(zaiKey);
+          // GLM-4.5-Flash — free tier, strong at humanized long-form writing.
+          model = zai("glm-4.5-flash");
+        } else if (geminiKey) {
           const gemini = createGeminiDirectProvider(geminiKey);
-          // Gemini 3.5 Flash — strong reasoning, low latency.
           model = gemini("gemini-3.5-flash");
         } else if (lovableKey) {
           const gateway = createLovableAiGatewayProvider(lovableKey);
           model = gateway("google/gemini-3-flash-preview");
         } else {
-          return new Response("Missing GEMINI_API_KEY and LOVABLE_API_KEY", { status: 500 });
+          return new Response("No AI provider key configured", { status: 500 });
         }
+
+        const system =
+          SYSTEM_PROMPT +
+          (mode === "technical" ? SONAR_TECHNICAL_ADDON : mode === "strategic" ? SONAR_STRATEGIC_ADDON : "");
 
         const tools = {
           fetch_page: tool({
@@ -229,7 +269,7 @@ export const Route = createFileRoute("/api/chat")({
 
         const result = streamText({
           model,
-          system: SYSTEM_PROMPT,
+          system,
           tools,
           stopWhen: stepCountIs(50),
           messages: await convertToModelMessages(messages),
