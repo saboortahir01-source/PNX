@@ -20,3 +20,15 @@ export const createGeminiDirectProvider = (geminiApiKey: string) =>
       Authorization: `Bearer ${geminiApiKey}`,
     },
   });
+
+// z.ai (Zhipu / GLM) — OpenAI-compatible endpoint. Used as PNX Sonar's
+// Strategic-mode brain (PER 2.0): humanization, social listening synthesis,
+// and content-opportunity strategy. Free-tier GLM-4.5-Flash keeps calls cheap.
+export const createZaiProvider = (zaiApiKey: string) =>
+  createOpenAICompatible({
+    name: "zai",
+    baseURL: "https://api.z.ai/api/paas/v4",
+    headers: {
+      Authorization: `Bearer ${zaiApiKey}`,
+    },
+  });

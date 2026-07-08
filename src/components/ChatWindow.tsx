@@ -1,6 +1,6 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Conversation,
   ConversationContent,
@@ -34,7 +34,7 @@ import {
   ToolInput,
   ToolOutput,
 } from "@/components/ai-elements/tool";
-import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, X, Copy, RefreshCw, Share2, ThumbsUp, ThumbsDown, Download, type LucideProps } from "lucide-react";
+import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, X, Copy, RefreshCw, Share2, ThumbsUp, ThumbsDown, Download, Radar, Wrench, Sparkles, ChevronDown, type LucideProps } from "lucide-react";
 import { cn } from "@/lib/utils";
 import pnxLogo from "@/assets/pnx-logo.png";
 import { ConversationTimeline } from "@/components/ConversationTimeline";
@@ -86,10 +86,19 @@ const SUGGESTIONS: { icon: React.ComponentType<{ className?: string; size?: numb
 ];
 
 export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Props) {
+  type SonarMode = "auto" | "technical" | "strategic";
+  const [mode, setMode] = useState<SonarMode>("auto");
+  const modeRef = useRef<SonarMode>(mode);
+  useEffect(() => { modeRef.current = mode; }, [mode]);
+
   const { messages, sendMessage, status, regenerate } = useChat({
     id: threadId,
     messages: initialMessages,
-    transport: new DefaultChatTransport({ api: "/api/chat" }),
+    transport: new DefaultChatTransport({
+      api: "/api/chat",
+      // Attach current PNX Sonar mode to every request body.
+      body: () => ({ mode: modeRef.current }),
+    }),
     onError: (err) => {
       const msg =
         err instanceof Error && err.message
@@ -395,6 +404,7 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                     <PromptInputActionAddAttachments label="Attach files or images" />
                   </PromptInputActionMenuContent>
                 </PromptInputActionMenu>
+                <SonarModePicker mode={mode} onChange={setMode} />
               </PromptInputTools>
               <PromptInputSubmit status={status} disabled={isBusy} />
             </PromptInputFooter>
@@ -430,6 +440,83 @@ function AttachmentChips() {
           </button>
         </div>
       ))}
+    </div>
+  );
+}
+
+// PNX Sonar mode picker — sits inline in the composer footer next to the
+// attach button. Kept minimal (ChatGPT-style dropdown) so users pick a lane
+// without reading a wall of copy.
+const SONAR_MODES: {
+  id: "auto" | "technical" | "strategic";
+  label: string;
+  desc: string;
+  Icon: React.ComponentType<{ className?: string }>;
+}[] = [
+  { id: "auto", label: "Auto", desc: "PNX decides the best approach", Icon: Sparkles },
+  { id: "technical", label: "Sonar · Technical", desc: "Deep on-page & schema audit (PER 1.0)", Icon: Wrench },
+  { id: "strategic", label: "Sonar · Strategic", desc: "Social intel + human content play (PER 2.0)", Icon: Radar },
+];
+
+function SonarModePicker({
+  mode,
+  onChange,
+}: {
+  mode: "auto" | "technical" | "strategic";
+  onChange: (m: "auto" | "technical" | "strategic") => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const current = SONAR_MODES.find((m) => m.id === mode) ?? SONAR_MODES[0];
+  const Icon = current.Icon;
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        onBlur={() => setTimeout(() => setOpen(false), 120)}
+        className={cn(
+          "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[12px] font-medium transition-colors",
+          mode === "auto"
+            ? "border-border/60 bg-background/60 text-muted-foreground hover:text-foreground"
+            : "border-[color:var(--brand)]/40 bg-[color:var(--brand)]/10 text-[color:var(--brand)]",
+        )}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label="Pick PNX Sonar mode"
+      >
+        <Icon className="size-3.5" />
+        <span>{current.label}</span>
+        <ChevronDown className="size-3 opacity-60" />
+      </button>
+      {open && (
+        <div
+          role="menu"
+          className="glass absolute bottom-full left-0 mb-2 w-64 overflow-hidden rounded-xl border border-border/70 shadow-[var(--shadow-elegant)]"
+        >
+          {SONAR_MODES.map((m) => {
+            const MIcon = m.Icon;
+            const active = m.id === mode;
+            return (
+              <button
+                key={m.id}
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => { onChange(m.id); setOpen(false); }}
+                className={cn(
+                  "flex w-full items-start gap-2.5 px-3 py-2.5 text-left transition-colors hover:bg-accent",
+                  active && "bg-accent/60",
+                )}
+              >
+                <MIcon className="mt-0.5 size-4 text-[color:var(--brand)]" />
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[13px] font-semibold text-foreground">{m.label}</span>
+                  <span className="block text-[11.5px] text-muted-foreground">{m.desc}</span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
