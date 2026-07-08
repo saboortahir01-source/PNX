@@ -1,6 +1,6 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Conversation,
   ConversationContent,
@@ -34,7 +34,7 @@ import {
   ToolInput,
   ToolOutput,
 } from "@/components/ai-elements/tool";
-import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, X, Copy, RefreshCw, Share2, ThumbsUp, ThumbsDown, Download, type LucideProps } from "lucide-react";
+import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, X, Copy, RefreshCw, Share2, ThumbsUp, ThumbsDown, Download, Radar, Wrench, Sparkles, ChevronDown, type LucideProps } from "lucide-react";
 import { cn } from "@/lib/utils";
 import pnxLogo from "@/assets/pnx-logo.png";
 import { ConversationTimeline } from "@/components/ConversationTimeline";
@@ -86,10 +86,19 @@ const SUGGESTIONS: { icon: React.ComponentType<{ className?: string; size?: numb
 ];
 
 export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Props) {
+  type SonarMode = "auto" | "technical" | "strategic";
+  const [mode, setMode] = useState<SonarMode>("auto");
+  const modeRef = useRef<SonarMode>(mode);
+  useEffect(() => { modeRef.current = mode; }, [mode]);
+
   const { messages, sendMessage, status, regenerate } = useChat({
     id: threadId,
     messages: initialMessages,
-    transport: new DefaultChatTransport({ api: "/api/chat" }),
+    transport: new DefaultChatTransport({
+      api: "/api/chat",
+      // Attach current PNX Sonar mode to every request body.
+      body: () => ({ mode: modeRef.current }),
+    }),
     onError: (err) => {
       const msg =
         err instanceof Error && err.message
@@ -395,6 +404,7 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                     <PromptInputActionAddAttachments label="Attach files or images" />
                   </PromptInputActionMenuContent>
                 </PromptInputActionMenu>
+                <SonarModePicker mode={mode} onChange={setMode} />
               </PromptInputTools>
               <PromptInputSubmit status={status} disabled={isBusy} />
             </PromptInputFooter>
