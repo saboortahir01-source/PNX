@@ -178,6 +178,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               logo: "https://pnx.lovable.app/favicon.png",
               founder: { "@type": "Person", name: "Saboor Tahir" },
               contactPoint: { "@type": "ContactPoint", email: "saboortahir01@gmail.com", contactType: "customer support" },
+              sameAs: [
+                "https://medium.com/@saboortahir",
+                "https://pnx.lovable.app/about",
+              ],
             },
             {
               "@type": "Person",
@@ -186,6 +190,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               url: "https://pnx.lovable.app/about",
               image: "https://pnx.lovable.app/saboor-tahir.png",
               worksFor: { "@type": "Organization", name: "PNX" },
+              sameAs: ["https://medium.com/@saboortahir"],
             },
             {
               "@type": "WebSite",
