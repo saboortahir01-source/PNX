@@ -34,7 +34,7 @@ import {
   ToolInput,
   ToolOutput,
 } from "@/components/ai-elements/tool";
-import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, X, Copy, RefreshCw, Share2, ThumbsUp, ThumbsDown, Download, Radar, Wrench, Sparkles, ChevronDown, type LucideProps } from "lucide-react";
+import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, X, Copy, RefreshCw, Share2, ThumbsUp, ThumbsDown, Download, Radar, Wrench, Sparkles, ChevronDown, AlertTriangle, type LucideProps } from "lucide-react";
 import { cn } from "@/lib/utils";
 import pnxLogo from "@/assets/pnx-logo.png";
 import { ConversationTimeline } from "@/components/ConversationTimeline";
@@ -91,6 +91,7 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
   const modeRef = useRef<SonarMode>(mode);
   useEffect(() => { modeRef.current = mode; }, [mode]);
 
+  const [errorInfo, setErrorInfo] = useState<{ title: string; hint: string } | null>(null);
   const { messages, sendMessage, status, regenerate } = useChat({
     id: threadId,
     messages: initialMessages,
@@ -100,13 +101,29 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
       body: () => ({ mode: modeRef.current }),
     }),
     onError: (err) => {
-      const msg =
-        err instanceof Error && err.message
-          ? err.message.slice(0, 140)
-          : "Something went wrong. Please try again.";
-      toast.error(msg);
+      const raw = (err instanceof Error && err.message ? err.message : "").toLowerCase();
+      let info = {
+        title: "PNX hit a snag",
+        hint: "The agent couldn't finish that reply. Give it another go — most one-off blips clear on retry.",
+      };
+      if (raw.includes("rate") || raw.includes("429")) {
+        info = { title: "You're going a bit fast for the free tier", hint: "The upstream model is rate-limiting us. Wait ~30 seconds and retry — no data was lost." };
+      } else if (raw.includes("bad request") || raw.includes("400")) {
+        info = { title: "That request confused the model", hint: "Usually a stray character or empty tool result. Rephrase your prompt or try again — the fix is almost always a retry." };
+      } else if (raw.includes("unauthor") || raw.includes("401") || raw.includes("403") || raw.includes("key")) {
+        info = { title: "The AI provider key needs attention", hint: "PNX couldn't authenticate with its model provider. If you're the owner, check GEMINI_API_KEY / ZAI_API_KEY / LOVABLE_API_KEY in Cloud secrets." };
+      } else if (raw.includes("network") || raw.includes("fetch") || raw.includes("timeout")) {
+        info = { title: "Network hiccup between you and PNX", hint: "Check your connection and hit retry — your message is still here." };
+      }
+      setErrorInfo(info);
+      toast.error(info.title, { description: info.hint });
     },
   });
+
+  // Clear the inline error banner as soon as a new turn starts.
+  useEffect(() => {
+    if (status === "submitted" || status === "streaming") setErrorInfo(null);
+  }, [status]);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -372,6 +389,34 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                 <ChatProgress status="submitted" />
               </MessageContent>
             </Message>
+          )}
+          {status === "error" && errorInfo && (
+            <div
+              role="alert"
+              className="glass mx-auto my-3 flex w-full max-w-2xl items-start gap-3 rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4"
+            >
+              <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                <AlertTriangle className="size-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-semibold text-foreground">{errorInfo.title}</div>
+                <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{errorInfo.hint}</p>
+                <div className="mt-2 flex gap-2">
+                  <button
+                    onClick={() => { setErrorInfo(null); regenerate(); }}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-3 py-1 text-xs font-medium text-background transition hover:opacity-90"
+                  >
+                    <RefreshCw className="size-3" /> Try again
+                  </button>
+                  <button
+                    onClick={() => setErrorInfo(null)}
+                    className="inline-flex items-center rounded-full border border-border/70 px-3 py-1 text-xs font-medium text-muted-foreground hover:text-foreground"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+            </div>
           )}
         </ConversationContent>
         <ConversationScrollButton />
