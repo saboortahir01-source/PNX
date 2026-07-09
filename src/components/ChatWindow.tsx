@@ -495,12 +495,13 @@ function AttachmentChips() {
 const SONAR_MODES: {
   id: "auto" | "technical" | "strategic";
   label: string;
+  short: string;
   desc: string;
   Icon: React.ComponentType<{ className?: string }>;
 }[] = [
-  { id: "auto", label: "Auto", desc: "PNX decides the best approach", Icon: Sparkles },
-  { id: "technical", label: "Sonar · Technical", desc: "Deep on-page & schema audit (PER 1.0)", Icon: Wrench },
-  { id: "strategic", label: "Sonar · Strategic", desc: "Social intel + human content play (PER 2.0)", Icon: Radar },
+  { id: "auto", label: "Auto", short: "Auto", desc: "PNX picks the right agent for your task", Icon: Sparkles },
+  { id: "technical", label: "Sonar 01", short: "Sonar 01", desc: "Technical & on-page audits — schema, headings, Core Web Vitals", Icon: Wrench },
+  { id: "strategic", label: "Sonar 02", short: "Sonar 02", desc: "Strategic content plays — SERP intel, humanized long-form", Icon: Radar },
 ];
 
 function SonarModePicker({
@@ -520,24 +521,27 @@ function SonarModePicker({
         onClick={() => setOpen((o) => !o)}
         onBlur={() => setTimeout(() => setOpen(false), 120)}
         className={cn(
-          "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[12px] font-medium transition-colors",
+          "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-medium transition-all",
           mode === "auto"
-            ? "border-border/60 bg-background/60 text-muted-foreground hover:text-foreground"
-            : "border-[color:var(--brand)]/40 bg-[color:var(--brand)]/10 text-[color:var(--brand)]",
+            ? "border-border/60 bg-background/60 text-muted-foreground hover:border-border hover:text-foreground"
+            : "border-[color:var(--brand)]/50 bg-gradient-to-r from-[color:var(--brand)]/15 to-[color:var(--brand,#667eea)]/5 text-[color:var(--brand)] shadow-[0_0_0_1px_color-mix(in_oklab,var(--brand,#667eea)_30%,transparent)]",
         )}
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label="Pick PNX Sonar mode"
       >
         <Icon className="size-3.5" />
-        <span>{current.label}</span>
-        <ChevronDown className="size-3 opacity-60" />
+        <span>{current.short}</span>
+        <ChevronDown className={cn("size-3 opacity-60 transition-transform", open && "rotate-180")} />
       </button>
       {open && (
         <div
           role="menu"
-          className="glass absolute bottom-full left-0 mb-2 w-64 overflow-hidden rounded-xl border border-border/70 shadow-[var(--shadow-elegant)]"
+          className="glass absolute bottom-full left-0 z-50 mb-2 w-72 overflow-hidden rounded-2xl border border-border/70 p-1 shadow-[var(--shadow-elegant)]"
         >
+          <div className="px-3 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70">
+            PNX Sonar agents
+          </div>
           {SONAR_MODES.map((m) => {
             const MIcon = m.Icon;
             const active = m.id === mode;
@@ -548,14 +552,22 @@ function SonarModePicker({
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => { onChange(m.id); setOpen(false); }}
                 className={cn(
-                  "flex w-full items-start gap-2.5 px-3 py-2.5 text-left transition-colors hover:bg-accent",
-                  active && "bg-accent/60",
+                  "flex w-full items-start gap-2.5 rounded-xl px-2.5 py-2 text-left transition-colors hover:bg-accent",
+                  active && "bg-gradient-to-r from-[color:var(--brand)]/15 to-transparent",
                 )}
               >
-                <MIcon className="mt-0.5 size-4 text-[color:var(--brand)]" />
+                <span className={cn(
+                  "mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg",
+                  active ? "bg-[color:var(--brand)]/20 text-[color:var(--brand)]" : "bg-muted text-muted-foreground",
+                )}>
+                  <MIcon className="size-3.5" />
+                </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[13px] font-semibold text-foreground">{m.label}</span>
-                  <span className="block text-[11.5px] text-muted-foreground">{m.desc}</span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-[13px] font-semibold text-foreground">{m.label}</span>
+                    {active && <span className="rounded-full bg-[color:var(--brand)]/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-[color:var(--brand)]">Active</span>}
+                  </span>
+                  <span className="mt-0.5 block text-[11.5px] leading-snug text-muted-foreground">{m.desc}</span>
                 </span>
               </button>
             );
