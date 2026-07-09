@@ -38,6 +38,43 @@ export const Route = createFileRoute("/")({
       { rel: "alternate", hrefLang: "en-AU", href: "https://pnx.lovable.app/" },
       { rel: "alternate", hrefLang: "en-IN", href: "https://pnx.lovable.app/" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "FAQPage",
+              mainEntity: [
+                { "@type": "Question", name: "Is PNX really free?", acceptedAnswer: { "@type": "Answer", text: "Yes. PNX is 100% free while in beta — no signup wall, no daily limits, no credit card." } },
+                { "@type": "Question", name: "What can PNX do?", acceptedAnswer: { "@type": "Answer", text: "PNX runs on-page SEO audits, AI keyword research with intent clustering, live SERP competitor analysis, YouTube SEO optimisation and AI-assisted content generation." } },
+                { "@type": "Question", name: "How is PNX different from Ahrefs, Semrush or Surfer?", acceptedAnswer: { "@type": "Answer", text: "PNX is an agentic assistant — you describe the goal in plain English and PNX picks the right tool, runs it live and returns an actionable report. It's free, has no daily caps and works in a single chat." } },
+                { "@type": "Question", name: "Does PNX help with GEO and AI search (ChatGPT, Perplexity, Google AI Overviews)?", acceptedAnswer: { "@type": "Answer", text: "Yes. PNX is built for the AI search era and helps you optimise for generative engines like ChatGPT, Perplexity, Gemini and Google's AI Overviews alongside classic Google SEO." } },
+              ],
+            },
+            {
+              "@type": "ItemList",
+              name: "PNX free SEO tools",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Free SEO Audit Tool", url: "https://pnx.lovable.app/blog/free-ai-seo-audit-tool" },
+                { "@type": "ListItem", position: 2, name: "AI Keyword Research", url: "https://pnx.lovable.app/blog/ai-keyword-research-free" },
+                { "@type": "ListItem", position: 3, name: "SERP Analysis", url: "https://pnx.lovable.app/blog/free-competitor-analysis-tool" },
+                { "@type": "ListItem", position: 4, name: "YouTube SEO", url: "https://pnx.lovable.app/blog/free-youtube-seo-tools" },
+                { "@type": "ListItem", position: 5, name: "AI Content Generator", url: "https://pnx.lovable.app/blog/ai-content-generator-for-seo" },
+                { "@type": "ListItem", position: 6, name: "AI SEO Strategist", url: "https://pnx.lovable.app/blog/ai-seo-strategist-vs-traditional-seo" },
+              ],
+            },
+            {
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Home", item: "https://pnx.lovable.app/" },
+              ],
+            },
+          ],
+        }),
+      },
+    ],
   }),
 });
 
