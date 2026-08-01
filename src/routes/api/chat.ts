@@ -306,7 +306,6 @@ export const Route = createFileRoute("/api/chat")({
             // provider error (which often reads "Bad Request" / "400").
             const raw = err instanceof Error ? err.message : String(err ?? "");
             if (/rate|429/i.test(raw)) return "The model is rate-limiting us — wait a few seconds and retry.";
-            if (/rate|429/i.test(raw)) return "The model is rate-limiting us — wait a few seconds and retry.";
             if (/401|403|unauthor/i.test(raw)) return "The AI provider rejected our key. Please check server secrets.";
             if (/400|bad request/i.test(raw)) return "The model didn't like that request. Rephrase or try again.";
             if (/network|fetch|timeout/i.test(raw)) return "Network hiccup reaching the model. Please retry.";
