@@ -387,7 +387,10 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
           {status === "submitted" && (
             <Message from="assistant">
               <MessageContent>
-                <ChatProgress status="submitted" />
+                <ChatProgress
+                  status="submitted"
+                  variant={isResearchTurn(messages) ? "detailed" : "simple"}
+                />
               </MessageContent>
             </Message>
           )}
