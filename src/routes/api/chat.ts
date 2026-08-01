@@ -270,6 +270,7 @@ export const Route = createFileRoute("/api/chat")({
           }),
         };
 
+        let debugBody = "";
         const result = streamText({
           model,
           system,
@@ -277,6 +278,14 @@ export const Route = createFileRoute("/api/chat")({
           stopWhen: stepCountIs(50),
           messages: await convertToModelMessages(messages),
           onError: (err) => {
+            const e = (err as { error?: Record<string, unknown> })?.error as
+              | Record<string, unknown>
+              | undefined;
+            debugBody = JSON.stringify({
+              msg: (e as { message?: string })?.message,
+              body: (e as { responseBody?: string })?.responseBody,
+              url: (e as { url?: string })?.url,
+            }).slice(0, 2000);
             console.error("[chat] streamText error", err);
           },
         });
@@ -287,7 +296,7 @@ export const Route = createFileRoute("/api/chat")({
             // Surface a human-readable message to the UI instead of the raw
             // provider error (which often reads "Bad Request" / "400").
             const raw = err instanceof Error ? err.message : String(err ?? "");
-            return `RAW: ${raw}`;
+            return `RAW: ${raw} | ${debugBody}`;
             if (/rate|429/i.test(raw)) return "The model is rate-limiting us — wait a few seconds and retry.";
             if (/401|403|unauthor/i.test(raw)) return "The AI provider rejected our key. Please check server secrets.";
             if (/400|bad request/i.test(raw)) return "The model didn't like that request. Rephrase or try again.";
