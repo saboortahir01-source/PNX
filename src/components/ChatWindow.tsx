@@ -27,6 +27,7 @@ import {
   type PromptInputMessage,
 } from "@/components/ai-elements/prompt-input";
 import { ChatProgress } from "@/components/ChatProgress";
+import { createPortal } from "react-dom";
 import {
   Tool,
   ToolContent,
