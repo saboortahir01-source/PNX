@@ -27,6 +27,7 @@ import {
   type PromptInputMessage,
 } from "@/components/ai-elements/prompt-input";
 import { ChatProgress } from "@/components/ChatProgress";
+import { createPortal } from "react-dom";
 import {
   Tool,
   ToolContent,
@@ -386,7 +387,10 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
           {status === "submitted" && (
             <Message from="assistant">
               <MessageContent>
-                <ChatProgress status="submitted" />
+                <ChatProgress
+                  status="submitted"
+                  variant={isResearchTurn(messages) ? "detailed" : "simple"}
+                />
               </MessageContent>
             </Message>
           )}
@@ -464,6 +468,29 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
 }
 
 function AttachmentChips() {
+  return <AttachmentChipsInner />;
+}
+
+/**
+ * Heuristic: does this turn need live crawling / research? Only those get
+ * the multi-step progress tracker; everything else gets a quiet "Thinking…".
+ */
+function isResearchTurn(messages: { role: string; parts?: { type: string; text?: string }[] }[]) {
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const m = messages[i];
+    if (m.role !== "user") continue;
+    const text = (m.parts ?? [])
+      .filter((p) => p.type === "text")
+      .map((p) => p.text ?? "")
+      .join(" ")
+      .toLowerCase();
+    if (/https?:\/\/|www\.|\.[a-z]{2,6}\//.test(text)) return true;
+    return /(audit|analy[sz]e|competitor|serp|rank|keyword|research|compare|backlink|youtube|traffic)/.test(text);
+  }
+  return false;
+}
+
+function AttachmentChipsInner() {
   const a = usePromptInputAttachments();
   if (a.files.length === 0) return null;
   return (
@@ -512,11 +539,36 @@ function SonarModePicker({
   onChange: (m: "auto" | "technical" | "strategic") => void;
 }) {
   const [open, setOpen] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const [pos, setPos] = useState<{ left: number; bottom: number; width: number } | null>(null);
   const current = SONAR_MODES.find((m) => m.id === mode) ?? SONAR_MODES[0];
   const Icon = current.Icon;
+
+  // The composer is a rounded, clipped glass surface, so an absolutely
+  // positioned menu gets cut off. Render it in a portal with fixed
+  // coordinates instead so it always floats clear of the input.
+  useEffect(() => {
+    if (!open) return;
+    const place = () => {
+      const r = btnRef.current?.getBoundingClientRect();
+      if (!r) return;
+      const width = Math.min(288, window.innerWidth - 24);
+      const left = Math.max(12, Math.min(r.left, window.innerWidth - width - 12));
+      setPos({ left, bottom: window.innerHeight - r.top + 8, width });
+    };
+    place();
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", place, true);
+    return () => {
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
+    };
+  }, [open]);
+
   return (
     <div className="relative">
       <button
+        ref={btnRef}
         type="button"
         onClick={() => setOpen((o) => !o)}
         onBlur={() => setTimeout(() => setOpen(false), 120)}
@@ -534,10 +586,11 @@ function SonarModePicker({
         <span>{current.short}</span>
         <ChevronDown className={cn("size-3 opacity-60 transition-transform", open && "rotate-180")} />
       </button>
-      {open && (
+      {open && pos && createPortal(
         <div
           role="menu"
-          className="glass absolute bottom-full left-0 z-50 mb-2 w-72 overflow-hidden rounded-2xl border border-border/70 p-1 shadow-[var(--shadow-elegant)]"
+          style={{ left: pos.left, bottom: pos.bottom, width: pos.width }}
+          className="glass fixed z-[100] overflow-hidden rounded-2xl border border-border/70 bg-background/95 p-1 shadow-[var(--shadow-elegant)] backdrop-blur-xl"
         >
           <div className="px-3 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70">
             PNX Sonar agents
@@ -572,7 +625,8 @@ function SonarModePicker({
               </button>
             );
           })}
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );

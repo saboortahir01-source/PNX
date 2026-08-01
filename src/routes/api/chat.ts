@@ -10,6 +10,12 @@ import {
 import { z } from "zod";
 import { createGeminiDirectProvider, createLovableAiGatewayProvider, createZaiProvider } from "@/lib/ai-gateway";
 import { fetchPage, webSearch, imageSearch } from "@/lib/seo-tools.server";
+import {
+  cannedReply,
+  lastUserMessageText,
+  recommendationContext,
+  staticUiMessageStream,
+} from "@/lib/pnx-fastpath";
 
 const SYSTEM_PROMPT = `You are **PNX** — a warm, brilliant SEO partner built by **Saboor Tahir**. Think of yourself as a knowledgeable friend sitting across a coffee table, not a robotic auditor. Your job is to make SEO feel human, intuitive, and totally manageable. You translate the messy language of search engines into the simple language of real businesses.
 
@@ -155,35 +161,47 @@ export const Route = createFileRoute("/api/chat")({
         const messages = Array.isArray(body.messages) ? body.messages : [];
         const mode = body.mode ?? "auto";
 
-        // PNX Sonar routing:
-        //   • strategic → z.ai GLM-4.5-Flash (humanization / social synthesis)
-        //   • technical / auto → direct Gemini (fast structured reasoning)
-        //   • last-resort → Lovable AI Gateway
+        // ── Zero-API fast path ────────────────────────────────────────────
+        // Budget guard: trivial turns (greetings, thanks, "what is PNX")
+        // are answered locally with no model call at all.
+        const lastUserText = lastUserMessageText(messages);
+        if (messages.length <= 2) {
+          const canned = cannedReply(lastUserText);
+          if (canned) return staticUiMessageStream(canned);
+        }
+
+        // PNX Sonar routing (quality-first ordering):
+        //   • auto / strategic → z.ai GLM (best prose quality, free tier)
+        //   • technical        → native Gemini (structured reasoning + tools)
+        //   • fallback chain   → the other direct key, then Lovable AI Gateway
         const geminiKey = process.env.GEMINI_API_KEY;
         const lovableKey = process.env.LOVABLE_API_KEY;
         const zaiKey = process.env.ZAI_API_KEY;
 
-        let model;
-        if (mode === "strategic" && zaiKey) {
-          const zai = createZaiProvider(zaiKey);
-          // GLM-4.5-Flash — free tier, strong at humanized long-form writing.
-          model = zai("glm-4.5-flash");
-        } else if (geminiKey) {
-          const gemini = createGeminiDirectProvider(geminiKey);
-          model = gemini("gemini-3.5-flash");
-        } else if (lovableKey) {
-          const gateway = createLovableAiGatewayProvider(lovableKey);
-          model = gateway("google/gemini-3-flash-preview");
-        } else {
+        const zaiModel = () => createZaiProvider(zaiKey!)("glm-4.5-flash");
+        const geminiModel = () => createGeminiDirectProvider(geminiKey!)("gemini-3.5-flash");
+        const gatewayModel = () =>
+          createLovableAiGatewayProvider(lovableKey!)("google/gemini-3-flash-preview");
+
+        // Ordered candidates — first available wins, the rest are fallbacks.
+        const order =
+          mode === "technical"
+            ? [geminiKey && geminiModel, zaiKey && zaiModel, lovableKey && gatewayModel]
+            : [zaiKey && zaiModel, geminiKey && geminiModel, lovableKey && gatewayModel];
+        const candidates = order.filter(Boolean) as Array<() => ReturnType<typeof zaiModel>>;
+
+        if (candidates.length === 0) {
           return Response.json(
             { error: "The AI provider key isn't configured on the server. Please contact PNX support." },
             { status: 500 },
           );
         }
+        const model = candidates[0]();
 
         const system =
           SYSTEM_PROMPT +
-          (mode === "technical" ? SONAR_TECHNICAL_ADDON : mode === "strategic" ? SONAR_STRATEGIC_ADDON : "");
+          (mode === "technical" ? SONAR_TECHNICAL_ADDON : mode === "strategic" ? SONAR_STRATEGIC_ADDON : "") +
+          recommendationContext(lastUserText);
 
         const tools = {
           fetch_page: tool({
