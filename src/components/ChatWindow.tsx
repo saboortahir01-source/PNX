@@ -468,6 +468,29 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
 }
 
 function AttachmentChips() {
+  return <AttachmentChipsInner />;
+}
+
+/**
+ * Heuristic: does this turn need live crawling / research? Only those get
+ * the multi-step progress tracker; everything else gets a quiet "Thinking…".
+ */
+function isResearchTurn(messages: { role: string; parts?: { type: string; text?: string }[] }[]) {
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const m = messages[i];
+    if (m.role !== "user") continue;
+    const text = (m.parts ?? [])
+      .filter((p) => p.type === "text")
+      .map((p) => p.text ?? "")
+      .join(" ")
+      .toLowerCase();
+    if (/https?:\/\/|www\.|\.[a-z]{2,6}\//.test(text)) return true;
+    return /(audit|analy[sz]e|competitor|serp|rank|keyword|research|compare|backlink|youtube|traffic)/.test(text);
+  }
+  return false;
+}
+
+function AttachmentChipsInner() {
   const a = usePromptInputAttachments();
   if (a.files.length === 0) return null;
   return (
