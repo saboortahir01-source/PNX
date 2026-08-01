@@ -9,20 +9,34 @@ const STEPS = [
   "Compiling clear, human recommendations",
 ];
 
-type Props = { status: "submitted" | "streaming" };
+type Props = { status: "submitted" | "streaming"; variant?: "simple" | "detailed" };
 
 /**
  * Lightweight, honest progress indicator shown while the agent is working.
  * - Rotates through plain-English steps so users know something is happening.
  * - Uses an indeterminate progress bar (no fake percentages).
  */
-export function ChatProgress({ status }: Props) {
+export function ChatProgress({ status, variant = "detailed" }: Props) {
   const [i, setI] = useState(0);
   useEffect(() => {
-    if (status !== "submitted") return;
+    if (status !== "submitted" || variant === "simple") return;
     const t = setInterval(() => setI((n) => (n + 1) % STEPS.length), 1600);
     return () => clearInterval(t);
-  }, [status]);
+  }, [status, variant]);
+
+  // Simple turns (a quick question, no crawling or research) get a quiet
+  // one-line indicator instead of a multi-step research tracker.
+  if (variant === "simple") {
+    return (
+      <div role="status" aria-live="polite" className="flex items-center gap-2 py-0.5">
+        <span className="relative flex size-2">
+          <span className="absolute inline-flex size-2 animate-ping rounded-full bg-[color:var(--brand)] opacity-60" />
+          <span className="relative inline-flex size-2 rounded-full bg-[color:var(--brand)]" />
+        </span>
+        <Shimmer as="span" className="text-[13px] font-light">Thinking…</Shimmer>
+      </div>
+    );
+  }
 
   const label = status === "streaming" ? "Writing your answer" : STEPS[i];
 
