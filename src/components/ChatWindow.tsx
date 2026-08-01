@@ -470,6 +470,8 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
 function AttachmentChips() {
   const a = usePromptInputAttachments();
   if (a.files.length === 0) return null;
+  const a = usePromptInputAttachments();
+  if (a.files.length === 0) return null;
   return (
     <div className="flex flex-wrap gap-1.5 px-3 pt-3">
       {a.files.map((f) => (
