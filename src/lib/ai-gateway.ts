@@ -1,4 +1,5 @@
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 
 export const createLovableAiGatewayProvider = (lovableApiKey: string) =>
   createOpenAICompatible({
@@ -10,16 +11,13 @@ export const createLovableAiGatewayProvider = (lovableApiKey: string) =>
     },
   });
 
-// Direct Google Gemini via its OpenAI-compatible endpoint.
-// Primary path — cheaper/faster than routing through the gateway.
+// Direct Google Gemini via the NATIVE Google provider.
+// The OpenAI-compatible endpoint drops Gemini 3's `thought_signature`
+// on tool-call round-trips, which makes every multi-step (tool-using)
+// request fail with a 400 after the first tool result. The native
+// provider round-trips signatures correctly.
 export const createGeminiDirectProvider = (geminiApiKey: string) =>
-  createOpenAICompatible({
-    name: "gemini-direct",
-    baseURL: "https://generativelanguage.googleapis.com/v1beta/openai",
-    headers: {
-      Authorization: `Bearer ${geminiApiKey}`,
-    },
-  });
+  createGoogleGenerativeAI({ apiKey: geminiApiKey });
 
 // z.ai (Zhipu / GLM) — OpenAI-compatible endpoint. Used as PNX Sonar's
 // Strategic-mode brain (PER 2.0): humanization, social listening synthesis,
