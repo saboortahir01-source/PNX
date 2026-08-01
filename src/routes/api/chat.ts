@@ -287,7 +287,7 @@ export const Route = createFileRoute("/api/chat")({
             // Surface a human-readable message to the UI instead of the raw
             // provider error (which often reads "Bad Request" / "400").
             const raw = err instanceof Error ? err.message : String(err ?? "");
-            if (process.env.PNX_DEBUG_ERRORS) return `RAW: ${raw}`;
+            return `RAW: ${raw}`;
             if (/rate|429/i.test(raw)) return "The model is rate-limiting us — wait a few seconds and retry.";
             if (/401|403|unauthor/i.test(raw)) return "The AI provider rejected our key. Please check server secrets.";
             if (/400|bad request/i.test(raw)) return "The model didn't like that request. Rephrase or try again.";
