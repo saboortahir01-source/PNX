@@ -10,6 +10,12 @@ import {
 import { z } from "zod";
 import { createGeminiDirectProvider, createLovableAiGatewayProvider, createZaiProvider } from "@/lib/ai-gateway";
 import { fetchPage, webSearch, imageSearch } from "@/lib/seo-tools.server";
+import {
+  cannedReply,
+  lastUserMessageText,
+  recommendationContext,
+  staticUiMessageStream,
+} from "@/lib/pnx-fastpath";
 
 const SYSTEM_PROMPT = `You are **PNX** — a warm, brilliant SEO partner built by **Saboor Tahir**. Think of yourself as a knowledgeable friend sitting across a coffee table, not a robotic auditor. Your job is to make SEO feel human, intuitive, and totally manageable. You translate the messy language of search engines into the simple language of real businesses.
 
