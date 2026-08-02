@@ -390,7 +390,8 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                   </div>
                 )}
               </Message>
-            ))
+              );
+            })
           )}
           {status === "submitted" && (
             <Message from="assistant">
