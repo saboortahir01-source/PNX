@@ -150,6 +150,27 @@ You are now operating as **PNX Sonar's Scraper, Humanizer & Strategist**. Your j
 - Inject Experience & E-E-A-T: quote or paraphrase real user pain-points, questions, and language from those social sources.
 - End with a **Content Play** section (H2): angle, hook, working title, target reader, structure, tone samples, and 3 "authentic" quotes/ideas pulled from the social sources.`;
 
+/**
+ * Does this turn need live crawling / SERP research? Keeps the tool catalogue
+ * (and its latency cost) out of ordinary writing/Q&A turns.
+ */
+function needsResearchTools(messages: UIMessage[]) {
+  if (messages.some((m) => m.parts?.some((p) => p.type?.startsWith("tool-")))) return true;
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const m = messages[i];
+    if (m.role !== "user") continue;
+    const text = (m.parts ?? [])
+      .map((p) => (p.type === "text" ? p.text : ""))
+      .join(" ")
+      .toLowerCase();
+    if (/https?:\/\/|www\.|\.[a-z]{2,6}\//.test(text)) return true;
+    return /(audit|analy[sz]e|competitor|serp|rank|keyword|research|compare|backlink|traffic|image|screenshot|latest|news)/.test(
+      text,
+    );
+  }
+  return false;
+}
+
 export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
