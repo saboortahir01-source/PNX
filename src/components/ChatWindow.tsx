@@ -195,6 +195,20 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
     toast.success(kind === "up" ? "Thanks for the feedback!" : "Got it — we'll improve.");
   };
 
+  // Long-press to copy on touch devices (ChatGPT-style), hover-reveal on desktop.
+  const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const startPress = (m: UIMessage) => {
+    if (pressTimer.current) clearTimeout(pressTimer.current);
+    pressTimer.current = setTimeout(() => {
+      handleCopy(m);
+      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(8);
+    }, 500);
+  };
+  const cancelPress = () => {
+    if (pressTimer.current) clearTimeout(pressTimer.current);
+    pressTimer.current = null;
+  };
+
   const handleDownloadPdf = async (m: UIMessage) => {
     const content = getMessageText(m);
     if (!content.trim()) {
@@ -283,7 +297,12 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
           ) : (
             messages.map((m, idx) => (
               <Message key={m.id} from={m.role} id={`msg-${m.id}`}>
-                <MessageContent>
+                <MessageContent
+                  onTouchStart={m.role === "user" ? () => startPress(m) : undefined}
+                  onTouchEnd={m.role === "user" ? cancelPress : undefined}
+                  onTouchMove={m.role === "user" ? cancelPress : undefined}
+                  onContextMenu={m.role === "user" ? cancelPress : undefined}
+                >
                   {m.parts.map((part, i) => {
                     if (part.type === "text") {
                       return m.role === "assistant" ? (
@@ -329,6 +348,18 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                     return null;
                   })}
                 </MessageContent>
+                {m.role === "user" && (
+                  <div className="mt-1 flex justify-end opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+                    <button
+                      onClick={() => handleCopy(m)}
+                      className="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
+                      aria-label="Copy your message"
+                      title="Copy"
+                    >
+                      <Copy className="size-3.5" />
+                    </button>
+                  </div>
+                )}
                 {m.role === "assistant" && !isBusy && (
                   <div className="mt-1 flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
                     <button
