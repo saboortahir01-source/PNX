@@ -107,8 +107,10 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
         title: "PNX hit a snag",
         hint: "The agent couldn't finish that reply. Give it another go — most one-off blips clear on retry.",
       };
-      if (raw.includes("rate") || raw.includes("429")) {
-        info = { title: "You're going a bit fast for the free tier", hint: "The upstream model is rate-limiting us. Wait ~30 seconds and retry — no data was lost." };
+      // NOTE: match rate limits precisely — a loose "rate" test also matches
+      // "generate"/"generated" and mislabels ordinary errors as throttling.
+      if (/\b429\b|rate.?limit|too many requests|quota/.test(raw)) {
+        info = { title: "The model is busy right now", hint: "PNX is queued behind a burst of requests. Hit retry in a few seconds — your message is safe." };
       } else if (raw.includes("bad request") || raw.includes("400")) {
         info = { title: "That request confused the model", hint: "Usually a stray character or empty tool result. Rephrase your prompt or try again — the fix is almost always a retry." };
       } else if (raw.includes("unauthor") || raw.includes("401") || raw.includes("403") || raw.includes("key")) {
