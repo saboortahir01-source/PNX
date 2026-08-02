@@ -150,6 +150,27 @@ You are now operating as **PNX Sonar's Scraper, Humanizer & Strategist**. Your j
 - Inject Experience & E-E-A-T: quote or paraphrase real user pain-points, questions, and language from those social sources.
 - End with a **Content Play** section (H2): angle, hook, working title, target reader, structure, tone samples, and 3 "authentic" quotes/ideas pulled from the social sources.`;
 
+/**
+ * Does this turn need live crawling / SERP research? Keeps the tool catalogue
+ * (and its latency cost) out of ordinary writing/Q&A turns.
+ */
+function needsResearchTools(messages: UIMessage[]) {
+  if (messages.some((m) => m.parts?.some((p) => p.type?.startsWith("tool-")))) return true;
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const m = messages[i];
+    if (m.role !== "user") continue;
+    const text = (m.parts ?? [])
+      .map((p) => (p.type === "text" ? p.text : ""))
+      .join(" ")
+      .toLowerCase();
+    if (/https?:\/\/|www\.|\.[a-z]{2,6}\//.test(text)) return true;
+    return /(audit|analy[sz]e|competitor|serp|rank|keyword|research|compare|backlink|traffic|image|screenshot|latest|news)/.test(
+      text,
+    );
+  }
+  return false;
+}
+
 export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
@@ -291,7 +312,11 @@ export const Route = createFileRoute("/api/chat")({
         const result = streamText({
           model,
           system,
-          tools,
+          // Speed: only expose the research toolset when the turn actually
+          // needs live crawling/SERP work. Simple writing/Q&A turns skip the
+          // tool schemas entirely — smaller prompt, faster first token, and no
+          // speculative tool round-trips.
+          tools: needsResearchTools(messages) ? tools : undefined,
           stopWhen: stepCountIs(50),
           messages: await convertToModelMessages(messages),
           onError: (err) => {
@@ -305,7 +330,8 @@ export const Route = createFileRoute("/api/chat")({
             // Surface a human-readable message to the UI instead of the raw
             // provider error (which often reads "Bad Request" / "400").
             const raw = err instanceof Error ? err.message : String(err ?? "");
-            if (/rate|429/i.test(raw)) return "The model is rate-limiting us — wait a few seconds and retry.";
+            if (/\b429\b|rate.?limit|too many requests|quota/i.test(raw))
+              return "The model is busy right now — retry in a few seconds.";
             if (/401|403|unauthor/i.test(raw)) return "The AI provider rejected our key. Please check server secrets.";
             if (/400|bad request/i.test(raw)) return "The model didn't like that request. Rephrase or try again.";
             if (/network|fetch|timeout/i.test(raw)) return "Network hiccup reaching the model. Please retry.";

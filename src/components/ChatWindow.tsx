@@ -107,8 +107,10 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
         title: "PNX hit a snag",
         hint: "The agent couldn't finish that reply. Give it another go — most one-off blips clear on retry.",
       };
-      if (raw.includes("rate") || raw.includes("429")) {
-        info = { title: "You're going a bit fast for the free tier", hint: "The upstream model is rate-limiting us. Wait ~30 seconds and retry — no data was lost." };
+      // NOTE: match rate limits precisely — a loose "rate" test also matches
+      // "generate"/"generated" and mislabels ordinary errors as throttling.
+      if (/\b429\b|rate.?limit|too many requests|quota/.test(raw)) {
+        info = { title: "The model is busy right now", hint: "PNX is queued behind a burst of requests. Hit retry in a few seconds — your message is safe." };
       } else if (raw.includes("bad request") || raw.includes("400")) {
         info = { title: "That request confused the model", hint: "Usually a stray character or empty tool result. Rephrase your prompt or try again — the fix is almost always a retry." };
       } else if (raw.includes("unauthor") || raw.includes("401") || raw.includes("403") || raw.includes("key")) {
@@ -191,6 +193,20 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
 
   const handleFeedback = (kind: "up" | "down") => {
     toast.success(kind === "up" ? "Thanks for the feedback!" : "Got it — we'll improve.");
+  };
+
+  // Long-press to copy on touch devices (ChatGPT-style), hover-reveal on desktop.
+  const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const startPress = (m: UIMessage) => {
+    if (pressTimer.current) clearTimeout(pressTimer.current);
+    pressTimer.current = setTimeout(() => {
+      handleCopy(m);
+      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(8);
+    }, 500);
+  };
+  const cancelPress = () => {
+    if (pressTimer.current) clearTimeout(pressTimer.current);
+    pressTimer.current = null;
   };
 
   const handleDownloadPdf = async (m: UIMessage) => {
@@ -281,7 +297,12 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
           ) : (
             messages.map((m, idx) => (
               <Message key={m.id} from={m.role} id={`msg-${m.id}`}>
-                <MessageContent>
+                <MessageContent
+                  onTouchStart={m.role === "user" ? () => startPress(m) : undefined}
+                  onTouchEnd={m.role === "user" ? cancelPress : undefined}
+                  onTouchMove={m.role === "user" ? cancelPress : undefined}
+                  onContextMenu={m.role === "user" ? cancelPress : undefined}
+                >
                   {m.parts.map((part, i) => {
                     if (part.type === "text") {
                       return m.role === "assistant" ? (
@@ -327,6 +348,18 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                     return null;
                   })}
                 </MessageContent>
+                {m.role === "user" && (
+                  <div className="mt-1 flex justify-end opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+                    <button
+                      onClick={() => handleCopy(m)}
+                      className="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
+                      aria-label="Copy your message"
+                      title="Copy"
+                    >
+                      <Copy className="size-3.5" />
+                    </button>
+                  </div>
+                )}
                 {m.role === "assistant" && !isBusy && (
                   <div className="mt-1 flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
                     <button
