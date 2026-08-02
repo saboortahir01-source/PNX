@@ -291,7 +291,11 @@ export const Route = createFileRoute("/api/chat")({
         const result = streamText({
           model,
           system,
-          tools,
+          // Speed: only expose the research toolset when the turn actually
+          // needs live crawling/SERP work. Simple writing/Q&A turns skip the
+          // tool schemas entirely — smaller prompt, faster first token, and no
+          // speculative tool round-trips.
+          tools: needsResearchTools(messages) ? tools : undefined,
           stopWhen: stepCountIs(50),
           messages: await convertToModelMessages(messages),
           onError: (err) => {
@@ -305,7 +309,8 @@ export const Route = createFileRoute("/api/chat")({
             // Surface a human-readable message to the UI instead of the raw
             // provider error (which often reads "Bad Request" / "400").
             const raw = err instanceof Error ? err.message : String(err ?? "");
-            if (/rate|429/i.test(raw)) return "The model is rate-limiting us — wait a few seconds and retry.";
+            if (/\b429\b|rate.?limit|too many requests|quota/i.test(raw))
+              return "The model is busy right now — retry in a few seconds.";
             if (/401|403|unauthor/i.test(raw)) return "The AI provider rejected our key. Please check server secrets.";
             if (/400|bad request/i.test(raw)) return "The model didn't like that request. Rephrase or try again.";
             if (/network|fetch|timeout/i.test(raw)) return "Network hiccup reaching the model. Please retry.";
