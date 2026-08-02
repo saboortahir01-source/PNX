@@ -28,13 +28,9 @@ import {
 } from "@/components/ai-elements/prompt-input";
 import { ChatProgress } from "@/components/ChatProgress";
 import { createPortal } from "react-dom";
-import {
-  Tool,
-  ToolContent,
-  ToolHeader,
-  ToolInput,
-  ToolOutput,
-} from "@/components/ai-elements/tool";
+import { AgentWorkflow } from "@/components/AgentWorkflow";
+import { SourcesPanel } from "@/components/SourcesPanel";
+import { buildWorkflow, collectSources, isToolPart, type ToolPart } from "@/components/agent-run";
 import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, X, Copy, RefreshCw, Share2, ThumbsUp, ThumbsDown, Download, Radar, Wrench, Sparkles, ChevronDown, AlertTriangle, type LucideProps } from "lucide-react";
 import { cn } from "@/lib/utils";
 import pnxLogo from "@/assets/pnx-logo.png";
@@ -295,7 +291,16 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
               </div>
             </div>
           ) : (
-            messages.map((m, idx) => (
+            messages.map((m, idx) => {
+              const toolParts = (m.parts as unknown as { type?: string }[]).filter(isToolPart) as ToolPart[];
+              const isLast = idx === messages.length - 1;
+              const hasText = m.parts.some((p) => p.type === "text" && Boolean((p as { text?: string }).text?.trim()));
+              const workflow =
+                m.role === "assistant"
+                  ? buildWorkflow(toolParts, isLast && isBusy, hasText)
+                  : [];
+              const sources = m.role === "assistant" ? collectSources(toolParts) : [];
+              return (
               <Message key={m.id} from={m.role} id={`msg-${m.id}`}>
                 <MessageContent
                   onTouchStart={m.role === "user" ? () => startPress(m) : undefined}
@@ -303,6 +308,7 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                   onTouchMove={m.role === "user" ? cancelPress : undefined}
                   onContextMenu={m.role === "user" ? cancelPress : undefined}
                 >
+                  {workflow.length > 0 && <AgentWorkflow steps={workflow} />}
                   {m.parts.map((part, i) => {
                     if (part.type === "text") {
                       return m.role === "assistant" ? (
@@ -313,40 +319,9 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                         </div>
                       );
                     }
-                    if (part.type?.startsWith("tool-")) {
-                      const toolPart = part as unknown as {
-                        type: string;
-                        state: "input-streaming" | "input-available" | "output-available" | "output-error" | "approval-requested" | "approval-responded" | "output-denied";
-                        input?: unknown;
-                        output?: unknown;
-                        errorText?: string;
-                      };
-                      return (
-                        <Tool key={i} defaultOpen={false}>
-                          <ToolHeader
-                            type={toolPart.type as `tool-${string}`}
-                            state={toolPart.state}
-                          />
-                          <ToolContent>
-                            <ToolInput input={toolPart.input} />
-                            <ToolOutput
-                              output={
-                                toolPart.output ? (
-                                  <pre className="overflow-x-auto whitespace-pre-wrap break-words text-xs">
-                                    {typeof toolPart.output === "string"
-                                      ? toolPart.output
-                                      : JSON.stringify(toolPart.output, null, 2)}
-                                  </pre>
-                                ) : undefined
-                              }
-                              errorText={toolPart.errorText}
-                            />
-                          </ToolContent>
-                        </Tool>
-                      );
-                    }
                     return null;
                   })}
+                  {sources.length > 0 && <SourcesPanel sources={sources} />}
                 </MessageContent>
                 {m.role === "user" && (
                   <div className="mt-1 flex justify-end opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
@@ -415,7 +390,8 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                   </div>
                 )}
               </Message>
-            ))
+              );
+            })
           )}
           {status === "submitted" && (
             <Message from="assistant">
