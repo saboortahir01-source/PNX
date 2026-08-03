@@ -66,7 +66,11 @@ export function phase(state: SharedAgentState, next: PnxPhase) {
   state.emit({ kind: "phase", phase: next });
 }
 
-export function log(state: SharedAgentState, level: PnxEvent extends { level: infer L } ? L : never, text: string) {
+export function log(
+  state: SharedAgentState,
+  level: "ok" | "warn" | "info" | "error",
+  text: string,
+) {
   state.emit({ kind: "log", level, text });
 }
 
