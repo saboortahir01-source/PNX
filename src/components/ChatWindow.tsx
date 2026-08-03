@@ -314,6 +314,13 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                   ? buildWorkflow(toolParts, isLast && isBusy, hasText)
                   : [];
               const sources = m.role === "assistant" ? collectSources(toolParts) : [];
+              const pnxEvents =
+                m.role === "assistant"
+                  ? ((m.parts as unknown as { type?: string }[])
+                      .filter(isPnxEventPart)
+                      .map((p) => p.data) as PnxEvent[])
+                  : [];
+              const awaitingPlan = pnxEvents.some((e) => e.kind === "plan" && e.awaitingApproval);
               return (
               <Message key={m.id} from={m.role} id={`msg-${m.id}`}>
                 <MessageContent
@@ -322,6 +329,13 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                   onTouchMove={m.role === "user" ? cancelPress : undefined}
                   onContextMenu={m.role === "user" ? cancelPress : undefined}
                 >
+                  {pnxEvents.length > 0 && (
+                    <AgentExecutionFeed
+                      events={pnxEvents}
+                      live={isLast && isBusy}
+                      onApprovePlan={awaitingPlan && isLast && !isBusy ? handleApprovePlan : undefined}
+                    />
+                  )}
                   {workflow.length > 0 && <AgentWorkflow steps={workflow} />}
                   {m.parts.map((part, i) => {
                     if (part.type === "text") {
