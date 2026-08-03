@@ -195,9 +195,11 @@ export const Route = createFileRoute("/api/chat")({
         const body = (await request.json().catch(() => ({}))) as {
           messages?: UIMessage[];
           mode?: "auto" | "technical" | "strategic";
+          planApproved?: boolean;
         };
         const messages = Array.isArray(body.messages) ? body.messages : [];
         const mode = body.mode ?? "auto";
+        const planApproved = body.planApproved === true;
 
         // ── Zero-API fast path ────────────────────────────────────────────
         // Budget guard: trivial turns (greetings, thanks, "what is PNX")
