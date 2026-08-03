@@ -354,6 +354,8 @@ export const Route = createFileRoute("/api/chat")({
             return "PNX hit a snag on that reply — please try again.";
           },
           execute: async ({ writer }) => {
+            writer.write({ type: "start" });
+            try {
             const emit = (event: PnxEvent) => writer.write({ type: "data-pnx", data: event });
             const state = createAgentState(emit);
 
@@ -489,6 +491,9 @@ export const Route = createFileRoute("/api/chat")({
                 outcome: state.errors.length > 0 ? `partial: ${state.errors[0]}` : "ok",
               }),
             ]);
+            } finally {
+              writer.write({ type: "finish" });
+            }
           },
         });
 
