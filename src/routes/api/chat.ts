@@ -11,7 +11,7 @@ import {
 } from "ai";
 import { z } from "zod";
 import { createGeminiDirectProvider, createLovableAiGatewayProvider, createZaiProvider } from "@/lib/ai-gateway";
-import { fetchPage, webSearch, imageSearch } from "@/lib/seo-tools.server";
+import { imageSearch } from "@/lib/seo-tools.server";
 import {
   cannedReply,
   lastUserMessageText,
