@@ -30,6 +30,8 @@ import { ChatProgress } from "@/components/ChatProgress";
 import { createPortal } from "react-dom";
 import { AgentWorkflow } from "@/components/AgentWorkflow";
 import { SourcesPanel } from "@/components/SourcesPanel";
+import { AgentExecutionFeed } from "@/components/AgentExecutionFeed";
+import { isPnxEventPart, type PnxEvent } from "@/lib/pnx/agent-events";
 import { buildWorkflow, collectSources, isToolPart, type ToolPart } from "@/components/agent-run";
 import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, X, Copy, RefreshCw, Share2, ThumbsUp, ThumbsDown, Download, Radar, Wrench, Sparkles, ChevronDown, AlertTriangle, type LucideProps } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -89,13 +91,19 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
   useEffect(() => { modeRef.current = mode; }, [mode]);
 
   const [errorInfo, setErrorInfo] = useState<{ title: string; hint: string } | null>(null);
+  // Set for exactly one request when the user approves a proposed plan.
+  const planApprovedRef = useRef(false);
   const { messages, sendMessage, status, regenerate } = useChat({
     id: threadId,
     messages: initialMessages,
     transport: new DefaultChatTransport({
       api: "/api/chat",
       // Attach current PNX Sonar mode to every request body.
-      body: () => ({ mode: modeRef.current }),
+      body: () => {
+        const planApproved = planApprovedRef.current;
+        planApprovedRef.current = false;
+        return { mode: modeRef.current, planApproved };
+      },
     }),
     onError: (err) => {
       const raw = (err instanceof Error && err.message ? err.message : "").toLowerCase();
@@ -153,6 +161,12 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
 
   const handleSuggestion = (text: string) => {
     sendMessage({ text });
+  };
+
+  // "Run this plan" — re-send with approval so the orchestrator executes it.
+  const handleApprovePlan = () => {
+    planApprovedRef.current = true;
+    sendMessage({ text: "Yes — run that plan." });
   };
 
   const isBusy = status === "submitted" || status === "streaming";
@@ -300,6 +314,13 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                   ? buildWorkflow(toolParts, isLast && isBusy, hasText)
                   : [];
               const sources = m.role === "assistant" ? collectSources(toolParts) : [];
+              const pnxEvents =
+                m.role === "assistant"
+                  ? ((m.parts as unknown as { type?: string }[])
+                      .filter(isPnxEventPart)
+                      .map((p) => p.data) as PnxEvent[])
+                  : [];
+              const awaitingPlan = pnxEvents.some((e) => e.kind === "plan" && e.awaitingApproval);
               return (
               <Message key={m.id} from={m.role} id={`msg-${m.id}`}>
                 <MessageContent
@@ -308,6 +329,13 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                   onTouchMove={m.role === "user" ? cancelPress : undefined}
                   onContextMenu={m.role === "user" ? cancelPress : undefined}
                 >
+                  {pnxEvents.length > 0 && (
+                    <AgentExecutionFeed
+                      events={pnxEvents}
+                      live={isLast && isBusy}
+                      onApprovePlan={awaitingPlan && isLast && !isBusy ? handleApprovePlan : undefined}
+                    />
+                  )}
                   {workflow.length > 0 && <AgentWorkflow steps={workflow} />}
                   {m.parts.map((part, i) => {
                     if (part.type === "text") {

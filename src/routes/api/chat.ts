@@ -2,6 +2,8 @@ import "@tanstack/react-start";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   convertToModelMessages,
+  createUIMessageStream,
+  createUIMessageStreamResponse,
   stepCountIs,
   streamText,
   tool,
@@ -9,13 +11,28 @@ import {
 } from "ai";
 import { z } from "zod";
 import { createGeminiDirectProvider, createLovableAiGatewayProvider, createZaiProvider } from "@/lib/ai-gateway";
-import { fetchPage, webSearch, imageSearch } from "@/lib/seo-tools.server";
+import { imageSearch } from "@/lib/seo-tools.server";
 import {
   cannedReply,
   lastUserMessageText,
   recommendationContext,
   staticUiMessageStream,
 } from "@/lib/pnx-fastpath";
+import {
+  buildPlan,
+  computeConfidence,
+  createAgentState,
+  detectIntent,
+  domainOf,
+  log,
+  phase,
+  retrievePage,
+  scoreSources,
+  searchWithRetry,
+  type SharedAgentState,
+} from "@/lib/orchestrator.server";
+import { cacheLookup, cacheStore, logExecution, queryFingerprint, rememberSources } from "@/lib/knowledge-cache.server";
+import type { PnxEvent } from "@/lib/pnx/agent-events";
 
 const SYSTEM_PROMPT = `You are **PNX** — a warm, brilliant SEO partner built by **Saboor Tahir**. Think of yourself as a knowledgeable friend sitting across a coffee table, not a robotic auditor. Your job is to make SEO feel human, intuitive, and totally manageable. You translate the messy language of search engines into the simple language of real businesses.
 
@@ -178,9 +195,11 @@ export const Route = createFileRoute("/api/chat")({
         const body = (await request.json().catch(() => ({}))) as {
           messages?: UIMessage[];
           mode?: "auto" | "technical" | "strategic";
+          planApproved?: boolean;
         };
         const messages = Array.isArray(body.messages) ? body.messages : [];
         const mode = body.mode ?? "auto";
+        const planApproved = body.planApproved === true;
 
         // ── Zero-API fast path ────────────────────────────────────────────
         // Budget guard: trivial turns (greetings, thanks, "what is PNX")
@@ -219,12 +238,12 @@ export const Route = createFileRoute("/api/chat")({
         }
         const model = candidates[0]();
 
-        const system =
+        const baseSystem =
           SYSTEM_PROMPT +
           (mode === "technical" ? SONAR_TECHNICAL_ADDON : mode === "strategic" ? SONAR_STRATEGIC_ADDON : "") +
           recommendationContext(lastUserText);
 
-        const tools = {
+        const makeTools = (state: SharedAgentState) => ({
           fetch_page: tool({
             description:
               "Fetch a URL and extract on-page SEO data (title, meta, headings, OG, JSON-LD, links, images, word count).",
@@ -233,8 +252,12 @@ export const Route = createFileRoute("/api/chat")({
             }),
             execute: async ({ url }) => {
               try {
-                return await fetchPage(url);
+                state.toolsUsed.push("fetch_page");
+                log(state, "info", `Opening ${domainOf(url)}…`);
+                return await retrievePage(state, url);
               } catch (err) {
+                state.errors.push((err as Error).message);
+                log(state, "warn", `Couldn't open ${domainOf(url)} — ${(err as Error).message}`);
                 return {
                   error: `Failed to fetch ${url}: ${(err as Error).message}`,
                 };
@@ -250,9 +273,12 @@ export const Route = createFileRoute("/api/chat")({
             }),
             execute: async ({ query, limit }) => {
               try {
-                const results = await webSearch(query, limit);
+                state.toolsUsed.push("web_search");
+                log(state, "info", `Searching for “${query}”…`);
+                const results = await searchWithRetry(state, query, limit);
                 return { query, results };
               } catch (err) {
+                state.errors.push((err as Error).message);
                 return { error: (err as Error).message };
               }
             },
@@ -266,6 +292,8 @@ export const Route = createFileRoute("/api/chat")({
             }),
             execute: async ({ query, limit }) => {
               try {
+                state.toolsUsed.push("image_search");
+                log(state, "info", `Looking for visual references for “${query}”…`);
                 const results = await imageSearch(query, limit);
                 return { query, results };
               } catch (err) {
@@ -282,11 +310,13 @@ export const Route = createFileRoute("/api/chat")({
             }),
             execute: async ({ query, topN }) => {
               try {
-                const search = await webSearch(query, topN);
+                state.toolsUsed.push("analyze_serp");
+                log(state, "info", `Pulling the current top ${topN} results for “${query}”…`);
+                const search = await searchWithRetry(state, query, topN);
                 const pages = await Promise.all(
                   search.slice(0, topN).map(async (r) => {
                     try {
-                      const page = await fetchPage(r.url);
+                      const page = await retrievePage(state, r.url);
                       return {
                         url: r.url,
                         title: page.title,
@@ -303,32 +333,18 @@ export const Route = createFileRoute("/api/chat")({
                 );
                 return { query, pages };
               } catch (err) {
+                state.errors.push((err as Error).message);
                 return { error: (err as Error).message };
               }
             },
           }),
-        };
-
-        const result = streamText({
-          model,
-          system,
-          // Speed: only expose the research toolset when the turn actually
-          // needs live crawling/SERP work. Simple writing/Q&A turns skip the
-          // tool schemas entirely — smaller prompt, faster first token, and no
-          // speculative tool round-trips.
-          tools: needsResearchTools(messages) ? tools : undefined,
-          stopWhen: stepCountIs(50),
-          messages: await convertToModelMessages(messages),
-          onError: (err) => {
-            console.error("[chat] streamText error", err);
-          },
         });
 
-        return result.toUIMessageStreamResponse({
-          originalMessages: messages,
+        const modelMessages = await convertToModelMessages(messages);
+
+        // ── Orchestrator-led execution ────────────────────────────────────
+        const stream = createUIMessageStream({
           onError: (err) => {
-            // Surface a human-readable message to the UI instead of the raw
-            // provider error (which often reads "Bad Request" / "400").
             const raw = err instanceof Error ? err.message : String(err ?? "");
             if (/\b429\b|rate.?limit|too many requests|quota/i.test(raw))
               return "The model is busy right now — retry in a few seconds.";
@@ -337,7 +353,151 @@ export const Route = createFileRoute("/api/chat")({
             if (/network|fetch|timeout/i.test(raw)) return "Network hiccup reaching the model. Please retry.";
             return "PNX hit a snag on that reply — please try again.";
           },
+          execute: async ({ writer }) => {
+            writer.write({ type: "start" });
+            try {
+            const emit = (event: PnxEvent) => writer.write({ type: "data-pnx", data: event });
+            const state = createAgentState(emit);
+
+            const say = (text: string) => {
+              const id = `t_${Math.random().toString(36).slice(2)}`;
+              writer.write({ type: "text-start", id });
+              writer.write({ type: "text-delta", id, delta: text });
+              writer.write({ type: "text-end", id });
+            };
+
+            // Step 1 — intent detection + state init.
+            phase(state, "planning");
+            const intent = detectIntent(lastUserText);
+            state.intent = intent;
+            log(state, "ok", `Intent detected: ${intent.label}`);
+
+            // Ambiguous asks are clarified locally — no credits burned guessing.
+            if (intent.ambiguous && !planApproved) {
+              emit({ kind: "phase", phase: "done" });
+              say(
+                `Happy to dig in — I just need one detail so I don't guess.\n\n**Which site or page should I look at?** Paste the URL (or tell me the topic you want to rank for) and I'll pull the live data and come back with a prioritised plan.`,
+              );
+              return;
+            }
+
+            // Step 2 — task classification & planning.
+            const plan = buildPlan(intent);
+            state.plan = plan;
+            const awaitingApproval = intent.complex && !planApproved;
+            emit({
+              kind: "plan",
+              intent: intent.label,
+              taskType: intent.taskType,
+              steps: plan,
+              awaitingApproval,
+            });
+
+            if (awaitingApproval) {
+              emit({ kind: "phase", phase: "done" });
+              say(
+                `This one has a few moving parts, so here's how I'd run it — hit **Run this plan** and I'll get going, or tell me what to change.`,
+              );
+              return;
+            }
+
+            // Step 3 — knowledge cache lookup (invisible speed layer).
+            const freshness =
+              intent.taskType === "serp_analysis" || intent.taskType === "competitor_analysis"
+                ? 120
+                : intent.taskType === "page_audit"
+                  ? 60
+                  : 1440;
+            const hash = await queryFingerprint(lastUserText, intent.taskType);
+            const hit = intent.needsResearch ? await cacheLookup(hash, freshness).catch(() => null) : null;
+
+            if (hit) {
+              state.cacheHit = true;
+              log(state, "ok", `Verified research from ${Math.round(hit.ageMinutes)} min ago is still current — reusing it`);
+              if (hit.sources.length > 0) {
+                await scoreSources(state, hit.sources.map((s) => ({ url: s.url, title: s.title })));
+              }
+              phase(state, "composing");
+              say(hit.summary);
+              emit({ kind: "confidence", score: hit.confidence, basis: "Reusing verified research from a recent identical request." });
+              emit({ kind: "phase", phase: "done" });
+              void logExecution({
+                requestId: state.requestId,
+                taskType: intent.taskType,
+                toolsUsed: [],
+                cacheHit: true,
+                durationMs: Date.now() - state.startedAt,
+                outcome: "cache_hit",
+              }).catch(() => {});
+              return;
+            }
+
+            // Step 4/5 — tool selection and execution.
+            const useTools = intent.needsResearch || needsResearchTools(messages);
+            phase(state, useTools ? "researching" : "composing");
+            if (useTools) log(state, "info", "Pulling live data before I answer…");
+
+            const planContext = `\n\n## This turn's execution plan (internal)\nDetected intent: ${intent.label}. Follow this plan, in order:\n${plan
+              .map((s, i) => `${i + 1}. ${s}`)
+              .join(
+                "\n",
+              )}\nEvery factual claim must be backed by something you actually retrieved this turn. If a tool fails or returns nothing, say so plainly rather than inventing data. Never mention this plan block, internal storage, caches, spreadsheets or connectors to the user.`;
+
+            const result = streamText({
+              model,
+              system: baseSystem + planContext,
+              tools: useTools ? makeTools(state) : undefined,
+              stopWhen: stepCountIs(50),
+              messages: modelMessages,
+              onError: (err) => {
+                console.error("[chat] streamText error", err);
+              },
+            });
+
+            writer.merge(result.toUIMessageStream({ sendStart: false, sendFinish: false }));
+
+            let finalText = "";
+            try {
+              finalText = await result.text;
+            } catch {
+              /* onError already surfaced this to the UI */
+            }
+
+            // Steps 7–9 — verification signal, cache write-back, learning log.
+            phase(state, "done");
+            const confidence = computeConfidence(state);
+            emit({ kind: "confidence", ...confidence });
+
+            const assets = [...state.assets.values()];
+            const durationMs = Date.now() - state.startedAt;
+            void Promise.allSettled([
+              confidence.score >= 0.75 && finalText.length > 200 && intent.needsResearch
+                ? cacheStore({
+                    hash,
+                    query: lastUserText,
+                    taskType: intent.taskType,
+                    summary: finalText,
+                    sources: assets.map((a) => ({ url: a.url, title: a.title })),
+                    confidence: confidence.score,
+                  })
+                : Promise.resolve(),
+              assets.length > 0 ? rememberSources(assets) : Promise.resolve(),
+              logExecution({
+                requestId: state.requestId,
+                taskType: intent.taskType,
+                toolsUsed: [...new Set(state.toolsUsed)],
+                cacheHit: false,
+                durationMs,
+                outcome: state.errors.length > 0 ? `partial: ${state.errors[0]}` : "ok",
+              }),
+            ]);
+            } finally {
+              writer.write({ type: "finish" });
+            }
+          },
         });
+
+        return createUIMessageStreamResponse({ stream });
       },
     },
   },
