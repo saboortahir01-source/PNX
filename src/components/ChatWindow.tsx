@@ -31,6 +31,7 @@ import { createPortal } from "react-dom";
 import { AgentWorkflow } from "@/components/AgentWorkflow";
 import { SourcesPanel } from "@/components/SourcesPanel";
 import { AgentExecutionFeed } from "@/components/AgentExecutionFeed";
+import { AdvancedDetails } from "@/components/AdvancedDetails";
 import { isPnxEventPart, type PnxEvent } from "@/lib/pnx/agent-events";
 import { buildWorkflow, collectSources, isToolPart, type ToolPart } from "@/components/agent-run";
 import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, X, Copy, RefreshCw, Share2, ThumbsUp, ThumbsDown, Download, Radar, Wrench, Sparkles, ChevronDown, AlertTriangle, type LucideProps } from "lucide-react";
@@ -336,7 +337,6 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                       onApprovePlan={awaitingPlan && isLast && !isBusy ? handleApprovePlan : undefined}
                     />
                   )}
-                  {workflow.length > 0 && <AgentWorkflow steps={workflow} />}
                   {m.parts.map((part, i) => {
                     if (part.type === "text") {
                       return m.role === "assistant" ? (
@@ -349,7 +349,19 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                     }
                     return null;
                   })}
-                  {sources.length > 0 && <SourcesPanel sources={sources} />}
+                  {(workflow.length > 0 || sources.length > 0) && (
+                    <AdvancedDetails
+                      summary={[
+                        workflow.length > 0 ? `${workflow.length} steps` : null,
+                        sources.length > 0 ? `${sources.length} sources` : null,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    >
+                      {workflow.length > 0 && <AgentWorkflow steps={workflow} />}
+                      {sources.length > 0 && <SourcesPanel sources={sources} />}
+                    </AdvancedDetails>
+                  )}
                 </MessageContent>
                 {m.role === "user" && (
                   <div className="mt-1 flex justify-end opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
