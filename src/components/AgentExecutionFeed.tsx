@@ -31,6 +31,7 @@ type Props = {
  */
 export function AgentExecutionFeed({ events, live, onApprovePlan }: Props) {
   const [showResearch, setShowResearch] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const view = useMemo(() => {
     let phase: PnxPhase | null = null;
@@ -127,23 +128,20 @@ export function AgentExecutionFeed({ events, live, onApprovePlan }: Props) {
         </div>
       )}
 
-      {/* Live execution log */}
-      {logs.length > 0 && (
-        <ul className="space-y-1 rounded-2xl border border-dashed border-border/60 bg-muted/20 px-3.5 py-2.5">
-          {logs.map((l, i) => (
-            <li key={i} className="flex items-start gap-2 text-[12.5px] font-light leading-snug">
-              <span
-                className={cn("material-symbols-rounded mt-px text-[14px] leading-none", LEVEL_CLASS[l.level])}
-                aria-hidden
-              >
-                {LEVEL_ICON[l.level]}
-              </span>
-              <span className={cn(l.level === "warn" || l.level === "error" ? "text-foreground/80" : "text-muted-foreground")}>
-                {l.text}
-              </span>
-            </li>
-          ))}
-        </ul>
+      {/* Compact activity line while working — one informative line, never a wall of logs */}
+      {live && logs.length > 0 && (
+        <p className="flex items-start gap-2 pl-1 text-[12.5px] font-light leading-snug text-muted-foreground">
+          <span
+            className={cn(
+              "material-symbols-rounded mt-px text-[14px] leading-none",
+              LEVEL_CLASS[logs[logs.length - 1]!.level],
+            )}
+            aria-hidden
+          >
+            {LEVEL_ICON[logs[logs.length - 1]!.level]}
+          </span>
+          {logs[logs.length - 1]!.text}
+        </p>
       )}
 
       {notes.map((n, i) => (
@@ -203,29 +201,79 @@ export function AgentExecutionFeed({ events, live, onApprovePlan }: Props) {
         </div>
       )}
 
-      {/* Confidence meter */}
-      {confidence && (
-        <div className="flex items-center gap-2.5 rounded-2xl border border-border/60 bg-muted/20 px-3.5 py-2">
-          <span className="material-symbols-rounded text-[16px] leading-none text-[color:var(--brand)]" aria-hidden>
-            verified
-          </span>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <span className="text-[12px] font-semibold uppercase tracking-widest text-muted-foreground">
-                Confidence
+      {/* Advanced — execution log + confidence, collapsed by default so chat stays clean */}
+      {(logs.length > 0 || confidence) && (
+        <div className="rounded-2xl border border-border/60 bg-muted/20">
+          <button
+            type="button"
+            onClick={() => setShowAdvanced((v) => !v)}
+            className="flex w-full items-center gap-2 px-3.5 py-2 text-left"
+            aria-expanded={showAdvanced}
+          >
+            <span className="material-symbols-rounded text-[16px] leading-none text-[color:var(--brand)]" aria-hidden>
+              tune
+            </span>
+            <span className="text-[12.5px] font-medium text-foreground/85">Advanced</span>
+            {confidence && (
+              <span className="rounded-full bg-[color:var(--brand)]/10 px-1.5 py-px text-[10.5px] font-medium tabular-nums text-[color:var(--brand)]">
+                Confidence {Math.round(confidence.score * 100)}%
               </span>
-              <span className="text-[12.5px] font-medium tabular-nums text-foreground/85">
-                {Math.round(confidence.score * 100)}%
-              </span>
+            )}
+            <span className="ml-auto text-[11.5px] font-light tabular-nums text-muted-foreground">
+              {logs.length} step{logs.length === 1 ? "" : "s"}
+            </span>
+            <span
+              className={cn(
+                "material-symbols-rounded text-[16px] leading-none text-muted-foreground transition-transform",
+                showAdvanced && "rotate-180",
+              )}
+              aria-hidden
+            >
+              expand_more
+            </span>
+          </button>
+          {showAdvanced && (
+            <div className="space-y-2.5 border-t border-border/50 px-3.5 py-2.5">
+              <ul className="space-y-1">
+                {logs.map((l, i) => (
+                  <li key={i} className="flex items-start gap-2 text-[12.5px] font-light leading-snug">
+                    <span
+                      className={cn("material-symbols-rounded mt-px text-[14px] leading-none", LEVEL_CLASS[l.level])}
+                      aria-hidden
+                    >
+                      {LEVEL_ICON[l.level]}
+                    </span>
+                    <span
+                      className={cn(
+                        l.level === "warn" || l.level === "error" ? "text-foreground/80" : "text-muted-foreground",
+                      )}
+                    >
+                      {l.text}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              {confidence && (
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[12px] font-semibold uppercase tracking-widest text-muted-foreground">
+                      Confidence
+                    </span>
+                    <span className="text-[12.5px] font-medium tabular-nums text-foreground/85">
+                      {Math.round(confidence.score * 100)}%
+                    </span>
+                  </div>
+                  <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-border/50">
+                    <div
+                      className="h-full rounded-full bg-[color:var(--brand)] transition-all"
+                      style={{ width: `${Math.round(confidence.score * 100)}%` }}
+                    />
+                  </div>
+                  <p className="mt-1 text-[11.5px] font-light leading-snug text-muted-foreground">{confidence.basis}</p>
+                </div>
+              )}
             </div>
-            <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-border/50">
-              <div
-                className="h-full rounded-full bg-[color:var(--brand)] transition-all"
-                style={{ width: `${Math.round(confidence.score * 100)}%` }}
-              />
-            </div>
-            <p className="mt-1 text-[11.5px] font-light leading-snug text-muted-foreground">{confidence.basis}</p>
-          </div>
+          )}
         </div>
       )}
     </div>
