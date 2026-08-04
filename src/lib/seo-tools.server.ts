@@ -235,6 +235,10 @@ export async function webSearch(
   limit = 8
 ): Promise<SearchResult[]> {
   const body = new URLSearchParams({ q: query });
+  // Recency bias: restrict to the past year unless the user explicitly asked
+  // about an older period. Keeps research on current data, not 2024 articles.
+  const asksOlder = /\b(19|20)\d{2}\b/.test(query) && !new RegExp(`${new Date().getFullYear()}`).test(query);
+  if (!asksOlder) body.set("df", "y");
   const res = await fetch("https://html.duckduckgo.com/html/", {
     method: "POST",
     headers: {

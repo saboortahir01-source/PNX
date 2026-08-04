@@ -240,6 +240,7 @@ export const Route = createFileRoute("/api/chat")({
 
         const baseSystem =
           SYSTEM_PROMPT +
+          `\n\n## Freshness (strict)\nToday is ${new Date().toISOString().slice(0, 10)}. SEO changes fast — always research and cite the newest available material.\n- Prefer sources published in the last 12 months; treat anything older than ~18 months as background only, and say so if you use it.\n- Never present 2024-or-older guidance as current. If a search returns stale pages, run another search adding the current year (or "latest"/"update") and prefer the fresher result.\n- When you name a study, algorithm update, or statistic, include its date.\n` +
           (mode === "technical" ? SONAR_TECHNICAL_ADDON : mode === "strategic" ? SONAR_STRATEGIC_ADDON : "") +
           recommendationContext(lastUserText);
 
