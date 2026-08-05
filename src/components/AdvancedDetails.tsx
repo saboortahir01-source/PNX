@@ -23,9 +23,11 @@ export function AdvancedDetails({ summary, children }: Props) {
         className="flex w-full items-center gap-2 px-3.5 py-2.5 text-left transition-colors hover:bg-muted/35"
       >
         <span className="material-symbols-rounded text-[16px] leading-none text-[color:var(--brand)]" aria-hidden>
-          tune
+          manage_search
         </span>
-        <span className="text-[13px] font-medium tracking-tight text-foreground/90">Advanced</span>
+        <span className="text-[13px] font-medium tracking-tight text-foreground/90">
+          {open ? "Hide working & sources" : "Show working & sources"}
+        </span>
         {summary && (
           <span className="ml-auto text-[11.5px] font-light tabular-nums text-muted-foreground">{summary}</span>
         )}
