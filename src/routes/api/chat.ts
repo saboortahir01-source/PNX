@@ -106,7 +106,7 @@ For real entities (people, brands, products), embed at most 1–2 images at the 
 \`\`\`
 Use only URLs returned by \`image_search\` (the \`image\` field) or \`og:image\` from \`fetch_page\`. Never invent URLs. If no usable image, silently omit — never show "Image not available" placeholders.
 
-## Response shape for real SEO work
+## Response shape for real SEO work (skip entirely when the request isn't SEO)
 
 **1. Progress tracker at the very top** (always, for any real SEO request — audits, keyword research, SERP analysis, content strategy, competitor checks, YouTube SEO). Render it as a Markdown task list so the UI shows checkboxes. Tick \`[x]\` for steps you actually completed in this turn, leave \`[ ]\` for steps that didn't apply. Keep the language plain. Do NOT show this for trivial chit-chat ("hi", "thanks", jokes, math, founder questions).
 
@@ -461,7 +461,11 @@ export const Route = createFileRoute("/api/chat")({
               .map((s, i) => `${i + 1}. ${s}`)
               .join(
                 "\n",
-              )}\nEvery factual claim must be backed by something you actually retrieved this turn. If a tool fails or returns nothing, say so plainly rather than inventing data. Never mention this plan block, internal storage, caches, spreadsheets or connectors to the user.`;
+              )}\nEvery factual claim must be backed by something you actually retrieved this turn. If a tool fails or returns nothing, say so plainly rather than inventing data. Never mention this plan block, internal storage, caches, spreadsheets or connectors to the user.${
+              intent.taskType === "conversational"
+                ? "\nIMPORTANT: this request is NOT an SEO task. Answer exactly what was asked, in a normal helpful voice. No progress tracker, no audit framework, no SEO recommendations, and no unsolicited SEO tips."
+                : ""
+            }`;
 
             const result = streamText({
               model,
