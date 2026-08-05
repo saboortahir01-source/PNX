@@ -315,3 +315,62 @@
   0%   { transform: translateX(-100%); }
   100% { transform: translateX(400%); }
 }
+
+/* ── Chat answer typography ──────────────────────────────────────────────
+   Gives assistant replies a proper reading rhythm: full-width paragraphs,
+   clear heading hierarchy, breathable lists and tables. Prevents the
+   "two words per line" fragmenting that made answers look unfinished. */
+.pnx-prose {
+  font-size: 16px;
+  line-height: 1.72;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+.pnx-prose > * + * { margin-top: 1rem; }
+.pnx-prose p { margin: 0; max-width: 74ch; }
+.pnx-prose h1,
+.pnx-prose h2,
+.pnx-prose h3 {
+  margin: 1.6rem 0 0.25rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+.pnx-prose h1 { font-size: 1.4rem; }
+.pnx-prose h2 { font-size: 1.2rem; }
+.pnx-prose h3 { font-size: 1.05rem; }
+.pnx-prose h2 + p,
+.pnx-prose h3 + p { margin-top: 0.4rem; }
+.pnx-prose ul,
+.pnx-prose ol { margin: 0.75rem 0; padding-left: 1.35rem; max-width: 74ch; }
+.pnx-prose ul { list-style: disc; }
+.pnx-prose ol { list-style: decimal; }
+.pnx-prose li { margin: 0.35rem 0; padding-left: 0.15rem; }
+.pnx-prose li > p { margin: 0; }
+.pnx-prose li::marker { color: color-mix(in oklab, var(--brand) 70%, transparent); }
+.pnx-prose strong { font-weight: 650; }
+.pnx-prose blockquote {
+  margin: 1rem 0;
+  padding: 0.35rem 0 0.35rem 1rem;
+  border-left: 3px solid color-mix(in oklab, var(--brand) 45%, transparent);
+  color: var(--muted-foreground);
+}
+.pnx-prose hr { margin: 1.5rem 0; border-color: var(--border); }
+.pnx-prose table {
+  width: 100%;
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 14.5px;
+}
+.pnx-prose th,
+.pnx-prose td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+  vertical-align: top;
+}
+.pnx-prose th { background: color-mix(in oklab, var(--muted) 70%, transparent); font-weight: 600; }
+.pnx-prose a { color: var(--brand); text-underline-offset: 3px; }
+.pnx-prose a:hover { text-decoration: underline; }
