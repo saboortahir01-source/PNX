@@ -53,15 +53,31 @@ export function AgentExecutionFeed({ events, live, onApprovePlan }: Props) {
 
   if (events.length === 0) return null;
   const { phase, plan, confidence, assets, logs, notes } = view;
-  const activeIndex = phase && phase !== "done" ? PHASE_ORDER.indexOf(phase) : PHASE_ORDER.length;
+  // Once the turn is no longer streaming, every phase is finished — never
+  // leave the rail stuck on "Researching" while the answer is already there.
+  const finished = !live || phase === "done";
+  const activeIndex = finished ? PHASE_ORDER.length : PHASE_ORDER.indexOf(phase ?? "planning");
 
   return (
     <div className="mb-3 space-y-2.5">
-      {/* Phase rail */}
+      {/* Phase rail — live only. Completed turns collapse to one quiet chip. */}
+      {finished ? (
+        <div className="flex items-center gap-1.5 text-[11.5px] font-medium text-muted-foreground">
+          <span className="material-symbols-rounded text-[15px] leading-none text-[color:var(--brand)]" aria-hidden>
+            task_alt
+          </span>
+          <span>Completed</span>
+          {confidence && (
+            <span className="rounded-full bg-[color:var(--brand)]/10 px-1.5 py-px text-[10.5px] tabular-nums text-[color:var(--brand)]">
+              {Math.round(confidence.score * 100)}% confidence
+            </span>
+          )}
+        </div>
+      ) : (
       <div className="flex flex-wrap items-center gap-1.5">
         {PHASE_ORDER.map((p, i) => {
           const done = i < activeIndex;
-          const current = i === activeIndex && live;
+          const current = i === activeIndex;
           return (
             <span
               key={p}
@@ -83,6 +99,7 @@ export function AgentExecutionFeed({ events, live, onApprovePlan }: Props) {
           );
         })}
       </div>
+      )}
 
       {/* Plan */}
       {plan && (
@@ -211,9 +228,9 @@ export function AgentExecutionFeed({ events, live, onApprovePlan }: Props) {
             aria-expanded={showAdvanced}
           >
             <span className="material-symbols-rounded text-[16px] leading-none text-[color:var(--brand)]" aria-hidden>
-              tune
+              manage_search
             </span>
-            <span className="text-[12.5px] font-medium text-foreground/85">Advanced</span>
+            <span className="text-[12.5px] font-medium text-foreground/85">How I worked this out</span>
             {confidence && (
               <span className="rounded-full bg-[color:var(--brand)]/10 px-1.5 py-px text-[10.5px] font-medium tabular-nums text-[color:var(--brand)]">
                 Confidence {Math.round(confidence.score * 100)}%
