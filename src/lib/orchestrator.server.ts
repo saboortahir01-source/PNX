@@ -76,6 +76,17 @@ export function log(
 
 const URL_RE = /\bhttps?:\/\/[^\s<>")]+|\bwww\.[^\s<>")]+/gi;
 
+/**
+ * Hosts that are documents, files or app workspaces — never a public web page
+ * someone wants ranked. Pasting one of these must NOT trigger an SEO audit.
+ */
+const NON_SEO_HOSTS =
+  /(docs|drive|sheets|slides|meet|calendar|mail)\.google\.com|notion\.(so|site)|dropbox\.com|onedrive|sharepoint|figma\.com|github\.com|gitlab\.com|gist\.github|canva\.com|airtable\.com|loom\.com|zoom\.us|slack\.com|trello\.com|linear\.app|codepen\.io|replit\.com|colab\.research\.google\.com/i;
+
+/** Words that mean the user actually wants SEO work done. */
+const SEO_SIGNAL =
+  /\bseo\b|audit|ranking?|rank\b|serp|keyword|backlink|meta\s|title tag|schema|crawl|index(ing)?|traffic|search engine|on[- ]page|competitor|optimi[sz]/i;
+
 /** Step 1 — Intent detection. Deterministic, no model call. */
 export function detectIntent(raw: string): Intent {
   const text = raw.trim();
@@ -86,6 +97,30 @@ export function detectIntent(raw: string): Intent {
 
   let taskType: TaskType = "conversational";
   let label = "General question";
+
+  // Intent gate: a URL alone is not an SEO request. Only run the SEO
+  // workflow when the user actually asked for SEO work, or dropped a bare
+  // public URL with nothing else to go on.
+  const wordCount = text.replace(URL_RE, "").trim().split(/\s+/).filter(Boolean).length;
+  const docLink = urls.some((u) => NON_SEO_HOSTS.test(u));
+  const seoAsked = SEO_SIGNAL.test(t);
+  const bareUrl = urls.length > 0 && wordCount <= 2 && !docLink;
+  const seoMode = seoAsked || bareUrl;
+
+  if (!seoMode) {
+    const label2 = urls.length > 0 ? (docLink ? "Document / link review" : "Link review") : "General question";
+    return {
+      raw: text,
+      taskType: "conversational",
+      label: label2,
+      urls,
+      topic: text.replace(URL_RE, "").replace(/\s+/g, " ").trim().slice(0, 180),
+      complex: false,
+      ambiguous: false,
+      needsResearch:
+        urls.length > 0 || /latest|current|right now|today|news|trending|who is|what is|research|find|search/i.test(t),
+    };
+  }
 
   if (has(/youtube|video (seo|title|description|tag)|thumbnail|watch time/)) {
     taskType = "youtube_seo";
