@@ -240,9 +240,10 @@ export function buildPlan(intent: Intent): string[] {
       ];
     default:
       return [
-        "Understand what you're really asking for",
+        "Work out what you're actually asking for",
+        ...(intent.urls.length > 0 ? [`Open ${host(intent.urls[0]!)} and read what's really there`] : []),
         intent.needsResearch ? "Pull current, real-world data" : "Draw on established SEO practice",
-        "Write a clear, actionable answer",
+        "Answer that question — and only that question",
       ];
   }
 }
