@@ -92,6 +92,15 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
   useEffect(() => { modeRef.current = mode; }, [mode]);
 
   const [errorInfo, setErrorInfo] = useState<{ title: string; hint: string } | null>(null);
+  // User-owned data connectors (Search Console). Loaded after hydration.
+  const [connectors, setConnectors] = useState<ConnectorState>({ gsc: null });
+  const connectorsRef = useRef<ConnectorState>(connectors);
+  useEffect(() => {
+    connectorsRef.current = connectors;
+  }, [connectors]);
+  useEffect(() => {
+    setConnectors(loadConnectors());
+  }, []);
   // Set for exactly one request when the user approves a proposed plan.
   const planApprovedRef = useRef(false);
   const { messages, sendMessage, status, regenerate } = useChat({
@@ -103,7 +112,11 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
       body: () => {
         const planApproved = planApprovedRef.current;
         planApprovedRef.current = false;
-        return { mode: modeRef.current, planApproved };
+        return {
+          mode: modeRef.current,
+          planApproved,
+          connectors: connectorPayload(connectorsRef.current),
+        };
       },
     }),
     onError: (err) => {
