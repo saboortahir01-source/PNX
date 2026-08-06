@@ -66,11 +66,11 @@ function AboutPage() {
 
         <h2 className="mt-10 text-2xl font-semibold">What you get, free forever</h2>
         <ul className="mt-3 list-disc pl-5 space-y-1 text-muted-foreground">
-          <li><Link to="/blog/free-ai-seo-audit-tool" className="underline">Free AI SEO audit tool</Link> — unlimited audits</li>
-          <li><Link to="/blog/ai-keyword-research-free" className="underline">AI keyword research</Link> with clustering</li>
-          <li><Link to="/blog/free-competitor-analysis-tool" className="underline">Free competitor analysis</Link> & SERP analysis</li>
-          <li><Link to="/blog/free-youtube-seo-tools" className="underline">Free YouTube SEO tools</Link></li>
-          <li><Link to="/blog/ai-content-generator-for-seo" className="underline">AI content generator for SEO</Link></li>
+          <li><a href="/blog/free-ai-seo-audit-tool" className="underline">Free AI SEO audit tool</a> — unlimited audits</li>
+          <li><a href="/blog/ai-keyword-research-free" className="underline">AI keyword research</a> with clustering</li>
+          <li><a href="/blog/free-competitor-analysis-tool" className="underline">Free competitor analysis</a> & SERP analysis</li>
+          <li><a href="/blog/free-youtube-seo-tools" className="underline">Free YouTube SEO tools</a></li>
+          <li><a href="/blog/ai-content-generator-for-seo" className="underline">AI content generator for SEO</a></li>
         </ul>
 
         <h2 className="mt-10 text-2xl font-semibold">Why free?</h2>
