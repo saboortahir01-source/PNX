@@ -215,10 +215,32 @@ export const Route = createFileRoute("/api/chat")({
           messages?: UIMessage[];
           mode?: "auto" | "technical" | "strategic";
           planApproved?: boolean;
+          connectors?: {
+            gsc?: {
+              property?: string;
+              importedAt?: string;
+              totals?: { queries?: number; clicks?: number; impressions?: number };
+              rows?: { query: string; clicks: number; impressions: number; ctr: number; position: number }[];
+            };
+          };
         };
         const messages = Array.isArray(body.messages) ? body.messages : [];
         const mode = body.mode ?? "auto";
         const planApproved = body.planApproved === true;
+
+        // Search Console snapshot the user connected in the composer. Kept
+        // small (top rows only) so it never slows the request down.
+        const gsc = body.connectors?.gsc;
+        const connectorContext =
+          gsc && Array.isArray(gsc.rows) && gsc.rows.length > 0
+            ? `\n\n## Connected data — Google Search Console (${gsc.property ?? "the user's site"})\nThis is the user's own real search performance, imported ${gsc.importedAt?.slice(0, 10) ?? "recently"}. Totals: ${gsc.totals?.clicks ?? 0} clicks, ${gsc.totals?.impressions ?? 0} impressions across ${gsc.totals?.queries ?? gsc.rows.length} queries.\nGround every recommendation in these numbers — name the actual queries, quote their position and clicks, and prioritise the ones with high impressions but low clicks or positions 4–20 (the fastest wins). Never invent a query that isn't listed.\n\n| Query | Clicks | Impressions | CTR % | Position |\n|---|---|---|---|---|\n${gsc.rows
+                .slice(0, 40)
+                .map(
+                  (r) =>
+                    `| ${String(r.query).slice(0, 70)} | ${r.clicks} | ${r.impressions} | ${r.ctr} | ${Number(r.position).toFixed(1)} |`,
+                )
+                .join("\n")}\n`
+            : "";
 
         // ── Zero-API fast path ────────────────────────────────────────────
         // Budget guard: trivial turns (greetings, thanks, "what is PNX")
@@ -261,7 +283,8 @@ export const Route = createFileRoute("/api/chat")({
           SYSTEM_PROMPT +
           `\n\n## Freshness (strict)\nToday is ${new Date().toISOString().slice(0, 10)}. SEO changes fast — always research and cite the newest available material.\n- Prefer sources published in the last 12 months; treat anything older than ~18 months as background only, and say so if you use it.\n- Never present 2024-or-older guidance as current. If a search returns stale pages, run another search adding the current year (or "latest"/"update") and prefer the fresher result.\n- When you name a study, algorithm update, or statistic, include its date.\n` +
           (mode === "technical" ? SONAR_TECHNICAL_ADDON : mode === "strategic" ? SONAR_STRATEGIC_ADDON : "") +
-          recommendationContext(lastUserText);
+          recommendationContext(lastUserText) +
+          connectorContext;
 
         const makeTools = (state: SharedAgentState) => ({
           fetch_page: tool({

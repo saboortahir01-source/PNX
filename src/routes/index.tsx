@@ -116,13 +116,13 @@ function LandingPage() {
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {TOOLS.map((t) => (
-              <Link key={t.title} to={t.href} className="glass-card p-4 sm:p-5 hover:-translate-y-0.5 transition-transform">
+              <a key={t.title} href={t.href} className="glass-card p-4 sm:p-5 hover:-translate-y-0.5 transition-transform">
                 <div className="size-9 sm:size-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-300">
                   <t.icon size={18} />
                 </div>
                 <h3 className="mt-3 sm:mt-4 text-[13.5px] sm:text-base font-semibold leading-tight">{t.title}</h3>
                 <p className="mt-1 text-[12px] sm:text-sm text-muted-foreground leading-snug">{t.desc}</p>
-              </Link>
+              </a>
             ))}
           </div>
         </section>

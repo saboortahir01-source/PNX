@@ -28,13 +28,13 @@ import {
 } from "@/components/ai-elements/prompt-input";
 import { ChatProgress } from "@/components/ChatProgress";
 import { createPortal } from "react-dom";
-import { AgentWorkflow } from "@/components/AgentWorkflow";
-import { SourcesPanel } from "@/components/SourcesPanel";
-import { AgentExecutionFeed } from "@/components/AgentExecutionFeed";
-import { AdvancedDetails } from "@/components/AdvancedDetails";
+import { AgentActivity } from "@/components/AgentActivity";
+import { SourcesFooter } from "@/components/SourcesFooter";
+import { ConnectorsMenu } from "@/components/ConnectorsMenu";
+import { connectorPayload, loadConnectors, type ConnectorState } from "@/lib/connectors";
 import { isPnxEventPart, type PnxEvent } from "@/lib/pnx/agent-events";
 import { buildWorkflow, collectSources, isToolPart, type ToolPart } from "@/components/agent-run";
-import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, X, Copy, RefreshCw, Share2, ThumbsUp, ThumbsDown, Download, Radar, Wrench, Sparkles, ChevronDown, AlertTriangle, type LucideProps } from "lucide-react";
+import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, Plus, X, Copy, RefreshCw, Share2, ThumbsUp, ThumbsDown, Download, Radar, Wrench, Sparkles, ChevronDown, AlertTriangle, type LucideProps } from "lucide-react";
 import { cn } from "@/lib/utils";
 import pnxLogo from "@/assets/pnx-logo.png";
 import { ConversationTimeline } from "@/components/ConversationTimeline";
@@ -92,6 +92,15 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
   useEffect(() => { modeRef.current = mode; }, [mode]);
 
   const [errorInfo, setErrorInfo] = useState<{ title: string; hint: string } | null>(null);
+  // User-owned data connectors (Search Console). Loaded after hydration.
+  const [connectors, setConnectors] = useState<ConnectorState>({ gsc: null });
+  const connectorsRef = useRef<ConnectorState>(connectors);
+  useEffect(() => {
+    connectorsRef.current = connectors;
+  }, [connectors]);
+  useEffect(() => {
+    setConnectors(loadConnectors());
+  }, []);
   // Set for exactly one request when the user approves a proposed plan.
   const planApprovedRef = useRef(false);
   const { messages, sendMessage, status, regenerate } = useChat({
@@ -103,7 +112,11 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
       body: () => {
         const planApproved = planApprovedRef.current;
         planApprovedRef.current = false;
-        return { mode: modeRef.current, planApproved };
+        return {
+          mode: modeRef.current,
+          planApproved,
+          connectors: connectorPayload(connectorsRef.current),
+        };
       },
     }),
     onError: (err) => {
@@ -322,6 +335,12 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                       .map((p) => p.data) as PnxEvent[])
                   : [];
               const awaitingPlan = pnxEvents.some((e) => e.kind === "plan" && e.awaitingApproval);
+              const confidenceEvent = pnxEvents.find((e) => e.kind === "confidence") as
+                | Extract<PnxEvent, { kind: "confidence" }>
+                | undefined;
+              const confidence = confidenceEvent
+                ? { score: confidenceEvent.score, basis: confidenceEvent.basis }
+                : null;
               return (
               <Message key={m.id} from={m.role} id={`msg-${m.id}`}>
                 <MessageContent
@@ -331,8 +350,9 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                   onContextMenu={m.role === "user" ? cancelPress : undefined}
                 >
                   {pnxEvents.length > 0 && (
-                    <AgentExecutionFeed
+                    <AgentActivity
                       events={pnxEvents}
+                      steps={workflow}
                       live={isLast && isBusy}
                       onApprovePlan={awaitingPlan && isLast && !isBusy ? handleApprovePlan : undefined}
                     />
@@ -349,18 +369,8 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                     }
                     return null;
                   })}
-                  {(workflow.length > 0 || sources.length > 0) && (
-                    <AdvancedDetails
-                      summary={[
-                        workflow.length > 0 ? `${workflow.length} steps` : null,
-                        sources.length > 0 ? `${sources.length} sources` : null,
-                      ]
-                        .filter(Boolean)
-                        .join(" · ")}
-                    >
-                      {workflow.length > 0 && <AgentWorkflow steps={workflow} />}
-                      {sources.length > 0 && <SourcesPanel sources={sources} />}
-                    </AdvancedDetails>
+                  {!(isLast && isBusy) && (workflow.length > 0 || sources.length > 0) && (
+                    <SourcesFooter sources={sources} steps={workflow} confidence={confidence} />
                   )}
                 </MessageContent>
                 {m.role === "user" && (
@@ -482,6 +492,8 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
             className="glass rounded-3xl shadow-[var(--shadow-elegant)] transition-all focus-within:border-border focus-within:shadow-[var(--shadow-elegant)]"
             multiple
             maxFiles={5}
+            accept="image/*,video/*,audio/*,.pdf,.csv,.txt,.md,.json,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.html,.xml"
+            maxFileSize={25 * 1024 * 1024}
           >
             <PromptInputBody>
               <AttachmentChips />
@@ -495,16 +507,19 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
             <PromptInputFooter className="justify-between">
               <PromptInputTools>
                 <PromptInputActionMenu>
-                  <PromptInputActionMenuTrigger aria-label="Attach">
-                    <Paperclip className="size-4" />
+                  <PromptInputActionMenuTrigger aria-label="Upload images, files or video" title="Upload">
+                    <Plus className="size-4" />
                   </PromptInputActionMenuTrigger>
                   <PromptInputActionMenuContent>
-                    <PromptInputActionAddAttachments label="Attach files or images" />
+                    <PromptInputActionAddAttachments label="Upload images, files or video" />
                   </PromptInputActionMenuContent>
                 </PromptInputActionMenu>
-                <SonarModePicker mode={mode} onChange={setMode} />
+                <ConnectorsMenu state={connectors} onChange={setConnectors} />
               </PromptInputTools>
-              <PromptInputSubmit status={status} disabled={isBusy} />
+              <PromptInputTools>
+                <SonarModePicker mode={mode} onChange={setMode} />
+                <PromptInputSubmit status={status} disabled={isBusy} />
+              </PromptInputTools>
             </PromptInputFooter>
           </PromptInput>
           <p className="mt-2 text-center text-[11px] text-muted-foreground/70">
