@@ -331,8 +331,9 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                   onContextMenu={m.role === "user" ? cancelPress : undefined}
                 >
                   {pnxEvents.length > 0 && (
-                    <AgentExecutionFeed
+                    <AgentActivity
                       events={pnxEvents}
+                      steps={workflow}
                       live={isLast && isBusy}
                       onApprovePlan={awaitingPlan && isLast && !isBusy ? handleApprovePlan : undefined}
                     />
@@ -349,18 +350,8 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                     }
                     return null;
                   })}
-                  {(workflow.length > 0 || sources.length > 0) && (
-                    <AdvancedDetails
-                      summary={[
-                        workflow.length > 0 ? `${workflow.length} steps` : null,
-                        sources.length > 0 ? `${sources.length} sources` : null,
-                      ]
-                        .filter(Boolean)
-                        .join(" · ")}
-                    >
-                      {workflow.length > 0 && <AgentWorkflow steps={workflow} />}
-                      {sources.length > 0 && <SourcesPanel sources={sources} />}
-                    </AdvancedDetails>
+                  {!(isLast && isBusy) && (workflow.length > 0 || sources.length > 0) && (
+                    <SourcesFooter sources={sources} steps={workflow} confidence={confidence} />
                   )}
                 </MessageContent>
                 {m.role === "user" && (
