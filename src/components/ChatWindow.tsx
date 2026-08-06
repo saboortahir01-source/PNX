@@ -28,13 +28,13 @@ import {
 } from "@/components/ai-elements/prompt-input";
 import { ChatProgress } from "@/components/ChatProgress";
 import { createPortal } from "react-dom";
-import { AgentWorkflow } from "@/components/AgentWorkflow";
-import { SourcesPanel } from "@/components/SourcesPanel";
-import { AgentExecutionFeed } from "@/components/AgentExecutionFeed";
-import { AdvancedDetails } from "@/components/AdvancedDetails";
+import { AgentActivity } from "@/components/AgentActivity";
+import { SourcesFooter } from "@/components/SourcesFooter";
+import { ConnectorsMenu } from "@/components/ConnectorsMenu";
+import { connectorPayload, loadConnectors, type ConnectorState } from "@/lib/connectors";
 import { isPnxEventPart, type PnxEvent } from "@/lib/pnx/agent-events";
 import { buildWorkflow, collectSources, isToolPart, type ToolPart } from "@/components/agent-run";
-import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, X, Copy, RefreshCw, Share2, ThumbsUp, ThumbsDown, Download, Radar, Wrench, Sparkles, ChevronDown, AlertTriangle, type LucideProps } from "lucide-react";
+import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, Plus, X, Copy, RefreshCw, Share2, ThumbsUp, ThumbsDown, Download, Radar, Wrench, Sparkles, ChevronDown, AlertTriangle, type LucideProps } from "lucide-react";
 import { cn } from "@/lib/utils";
 import pnxLogo from "@/assets/pnx-logo.png";
 import { ConversationTimeline } from "@/components/ConversationTimeline";
