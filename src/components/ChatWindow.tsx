@@ -322,6 +322,12 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                       .map((p) => p.data) as PnxEvent[])
                   : [];
               const awaitingPlan = pnxEvents.some((e) => e.kind === "plan" && e.awaitingApproval);
+              const confidenceEvent = pnxEvents.find((e) => e.kind === "confidence") as
+                | Extract<PnxEvent, { kind: "confidence" }>
+                | undefined;
+              const confidence = confidenceEvent
+                ? { score: confidenceEvent.score, basis: confidenceEvent.basis }
+                : null;
               return (
               <Message key={m.id} from={m.role} id={`msg-${m.id}`}>
                 <MessageContent
