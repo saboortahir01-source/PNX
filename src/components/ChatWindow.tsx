@@ -479,6 +479,8 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
             className="glass rounded-3xl shadow-[var(--shadow-elegant)] transition-all focus-within:border-border focus-within:shadow-[var(--shadow-elegant)]"
             multiple
             maxFiles={5}
+            accept="image/*,video/*,audio/*,.pdf,.csv,.txt,.md,.json,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.html,.xml"
+            maxFileSize={25 * 1024 * 1024}
           >
             <PromptInputBody>
               <AttachmentChips />
@@ -492,16 +494,19 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
             <PromptInputFooter className="justify-between">
               <PromptInputTools>
                 <PromptInputActionMenu>
-                  <PromptInputActionMenuTrigger aria-label="Attach">
-                    <Paperclip className="size-4" />
+                  <PromptInputActionMenuTrigger aria-label="Upload images, files or video" title="Upload">
+                    <Plus className="size-4" />
                   </PromptInputActionMenuTrigger>
                   <PromptInputActionMenuContent>
-                    <PromptInputActionAddAttachments label="Attach files or images" />
+                    <PromptInputActionAddAttachments label="Upload images, files or video" />
                   </PromptInputActionMenuContent>
                 </PromptInputActionMenu>
-                <SonarModePicker mode={mode} onChange={setMode} />
+                <ConnectorsMenu state={connectors} onChange={setConnectors} />
               </PromptInputTools>
-              <PromptInputSubmit status={status} disabled={isBusy} />
+              <PromptInputTools>
+                <SonarModePicker mode={mode} onChange={setMode} />
+                <PromptInputSubmit status={status} disabled={isBusy} />
+              </PromptInputTools>
             </PromptInputFooter>
           </PromptInput>
           <p className="mt-2 text-center text-[11px] text-muted-foreground/70">
