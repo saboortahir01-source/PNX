@@ -39,7 +39,6 @@ export const ConnectorsMenu: React.FC<ConnectorsMenuProps> = ({
   useEffect(() => {
     if (isOpen && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
-      // On mobile / small screens center or clamp; on desktop align neatly above button
       const width = Math.min(Math.max(window.innerWidth - 32, 320), 420);
       let left = rect.left;
       
@@ -70,7 +69,7 @@ export const ConnectorsMenu: React.FC<ConnectorsMenuProps> = ({
       if (!text) return;
 
       const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
-      const rowCount = lines.length - 1; // exclude header
+      const rowCount = lines.length - 1;
       const fileName = file.name;
 
       const updated = {
@@ -172,7 +171,7 @@ export const ConnectorsMenu: React.FC<ConnectorsMenuProps> = ({
                 </button>
               </div>
 
-              {/* Primary Featured Connector: Google Search Console */}
+              {/* Connector 1: Google Search Console */}
               <div className="mb-4">
                 <div className={`relative overflow-hidden rounded-xl border p-4 transition-all duration-200 ${
                   isGscConnected
@@ -254,7 +253,7 @@ export const ConnectorsMenu: React.FC<ConnectorsMenuProps> = ({
                           <button
                             onClick={handleDisconnectGsc}
                             className="inline-flex items-center justify-center p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                            title="Disconnect GSC"
+                            title="Disconnect Google Search Console"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -263,7 +262,7 @@ export const ConnectorsMenu: React.FC<ConnectorsMenuProps> = ({
                     ) : (
                       <>
                         <span className="text-[11px] text-muted-foreground">
-                          GSC ▸ Performance ▸ Export ▸ CSV
+                          Google Search Console ▸ Performance ▸ Export ▸ CSV
                         </span>
                         <button
                           onClick={() => fileInputRef.current?.click()}
@@ -308,11 +307,11 @@ export const ConnectorsMenu: React.FC<ConnectorsMenuProps> = ({
                         Coming Soon
                       </span>
                     </div>
-                    <div className="text-xs font-medium text-foreground">YouTube Analytics</div>
+                    <div className="text-xs font-medium text-foreground">YouTube</div>
                     <div className="text-[11px] text-muted-foreground mt-0.5">Video SEO & tags</div>
                   </div>
 
-                  {/* GA4 */}
+                  {/* Google Analytics 4 */}
                   <div className="rounded-xl border border-border/50 bg-muted/20 p-3 opacity-80 hover:opacity-100 transition-opacity">
                     <div className="flex items-center justify-between gap-2 mb-1.5">
                       <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/20">
@@ -336,7 +335,7 @@ export const ConnectorsMenu: React.FC<ConnectorsMenuProps> = ({
                         Coming Soon
                       </span>
                     </div>
-                    <div className="text-xs font-medium text-foreground">Blogger API</div>
+                    <div className="text-xs font-medium text-foreground">Blogger</div>
                     <div className="text-[11px] text-muted-foreground mt-0.5">Auto-publish drafts</div>
                   </div>
 
@@ -356,7 +355,7 @@ export const ConnectorsMenu: React.FC<ConnectorsMenuProps> = ({
                 </div>
               </div>
 
-              {/* Subtle footer info */}
+              {/* Footer info */}
               <div className="mt-4 pt-3 border-t border-border/40 flex items-center justify-between text-[11px] text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <Sparkles className="w-3 h-3 text-indigo-400" />
