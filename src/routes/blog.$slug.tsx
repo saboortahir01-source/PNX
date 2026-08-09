@@ -41,32 +41,51 @@ export const Route = createFileRoute("/blog/$slug")({
         { rel: "alternate", hrefLang: "en-AU", href: url },
         { rel: "alternate", hrefLang: "en-IN", href: url },
       ],
-      scripts: [{
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Article",
-          headline: p.title,
-          description: p.description,
-          author: { "@type": "Person", name: "Saboor Tahir", url: "https://pnx.lovable.app/about" },
-          publisher: { "@type": "Organization", name: "PNX", logo: { "@type": "ImageObject", url: "https://pnx.lovable.app/favicon.png" } },
-          datePublished: p.publishedAt,
-          dateModified: p.updatedAt,
-          mainEntityOfPage: url,
-          keywords: p.keyword,
-        }),
-      }, {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://pnx.lovable.app/" },
-            { "@type": "ListItem", position: 2, name: "Blog", item: "https://pnx.lovable.app/blog" },
-            { "@type": "ListItem", position: 3, name: p.title, item: url },
-          ],
-        }),
-      }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: p.title,
+            description: p.description,
+            author: { "@type": "Person", name: "Saboor Tahir", url: "https://pnx.lovable.app/about" },
+            publisher: { "@type": "Organization", name: "PNX", logo: { "@type": "ImageObject", url: "https://pnx.lovable.app/favicon.png" } },
+            datePublished: p.publishedAt,
+            dateModified: p.updatedAt,
+            mainEntityOfPage: url,
+            keywords: p.keyword,
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: "https://pnx.lovable.app/" },
+              { "@type": "ListItem", position: 2, name: "Blog", item: "https://pnx.lovable.app/blog" },
+              { "@type": "ListItem", position: 3, name: p.title, item: url },
+            ],
+          }),
+        },
+        ...(p.faqs && p.faqs.length > 0
+          ? [
+              {
+                type: "application/ld+json",
+                children: JSON.stringify({
+                  "@context": "https://schema.org",
+                  "@type": "FAQPage",
+                  mainEntity: p.faqs.map((f) => ({
+                    "@type": "Question",
+                    name: f.q,
+                    acceptedAnswer: { "@type": "Answer", text: f.a },
+                  })),
+                }),
+              },
+            ]
+          : []),
+      ],
     };
   },
 });
