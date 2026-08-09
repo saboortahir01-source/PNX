@@ -51,7 +51,16 @@ function AboutPage() {
         <p className="mt-4 text-lg text-muted-foreground">PNX is a 100% free agentic SEO platform — built so anyone can rank without paying enterprise prices.</p>
 
         <div className="glass-card mt-10 p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center">
-          <img src="/saboor-tahir.png" alt="Saboor Tahir — Founder of PNX" width={140} height={140} className="rounded-2xl object-cover size-36 border" />
+          <img
+            src="/saboor-tahir.png"
+            alt="Saboor Tahir — Founder of PNX"
+            width={140}
+            height={140}
+            className="rounded-2xl object-cover size-36 border bg-muted"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src = "https://api.dicebear.com/7.x/avataaars/svg?seed=SaboorTahir";
+            }}
+          />
           <div>
             <h2 className="text-2xl font-semibold">Saboor Tahir</h2>
             <p className="text-sm text-muted-foreground">Founder & Lead SEO Strategist</p>
@@ -66,11 +75,11 @@ function AboutPage() {
 
         <h2 className="mt-10 text-2xl font-semibold">What you get, free forever</h2>
         <ul className="mt-3 list-disc pl-5 space-y-1 text-muted-foreground">
-          <li><a href="/blog/free-ai-seo-audit-tool" className="underline">Free AI SEO audit tool</a> — unlimited audits</li>
-          <li><a href="/blog/ai-keyword-research-free" className="underline">AI keyword research</a> with clustering</li>
-          <li><a href="/blog/free-competitor-analysis-tool" className="underline">Free competitor analysis</a> & SERP analysis</li>
-          <li><a href="/blog/free-youtube-seo-tools" className="underline">Free YouTube SEO tools</a></li>
-          <li><a href="/blog/ai-content-generator-for-seo" className="underline">AI content generator for SEO</a></li>
+          <li><Link to="/blog/$slug" params={{ slug: "free-ai-seo-audit-tool" }} className="underline">Free AI SEO audit tool</Link> — unlimited audits</li>
+          <li><Link to="/blog/$slug" params={{ slug: "ai-keyword-research-free" }} className="underline">AI keyword research</Link> with clustering</li>
+          <li><Link to="/blog/$slug" params={{ slug: "free-competitor-analysis-tool" }} className="underline">Free competitor analysis</Link> & SERP analysis</li>
+          <li><Link to="/blog/$slug" params={{ slug: "free-youtube-seo-tools" }} className="underline">Free YouTube SEO tools</Link></li>
+          <li><Link to="/blog/$slug" params={{ slug: "ai-content-generator-for-seo" }} className="underline">AI content generator for SEO</Link></li>
         </ul>
 
         <h2 className="mt-10 text-2xl font-semibold">Why free?</h2>

@@ -1,23 +1,17 @@
 {
-  "name": "PNX — Free Agentic SEO Tool",
+  "name": "PNX — Agentic SEO Co-Pilot",
   "short_name": "PNX",
-  "description": "Free agentic SEO co-pilot: AI audits, keyword research, SERP analysis, YouTube SEO and AI content generation. No signup, no limits.",
-  "id": "/",
-  "start_url": "/chat",
-  "scope": "/",
+  "description": "Free agentic SEO tool for AI audits, keyword research, SERP analysis, and YouTube SEO.",
+  "start_url": "/",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#ffffff",
-  "theme_color": "#7c3aed",
-  "categories": ["productivity", "business", "marketing"],
+  "background_color": "#0b0b14",
+  "theme_color": "#0b0b14",
   "icons": [
-    { "src": "/favicon.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/favicon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" },
-    { "src": "/favicon.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" }
-  ],
-  "shortcuts": [
-    { "name": "Launch PNX Chat", "short_name": "Chat", "url": "/chat", "description": "Open the agentic SEO chat" },
-    { "name": "Read the SEO blog", "short_name": "Blog", "url": "/blog" }
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }
