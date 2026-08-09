@@ -78,7 +78,7 @@ function FaqPage() {
             </details>
           ))}
         </div>
-        <h2 className="mt-12 text-xs font-semibold uppercase tracking-widest text-muted-foreground/70">Google APIs, OAuth &amp; security</h2>
+        <h2 className="mt-12 text-xs font-semibold uppercase tracking-widest text-muted-foreground/70">Google APIs, OAuth & security</h2>
         <div className="mt-4 space-y-3">
           {GOOGLE_FAQ.map((f) => (
             <details key={f.q} className="glass-card p-5 group">

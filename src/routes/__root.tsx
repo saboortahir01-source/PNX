@@ -122,6 +122,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     scripts: [
       {
+        async: true,
+        src: "https://www.googletagmanager.com/gtag/js?id=G-2MT0HT3T33",
+      },
+      {
+        children: "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-2MT0HT3T33');",
+      },
+      {
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
@@ -210,13 +217,6 @@ function RootShell({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-2MT0HT3T33" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-2MT0HT3T33');",
-          }}
-        />
       </head>
       <body>
         {children}

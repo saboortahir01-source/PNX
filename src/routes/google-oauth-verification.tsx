@@ -54,7 +54,7 @@ function VerificationHub() {
         <div className="inline-flex items-center gap-2 glass rounded-full px-3 py-1 text-xs text-muted-foreground">
           <ShieldCheck size={14} className="text-emerald-500" /> Google API Services User Data Policy — Limited Use compliant
         </div>
-        <h1 className="mt-4 text-4xl sm:text-5xl font-bold tracking-tight">Google OAuth &amp; API Transparency Hub</h1>
+        <h1 className="mt-4 text-4xl sm:text-5xl font-bold tracking-tight">Google OAuth & API Transparency Hub</h1>
         <p className="mt-4 text-muted-foreground max-w-2xl">
           PNX integrates with Google Search Console, GA4, Drive, Sheets, Blogger and the YouTube Data API to power
           user-facing SEO features. This page is a full, plain-English breakdown of what we ask for, why, and how
@@ -79,7 +79,7 @@ function VerificationHub() {
           </div>
         </div>
 
-        <h2 className="mt-12 text-2xl font-semibold">Requested scopes &amp; user benefit</h2>
+        <h2 className="mt-12 text-2xl font-semibold">Requested scopes & user benefit</h2>
         <div className="mt-4 overflow-x-auto glass-card p-1">
           <table className="w-full text-sm">
             <thead className="text-left text-muted-foreground">
@@ -139,7 +139,7 @@ function VerificationHub() {
           Revocation is immediate and removes our ability to call any Google API on your behalf.
         </p>
 
-        <h2 className="mt-12 text-2xl font-semibold">Technical &amp; privacy contact</h2>
+        <h2 className="mt-12 text-2xl font-semibold">Technical & privacy contact</h2>
         <p className="mt-3 text-muted-foreground">
           Security disclosures, privacy questions and verification-team contact:{" "}
           <a className="underline" href="mailto:saboortahir01@gmail.com"><strong>saboortahir01@gmail.com</strong></a>.

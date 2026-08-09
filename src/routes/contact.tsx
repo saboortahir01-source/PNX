@@ -42,7 +42,6 @@ export const Route = createFileRoute("/contact")({
         "@context": "https://schema.org",
         "@type": "ContactPage",
         url: "https://pnx.lovable.app/contact",
-        // Intentionally omit the email from JSON-LD to avoid handing it to scrapers.
         mainEntity: {
           "@type": "Organization",
           name: "PNX",
@@ -62,8 +61,6 @@ function ContactPage() {
   const [revealed, setRevealed] = useState(false);
   const [email, setEmail] = useState("");
 
-  // Decode the address only in the browser, after hydration, so the raw
-  // string is never present in the server-rendered HTML.
   useEffect(() => {
     setEmail(decodeEmail());
   }, []);
@@ -76,7 +73,6 @@ function ContactPage() {
     const fromEmail = String(data.get("email") || "").trim().slice(0, 200);
     const message = String(data.get("message") || "").trim().slice(0, 2000);
     if (!name || !fromEmail || !message) return;
-    // Basic client-side email shape check before opening the mail client.
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fromEmail)) return;
     const target = email || decodeEmail();
     const subject = encodeURIComponent(`PNX contact from ${name}`);

@@ -93,7 +93,7 @@ function LandingPage() {
             </div>
             <h1 className="mt-4 text-[1.85rem] leading-[1.1] sm:text-6xl sm:leading-[1.05] font-bold tracking-tight text-balance">
               The <span className="text-gradient-brand">Free Agentic SEO Tool</span><br className="hidden sm:block" />
-              built for founders, writers &amp; small teams
+              built for founders, writers & small teams
             </h1>
             <p className="mt-4 max-w-2xl mx-auto text-[14px] leading-relaxed sm:text-lg text-muted-foreground">
               PNX is a new, independent AI SEO agent — free while in beta. Audits, keyword research, SERP analysis, YouTube SEO and AI content, all in one chat.
