@@ -1,6 +1,6 @@
 [build]
   command = "pnpm run build"
-  publish = "dist/client"
+  publish = "dist"
 
 [build.environment]
   NODE_OPTIONS = "--max-old-space-size=4096"
