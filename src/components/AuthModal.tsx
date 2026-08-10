@@ -260,17 +260,25 @@ export const AuthModal: React.FC = () => {
 
   return (
     <Dialog open={authModalOpen} onOpenChange={(open) => !open && closeAuthModal()}>
-      <DialogContent className="sm:max-w-[420px] rounded-3xl p-6 border-border/80 bg-background/95 backdrop-blur-2xl shadow-[var(--shadow-elegant)]">
+      <DialogContent className="w-full max-w-sm sm:max-w-md md:max-w-lg glass rounded-2xl border border-border/80 bg-background/95 backdrop-blur-xl shadow-[var(--shadow-elegant)] p-6 sm:p-8">
         {/* Official PNX Logo at top of every auth state */}
-        <div className="flex justify-center mb-4 pt-1">
-          <div className="flex size-12 items-center justify-center rounded-2xl border border-border/60 bg-muted/30 p-2 shadow-xs">
+        <div className="flex justify-center mb-4">
+          <div className="flex size-10 items-center justify-center rounded-xl border border-border/60 bg-muted/20 p-2">
             <img src={pnxLogo} alt="PNX Logo" className="size-full object-contain" />
           </div>
         </div>
 
+        {/* Continue with PNX header */}
+        <div className="text-center mb-4">
+          <h2 className="text-xl font-bold tracking-tight text-foreground">Continue with PNX</h2>
+          <p className="mt-1 text-sm text-muted-foreground/80">
+            Sign in to start your workspace and keep your chats, projects, and SEO research saved.
+          </p>
+        </div>
+
         {/* Verification View */}
         {authModalView === "verify_email" && (
-          <div className="text-center">
+          <>
             <DialogHeader className="text-center">
               <DialogTitle className="text-2xl font-bold tracking-tight">Check your email</DialogTitle>
               <DialogDescription className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground">
@@ -280,12 +288,12 @@ export const AuthModal: React.FC = () => {
               </DialogDescription>
             </DialogHeader>
 
-            <div className="mt-6 space-y-2.5">
+            <div className="mt-6 space-y-3">
               <button
                 type="button"
                 onClick={handleResendVerification}
                 disabled={loading}
-                className="w-full inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-secondary px-4 text-xs font-semibold text-foreground transition hover:bg-secondary/80 disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary/80 disabled:opacity-50"
               >
                 {loading ? <Loader2 className="size-3.5 animate-spin" /> : "Resend verification email"}
               </button>
@@ -297,15 +305,15 @@ export const AuthModal: React.FC = () => {
                 Change email / Back to signup
               </button>
             </div>
-          </div>
+          </>
         )}
 
         {/* Forgot Password View */}
         {authModalView === "forgot_password" && (
-          <div>
+          <>
             <button
               onClick={() => openAuthModal("login")}
-              className="mb-3 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+              className="mb-3 flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="size-3" /> Back to Sign In
             </button>
@@ -318,13 +326,13 @@ export const AuthModal: React.FC = () => {
 
             {resetSent ? (
               <div className="mt-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-center">
-                <CheckCircle2 className="mx-auto size-7 text-emerald-500 mb-2" />
+                <CheckCircle2 className="mx-auto size-6 text-emerald-500 mb-2" />
                 <p className="text-xs leading-relaxed text-foreground font-medium">
                   If an account exists for this email, we've sent password reset instructions.
                 </p>
                 <button
                   onClick={() => openAuthModal("login")}
-                  className="mt-4 inline-flex h-9 items-center justify-center rounded-xl bg-foreground px-4 text-xs font-semibold text-background"
+                  className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-background transition-colors hover:bg-accent/90 disabled:opacity-50"
                 >
                   Return to Sign In
                 </button>
@@ -347,18 +355,18 @@ export const AuthModal: React.FC = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-10 mt-2 inline-flex items-center justify-center rounded-xl bg-foreground font-semibold text-xs text-background transition hover:opacity-90 disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-background transition-colors hover:bg-accent/90 disabled:opacity-50"
                 >
                   {loading ? <Loader2 className="size-4 animate-spin" /> : "Send Reset Link"}
                 </button>
               </form>
             )}
-          </div>
+          </>
         )}
 
         {/* Onboarding View */}
         {authModalView === "onboarding" && (
-          <div>
+          <>
             <DialogHeader className="text-center">
               <DialogTitle className="text-2xl font-bold tracking-tight">Welcome to PNX!</DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground mt-1">
@@ -366,7 +374,7 @@ export const AuthModal: React.FC = () => {
               </DialogDescription>
             </DialogHeader>
 
-            <form onSubmit={handleOnboardingSubmit} className="mt-5 space-y-4">
+            <form onSubmit={handleOnboardingSubmit} className="mt-6 space-y-4">
               <div>
                 <label className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
                   1. What best describes you?
@@ -377,7 +385,7 @@ export const AuthModal: React.FC = () => {
                       key={r}
                       type="button"
                       onClick={() => setSelectedRole(r)}
-                      className={`rounded-xl border px-3 py-2 text-left text-xs font-medium transition ${
+                      className={`w-full flex items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left text-xs font-medium transition-colors ${
                         selectedRole === r
                           ? "border-[color:var(--brand)] bg-[color:var(--brand)]/15 text-foreground"
                           : "border-border/60 bg-muted/20 text-muted-foreground hover:bg-muted/40"
@@ -399,7 +407,7 @@ export const AuthModal: React.FC = () => {
                       key={uc}
                       type="button"
                       onClick={() => setSelectedUseCase(uc)}
-                      className={`rounded-xl border px-3 py-2 text-left text-xs font-medium transition ${
+                      className={`w-full flex items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left text-xs font-medium transition-colors ${
                         selectedUseCase === uc
                           ? "border-[color:var(--brand)] bg-[color:var(--brand)]/15 text-foreground"
                           : "border-border/60 bg-muted/20 text-muted-foreground hover:bg-muted/40"
@@ -414,17 +422,17 @@ export const AuthModal: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full h-10 mt-2 inline-flex items-center justify-center rounded-xl bg-foreground font-semibold text-xs text-background transition hover:opacity-90 disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-background transition-colors hover:bg-accent/90 disabled:opacity-50"
               >
                 {loading ? <Loader2 className="size-4 animate-spin" /> : "Enter PNX →"}
               </button>
             </form>
-          </div>
+          </>
         )}
 
         {/* Login / Signup Primary Views */}
         {(authModalView === "login" || authModalView === "signup") && (
-          <div>
+          <>
             <DialogHeader className="text-center sm:text-left">
               <DialogTitle className="text-2xl font-extrabold tracking-tight">Continue with PNX</DialogTitle>
               <DialogDescription className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
@@ -432,16 +440,16 @@ export const AuthModal: React.FC = () => {
               </DialogDescription>
             </DialogHeader>
 
-            <div className="mt-5 space-y-2.5">
+            <div className="mt-5 space-y-3">
               {/* Google Button — Primary Social */}
               <button
                 type="button"
                 onClick={handleGoogleSignIn}
                 disabled={loading}
-                className="w-full h-10 inline-flex items-center justify-center gap-2.5 rounded-xl border border-border/80 bg-card px-4 text-xs font-semibold text-foreground shadow-xs transition hover:bg-accent disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-3 rounded-xl border border-border/80 bg-card px-4 text-xs font-semibold text-foreground shadow-xs transition-colors hover:bg-accent disabled:opacity-50"
               >
-                <GoogleIcon />
-                <span>Continue with Google</span>
+                <GoogleIcon className="size-3.5" />
+                <span className="ml-2">Continue with Google</span>
               </button>
 
               {/* Apple Button */}
@@ -449,14 +457,14 @@ export const AuthModal: React.FC = () => {
                 type="button"
                 onClick={handleAppleSignIn}
                 disabled={loading}
-                className="w-full h-10 inline-flex items-center justify-center gap-2.5 rounded-xl border border-border/80 bg-card px-4 text-xs font-semibold text-foreground shadow-xs transition hover:bg-accent disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-3 rounded-xl border border-border/80 bg-card px-4 text-xs font-semibold text-foreground shadow-xs transition-colors hover:bg-accent disabled:opacity-50"
               >
-                <AppleIcon />
-                <span>Continue with Apple</span>
+                <AppleIcon className="size-3.5" />
+                <span className="ml-2">Continue with Apple</span>
               </button>
             </div>
 
-            <div className="relative my-4 text-center">
+            <div className="relative my-4">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t border-border/60" />
               </div>
@@ -492,49 +500,47 @@ export const AuthModal: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@company.com"
-                  className="w-full rounded-xl border border-border/80 bg-muted/30 px-3.5 py-2 text-sm outline-none focus:border-[color:var(--brand)] focus:ring-1 focus:ring-[color:var(--brand)]"
+                  className="w-full rounded-xl border border-border/80 bg-muted/30 px-3.5 py-2.5 text-sm outline-none focus:border-[color:var(--brand)] focus:ring-1 focus:ring-[color:var(--brand)]"
                 />
               </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    Password
-                  </label>
-                  {authModalView === "login" && (
-                    <button
-                      type="button"
-                      onClick={() => openAuthModal("forgot_password")}
-                      className="text-[11px] font-medium text-[color:var(--brand)] hover:underline"
-                    >
-                      Forgot password?
-                    </button>
-                  )}
-                </div>
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full rounded-xl border border-border/80 bg-muted/30 px-3.5 py-2 text-sm outline-none focus:border-[color:var(--brand)] focus:ring-1 focus:ring-[color:var(--brand)]"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full h-10 mt-1 inline-flex items-center justify-center rounded-xl bg-foreground font-semibold text-xs text-background transition hover:opacity-90 disabled:opacity-50"
-              >
-                {loading ? (
-                  <Loader2 className="size-4 animate-spin" />
-                ) : authModalView === "signup" ? (
-                  "Create account"
-                ) : (
-                  "Continue"
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Password
+                </label>
+                {authModalView === "login" && (
+                  <button
+                    type="button"
+                    onClick={() => openAuthModal("forgot_password")}
+                    className="text-[11px] font-medium text-[color:var(--brand)] hover:underline"
+                  >
+                    Forgot password?
+                  </button>
                 )}
-              </button>
+              </div>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full rounded-xl border border-border/80 bg-muted/30 px-3.5 py-2.5 text-sm outline-none focus:border-[color:var(--brand)] focus:ring-1 focus:ring-[color:var(--brand)]"
+              />
             </form>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-background transition-colors hover:bg-accent/90 disabled:opacity-50"
+            >
+              {loading ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : authModalView === "signup" ? (
+                "Create account"
+              ) : (
+                "Continue"
+              )}
+            </button>
 
             <div className="mt-4 text-center">
               {authModalView === "login" ? (
@@ -574,7 +580,7 @@ export const AuthModal: React.FC = () => {
                 </div>
               )}
             </div>
-          </div>
+          </>
         )}
       </DialogContent>
     </Dialog>
