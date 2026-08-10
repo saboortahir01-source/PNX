@@ -38,6 +38,7 @@ import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, Plus, X, Copy, Refresh
 import { cn } from "@/lib/utils";
 import pnxLogo from "@/assets/pnx-logo.png";
 import { ConversationTimeline } from "@/components/ConversationTimeline";
+import { useAuth } from "@/lib/auth-context";
 
 const YoutubeIcon = (props: LucideProps) => (
   <svg
@@ -86,13 +87,13 @@ const SUGGESTIONS: { icon: React.ComponentType<{ className?: string; size?: numb
 ];
 
 export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Props) {
+  const { user, openAuthModal, pendingPrompt, clearPendingPrompt } = useAuth();
   type SonarMode = "auto" | "technical" | "strategic";
   const [mode, setMode] = useState<SonarMode>("auto");
   const modeRef = useRef<SonarMode>(mode);
   useEffect(() => { modeRef.current = mode; }, [mode]);
 
   const [errorInfo, setErrorInfo] = useState<{ title: string; hint: string } | null>(null);
-  // User-owned data connectors (Search Console). Loaded after hydration.
   const [connectors, setConnectors] = useState<ConnectorState>({ gsc: null });
   const connectorsRef = useRef<ConnectorState>(connectors);
   useEffect(() => {
@@ -101,14 +102,13 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
   useEffect(() => {
     setConnectors(loadConnectors());
   }, []);
-  // Set for exactly one request when the user approves a proposed plan.
+
   const planApprovedRef = useRef(false);
   const { messages, sendMessage, status, regenerate } = useChat({
     id: threadId,
     messages: initialMessages,
     transport: new DefaultChatTransport({
       api: "/api/chat",
-      // Attach current PNX Sonar mode to every request body.
       body: () => {
         const planApproved = planApprovedRef.current;
         planApprovedRef.current = false;
@@ -125,8 +125,6 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
         title: "PNX hit a snag",
         hint: "The agent couldn't finish that reply. Give it another go — most one-off blips clear on retry.",
       };
-      // NOTE: match rate limits precisely — a loose "rate" test also matches
-      // "generate"/"generated" and mislabels ordinary errors as throttling.
       if (/\b429\b|rate.?limit|too many requests|quota/.test(raw)) {
         info = { title: "The model is busy right now", hint: "PNX is queued behind a burst of requests. Hit retry in a few seconds — your message is safe." };
       } else if (raw.includes("bad request") || raw.includes("400")) {
@@ -141,7 +139,6 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
     },
   });
 
-  // Clear the inline error banner as soon as a new turn starts.
   useEffect(() => {
     if (status === "submitted" || status === "streaming") setErrorInfo(null);
   }, [status]);
@@ -153,8 +150,6 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages, threadId]);
 
-  // Auto-focus the composer only on non-touch devices. On phones, re-focusing
-  // after every reply pops the keyboard back up and steals the screen.
   useEffect(() => {
     if (status === "streaming" || status === "submitted") return;
     if (typeof window === "undefined") return;
@@ -162,23 +157,53 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
     if (!isTouch) textareaRef.current?.focus();
   }, [status, threadId]);
 
+  // Handle auto-submitting pending prompt after authentication
+  useEffect(() => {
+    if (user && pendingPrompt) {
+      const promptToRun = clearPendingPrompt();
+      if (promptToRun) {
+        toast.success("Signed in! Sending your prompt…");
+        sendMessage({ text: promptToRun });
+      }
+    }
+  }, [user, pendingPrompt, clearPendingPrompt, sendMessage]);
+
   const handleSubmit = (msg: PromptInputMessage) => {
     const text = msg.text?.trim();
     const files = msg.files ?? [];
     if (!text && files.length === 0) return;
+
+    // AUTH INTERCEPTION REQUIREMENT
+    if (!user) {
+      openAuthModal("signup", text || "");
+      toast.info("Please sign in or create an account to start your AI prompt.", {
+        description: "Your prompt has been saved and will run automatically after authentication.",
+      });
+      return;
+    }
+
     sendMessage({ text: text ?? "", files });
-    // Dismiss the mobile keyboard so the reply is visible immediately.
     if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
       textareaRef.current?.blur();
     }
   };
 
   const handleSuggestion = (text: string) => {
+    if (!user) {
+      openAuthModal("signup", text);
+      toast.info("Please sign in or create an account to start your AI prompt.", {
+        description: "Your prompt has been saved and will run automatically after authentication.",
+      });
+      return;
+    }
     sendMessage({ text });
   };
 
-  // "Run this plan" — re-send with approval so the orchestrator executes it.
   const handleApprovePlan = () => {
+    if (!user) {
+      openAuthModal("signup", "Yes — run that plan.");
+      return;
+    }
     planApprovedRef.current = true;
     sendMessage({ text: "Yes — run that plan." });
   };
@@ -219,7 +244,6 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
     toast.success(kind === "up" ? "Thanks for the feedback!" : "Got it — we'll improve.");
   };
 
-  // Long-press to copy on touch devices (ChatGPT-style), hover-reveal on desktop.
   const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const startPress = (m: UIMessage) => {
     if (pressTimer.current) clearTimeout(pressTimer.current);
@@ -283,7 +307,7 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
                 <span className="bg-gradient-to-r from-[color:var(--brand)] to-[color:var(--brand-2,oklch(0.7_0.16_305))] bg-clip-text text-transparent">
                   Agentic SEO Co-Pilot
                 </span>
-                . AI Audits, Keyword Research &amp; SERP Analysis.
+                . AI Audits, Keyword Research & SERP Analysis.
               </h1>
               <p className="mt-3 max-w-xl text-balance text-[14px] leading-relaxed text-muted-foreground sm:text-[15px]">
                 Autonomous on-page SEO audits, AI keyword clustering, competitor SERP analysis,
@@ -535,10 +559,6 @@ function AttachmentChips() {
   return <AttachmentChipsInner />;
 }
 
-/**
- * Heuristic: does this turn need live crawling / research? Only those get
- * the multi-step progress tracker; everything else gets a quiet "Thinking…".
- */
 function isResearchTurn(messages: { role: string; parts?: { type: string; text?: string }[] }[]) {
   for (let i = messages.length - 1; i >= 0; i--) {
     const m = messages[i];
@@ -580,9 +600,6 @@ function AttachmentChipsInner() {
   );
 }
 
-// PNX Sonar mode picker — sits inline in the composer footer next to the
-// attach button. Kept minimal (ChatGPT-style dropdown) so users pick a lane
-// without reading a wall of copy.
 const SONAR_MODES: {
   id: "auto" | "technical" | "strategic";
   label: string;
@@ -608,9 +625,6 @@ function SonarModePicker({
   const current = SONAR_MODES.find((m) => m.id === mode) ?? SONAR_MODES[0];
   const Icon = current.Icon;
 
-  // The composer is a rounded, clipped glass surface, so an absolutely
-  // positioned menu gets cut off. Render it in a portal with fixed
-  // coordinates instead so it always floats clear of the input.
   useEffect(() => {
     if (!open) return;
     const place = () => {
@@ -695,4 +709,3 @@ function SonarModePicker({
     </div>
   );
 }
-
