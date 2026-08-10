@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
 import type { User, Session } from "@supabase/supabase-js";
 import { supabase, fetchProfile, upsertProfile, type UserProfile } from "./supabase";
 
@@ -48,6 +48,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
   const [verificationEmail, setVerificationEmail] = useState<string | null>(null);
 
+  const modalOpenRef = useRef(authModalOpen);
+  modalOpenRef.current = authModalOpen;
+
   const setPendingPrompt = useCallback((prompt: string | null) => {
     setPendingPromptState(prompt);
     if (typeof window !== "undefined") {
@@ -74,7 +77,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (p) {
       setProfile(p);
     } else {
-      // Create initial profile if missing
       const initial = await upsertProfile({
         id: user.id,
         email: user.email ?? null,
@@ -87,7 +89,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [user]);
 
   useEffect(() => {
-    // Initial session check
+    // Initial session retrieval
     supabase.auth.getSession().then(({ data: { session: initSession } }) => {
       setSession(initSession);
       setUser(initSession?.user ?? null);
@@ -96,22 +98,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, currentSession) => {
+    } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
       setSession(currentSession);
       const currentUser = currentSession?.user ?? null;
       setUser(currentUser);
       setLoading(false);
 
       if (currentUser) {
-        // Fetch or create profile
         const p = await fetchProfile(currentUser.id);
         if (p) {
           setProfile(p);
-          // Check if onboarding is needed
           if (!p.onboarding_completed) {
             setAuthModalView("onboarding");
             setAuthModalOpen(true);
-          } else if (authModalOpen && authModalView !== "onboarding") {
+          } else if (modalOpenRef.current) {
             setAuthModalOpen(false);
           }
         } else {
@@ -126,6 +126,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setAuthModalView("onboarding");
           setAuthModalOpen(true);
         }
+
+        // Clean OAuth hash fragment from URL if present
+        if (typeof window !== "undefined" && window.location.hash.includes("access_token=")) {
+          window.history.replaceState(null, "", window.location.pathname + window.location.search);
+        }
       } else {
         setProfile(null);
       }
@@ -134,16 +139,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => {
       subscription.unsubscribe();
     };
-  }, [authModalOpen, authModalView]);
-
-  useEffect(() => {
-    if (user && profile) {
-      // If user logged in and modal was open for auth, close it unless onboarding is active
-      if (profile.onboarding_completed && authModalOpen && authModalView !== "onboarding") {
-        setAuthModalOpen(false);
-      }
-    }
-  }, [user, profile, authModalOpen, authModalView]);
+  }, []);
 
   const openAuthModal = useCallback((view: AuthModalView = "login", promptToPreserve?: string) => {
     if (promptToPreserve) {
