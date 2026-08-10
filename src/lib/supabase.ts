@@ -3,72 +3,23 @@ import { createClient } from "@supabase/supabase-js";
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+// Remove trailing slash from URL if present
+const cleanedSupabaseUrl = supabaseUrl?.replace(/\/+$/, "");
+
+// Fallback to empty string if undefined to avoid passing undefined to createClient
+const url = cleanedSupabaseUrl ?? "";
+const key = supabaseAnonKey ?? "";
+
+if (!url || !key) {
+  // Log a warning but still create the client to avoid breaking the app
+  // The client will throw an error when used, which is better than a silent failure.
+  console.warn("Supabase URL or anon key is not defined");
+}
+
+export const supabase = createClient(url, key, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,
   },
 });
-
-export type UserProfile = {
-  id: string;
-  full_name: string | null;
-  email: string | null;
-  avatar_url: string | null;
-  role: string | null;
-  use_case: string | null;
-  onboarding_completed: boolean;
-  created_at: string;
-  updated_at: string;
-};
-
-export async function fetchProfile(userId: string): Promise<UserProfile | null> {
-  try {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .maybeSingle();
-
-    if (error) {
-      console.warn("[PNX Auth] Error fetching user profile:", error.message);
-      return null;
-    }
-    return data as UserProfile | null;
-  } catch (err) {
-    console.warn("[PNX Auth] Profile fetch exception:", err);
-    return null;
-  }
-}
-
-export async function upsertProfile(profile: Partial<UserProfile> & { id: string }): Promise<UserProfile | null> {
-  try {
-    const { data, error } = await supabase
-      .from("profiles")
-      .upsert(
-        {
-          id: profile.id,
-          full_name: profile.full_name ?? null,
-          email: profile.email ?? null,
-          avatar_url: profile.avatar_url ?? null,
-          role: profile.role ?? null,
-          use_case: profile.use_case ?? null,
-          onboarding_completed: profile.onboarding_completed ?? false,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "id" }
-      )
-      .select("*")
-      .maybeSingle();
-
-    if (error) {
-      console.warn("[PNX Auth] Profile upsert error:", error.message);
-      return null;
-    }
-    return data as UserProfile | null;
-  } catch (err) {
-    console.warn("[PNX Auth] Profile upsert exception:", err);
-    return null;
-  }
-}
