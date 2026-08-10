@@ -77,7 +77,7 @@ export const AuthModal: React.FC = () => {
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
-      const redirectTo = typeof window !== "undefined" ? window.location.href : undefined;
+      const redirectTo = typeof window !== "undefined" ? window.location.origin : undefined;
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
@@ -98,7 +98,7 @@ export const AuthModal: React.FC = () => {
   const handleAppleSignIn = async () => {
     try {
       setLoading(true);
-      const redirectTo = typeof window !== "undefined" ? window.location.href : undefined;
+      const redirectTo = typeof window !== "undefined" ? window.location.origin : undefined;
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "apple",
         options: { redirectTo },
