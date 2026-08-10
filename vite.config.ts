@@ -1,7 +1,8 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import netlify from "@netlify/vite-plugin-tanstack-start";
 
-// Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
 export default defineConfig({
+  plugins: [netlify()],
   tanstackStart: {
     server: { entry: "src/server.ts" },
   },
