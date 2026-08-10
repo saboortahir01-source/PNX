@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth, type AuthModalView } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { Loader2, Mail, CheckCircle2, ArrowLeft, ShieldCheck, Sparkles } from "lucide-react";
+import pnxLogo from "@/assets/pnx-logo.png";
 
 // Google Logo SVG
 const GoogleIcon = () => (
@@ -41,7 +42,8 @@ const ROLES = [
   "Agency",
   "Marketer",
   "Content Creator",
-  "Other",];
+  "Other",
+];
 
 const USE_CASES = [
   "Website Audits",
@@ -259,12 +261,16 @@ export const AuthModal: React.FC = () => {
   return (
     <Dialog open={authModalOpen} onOpenChange={(open) => !open && closeAuthModal()}>
       <DialogContent className="sm:max-w-[420px] rounded-3xl p-6 border-border/80 bg-background/95 backdrop-blur-2xl shadow-[var(--shadow-elegant)]">
+        {/* Official PNX Logo at top of every auth state */}
+        <div className="flex justify-center mb-4 pt-1">
+          <div className="flex size-12 items-center justify-center rounded-2xl border border-border/60 bg-muted/30 p-2 shadow-xs">
+            <img src={pnxLogo} alt="PNX Logo" className="size-full object-contain" />
+          </div>
+        </div>
+
         {/* Verification View */}
         {authModalView === "verify_email" && (
-          <div className="text-center py-2">
-            <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-2xl bg-[color:var(--brand)]/15 text-[color:var(--brand)]">
-              <Mail className="size-6" />
-            </div>
+          <div className="text-center">
             <DialogHeader className="text-center">
               <DialogTitle className="text-2xl font-bold tracking-tight">Check your email</DialogTitle>
               <DialogDescription className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground">
@@ -353,9 +359,6 @@ export const AuthModal: React.FC = () => {
         {/* Onboarding View */}
         {authModalView === "onboarding" && (
           <div>
-            <div className="mx-auto mb-3 flex size-10 items-center justify-center rounded-2xl bg-[color:var(--brand)]/15 text-[color:var(--brand)]">
-              <Sparkles className="size-5" />
-            </div>
             <DialogHeader className="text-center">
               <DialogTitle className="text-2xl font-bold tracking-tight">Welcome to PNX!</DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground mt-1">
