@@ -1,21 +1,13 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const SUPABASE_URL = "https://lubmuvmwvkaxbgqrfljb.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1Ym11dm13dmtheGJncXJmbGpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzNzE5ODMsImV4cCI6MjEwMTk0Nzk4M30.jhaybuteM4du7mFMrxY346jTEJEZ8yIYEG7JXYqRa8s";
 
-// Remove trailing slash from URL if present
-const cleanedSupabaseUrl = supabaseUrl?.replace(/\/+$/, "");
+const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || SUPABASE_URL).replace(/\/+$/, "");
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || SUPABASE_ANON_KEY;
 
-// Fallback to empty string if undefined to avoid passing undefined to createClient
-const url = cleanedSupabaseUrl ?? "";
-const key = supabaseAnonKey ?? "";
-
-if (!url || !key) {
-  // Log a warning but still create the client to avoid breaking the app
-  console.warn("Supabase URL or anon key is not defined");
-}
-
-export const supabase = createClient(url, key, {
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
@@ -36,7 +28,6 @@ export interface UserProfile {
 }
 
 export async function fetchProfile(userId: string): Promise<UserProfile | null> {
-  if (!url || !key) return null;
   try {
     const { data, error } = await supabase
       .from("profiles")
@@ -56,7 +47,6 @@ export async function fetchProfile(userId: string): Promise<UserProfile | null> 
 }
 
 export async function upsertProfile(profile: Partial<UserProfile> & { id: string }): Promise<UserProfile | null> {
-  if (!url || !key) return null;
   try {
     const { data, error } = await supabase
       .from("profiles")
