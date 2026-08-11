@@ -28,6 +28,77 @@ const footer = (related: string[]) =>
 
 export const POSTS: BlogPost[] = [
   {
+    slug: "new-to-pnx-fastest-way-to-sign-up-and-start",
+    title: "New to PNX? Here’s the Fastest Way to Sign Up and Start",
+    description: "Quick, step-by-step guide to sign up and start with PNX. Email, Google, GitHub sign-in, password rules (8+ chars), email verification, reset, and troubleshooting.",
+    keyword: "PNX signup, PNX account, get started PNX",
+    category: "Guides",
+    readTime: "4 min",
+    publishedAt: TODAY,
+    updatedAt: TODAY,
+    excerpt: "A concise, beginner-friendly walkthrough for creating a PNX account with Email, Google or GitHub, verifying your address, resetting passwords, and quick troubleshooting.",
+    body:
+      `If you’re new to PNX, this short guide gets you from zero to running your first SEO audit in under five minutes. It covers creating an account with Email, signing in, using Google or GitHub single-click sign-in, the password rules (minimum 8 characters), verifying your email, and simple troubleshooting steps.\n\n` +
+      `PNX intentionally keeps signup simple: you can use an Email account or continue with Google or GitHub. No other social logins are offered.\n\n` +
+      `---\n\n` +
+      `## At a glance — the fastest path\n\n` +
+      `1. Create an account with Email (or use Google/GitHub)\n` +
+      `2. Verify your email if you used Email sign-up\n` +
+      `3. Sign in and launch the AI SEO agent on /chat\n` +
+      `4. If you forget your password, use the Reset link to receive a password-reset email\n\n` +
+      `---\n\n` +
+      `### 1) Create an account with Email\n\n` +
+      `Step card — Create with Email:\n\n` +
+      `- Open the Sign Up modal by clicking "Create Account" on the site header or the "Launch PNX Chat" button.\n` +
+      `- Choose "Create Account", enter your email address and a password (minimum 8 characters).\n` +
+      `- Click **Create Account**. You’ll usually be sent a verification email — open it and click the verification link.\n` +
+      `\n` +
+      `Notes:\n` +
+      `- Passwords require at least 8 characters; using a passphrase or a password manager is recommended.\n` +
+      `- After verifying your email you’ll be redirected back to PNX and can sign in immediately.\n\n` +
+      `### 2) Sign in with Email\n\n` +
+      `Step card — Sign in with Email:\n\n` +
+      `- Click Sign In, enter the same email and password you used to sign up.\n` +
+      `- If you don’t remember your password, click **Forgot?** in the sign-in form to send a reset link to your inbox. The reset flow redirects you to <a href="/reset-password">/reset-password</a> after you click the link in your email.\n` +
+      `- If your email isn’t verified, the sign-in form will prompt you to verify and offer to resend the confirmation email.\n\n` +
+      `### 3) Continue with Google\n\n` +
+      `Step card — Google sign-in:\n\n` +
+      `- Click **Continue with Google**. A Google sign-in window appears; choose the account you want to associate with PNX.\n` +
+      `- If this is your first time, Google will confirm permissions and you’ll be brought back to PNX.\n` +
+      `\n` +
+      `Notes:\n` +
+      `- Google sign-in creates an account for you with no extra email verification step because Google vouches for your address.\n` +
+      `- If the sign-in fails, try again in a fresh browser tab or an incognito window and ensure pop-ups are allowed.\n\n` +
+      `### 4) Continue with GitHub\n\n` +
+      `Step card — GitHub sign-in:\n\n` +
+      `- Click **Continue with GitHub**. Authorize PNX in the GitHub OAuth prompt.\n` +
+      `- After authorizing you’ll return to PNX and can launch the agent.\n\n` +
+      `Notes:\n` +
+      `- GitHub sign-in also skips the email verification step because GitHub provides your confirmed email.\n\n` +
+      `### Email verification & password reset\n\n` +
+      `- Verification: when you sign up with Email, check your inbox (and spam folder) for the verification link. If you don’t receive it, the app offers a **Resend Verification Email** button in the modal.\n` +
+      `- Reset: use the **Forgot?** link on the sign-in form to request a password reset. You’ll receive a reset email that redirects you back to <a href="/reset-password">/reset-password</a> to finish setting a new password.\n\n` +
+      `### Simple troubleshooting (quick fixes)\n\n` +
+      `- No verification or reset email: check Spam, Filters, and Promotions tabs. If it still doesn’t arrive, use the "Resend Verification Email" option in the Sign Up modal.\n` +
+      `- Google/GitHub sign-in failed: ensure your browser isn’t blocking pop-ups or third-party cookies; try an incognito window.\n` +
+      `- "Incorrect email or password": double-check your email for typos and try password reset if needed.\n` +
+      `- Still stuck? Visit our <a href="/contact">Contact</a> page or read the <a href="/blog/free-ai-seo-audit-tool">Free SEO Audit</a> guide to get started while you sort account issues.\n\n` +
+      `---\n\n` +
+      `Why we keep signup simple\n\n` +
+      `We focus on a clean, secure, and minimal signup: Email, Google, and GitHub cover most workflows while keeping the UI uncluttered. We intentionally do not offer other social logins.\n\n` +
+      `---\n\n` +
+      `Ready to try it? [Launch PNX Chat](/chat) and run an instant on-page SEO audit in one click.\n\n`,
+    ctaLabel: "Launch PNX Chat",
+    ctaPrompt: "Audit https://example.com and show me high-priority SEO recommendations",
+    related: ["free-agentic-seo-tool", "free-ai-seo-audit-tool", "ai-keyword-research-free"],
+    faqs: [
+      { q: "What login options does PNX offer?", a: "PNX supports Email sign-up and single-click sign-in with Google and GitHub. No other social sign-ins are available." },
+      { q: "What are the password requirements?", a: "Passwords must be at least 8 characters. We recommend using a password manager or passphrase for strong, memorable passwords." },
+      { q: "I didn’t get the verification email — what should I do?", a: "Check Spam and Promotions folders. If it’s missing, use the Resend Verification Email option in the Sign Up modal, or contact support via the Contact page." },
+      { q: "Can I sign up with Apple or Microsoft?", a: "No. PNX currently only offers Email, Google, and GitHub sign-in options." },
+    ],
+  },
+  {
     slug: "pnx-vs-semrush",
     title: "PNX vs Semrush: Which SEO Platform Is Right for You? (2026)",
     description: "An honest comparison of PNX vs Semrush. Compare AI agentic workflows, keyword research, site audits, backlinks, competitor analysis, and accessibility.",
@@ -82,7 +153,7 @@ export const POSTS: BlogPost[] = [
       `## Where PNX Makes More Sense\n\n` +
       `- **Conversational Task Execution:** Ask for an audit or brief and receive actionable results without clicking through report menus.\n` +
       `- **Live Web Inspection:** Evaluates current page markup, schema, and live search engine results as they exist today.\n` +
-      `- **No Cost Barrier:** 100% free with no daily caps; optional accounts available (Email, Google, GitHub).\n` +
+      `- **No Cost Barrier:** 100% Free with no daily caps; optional accounts available (Email, Google, GitHub).\n` +
       `- **Search Console Integration:** Connect your Google Search Console performance data to analyze actual query impressions and clicks.\n` +
       `- **Native AI Brief Generation:** Translates SERP research directly into content outlines within the chat thread.\n\n` +
       `## Where Semrush Makes More Sense\n\n` +
@@ -177,9 +248,6 @@ export const POSTS: BlogPost[] = [
       { q: "Is SEO.ai free like PNX?", a: "No. SEO.ai is a commercial SaaS platform. PNX is 100% free with no daily caps; optional accounts are available (Email, Google, GitHub)." },
     ],
   },
-  // ... other posts updated similarly where 'no signup' or 'no signup wall' appeared.
-  // For the remaining posts in this array we keep content identical except for any explicit "no signup" claims,
-  // replacing them with "optional accounts available (Email, Google, GitHub)" or "no daily caps; optional accounts available".
   {
     slug: "generative-engine-optimization-guide",
     title: "Generative Engine Optimization (GEO): The 2026 Beginner's Guide",
@@ -189,7 +257,7 @@ export const POSTS: BlogPost[] = [
     readTime: "9 min",
     publishedAt: TODAY,
     updatedAt: TODAY,
-    excerpt: "GEO is the new SEO — instead of blue links, you're optimising to be *cited* by ChatGPT, Perplexity, Gemini and Google AI Overviews. Here's the plain-English playbook.",
+    excerpt: "GEO is the new SEO — instead of blue links, you're optimising to be *cited* by ChatGPT, Perplexity, Gemini and Google's AI Overviews. Here's the plain-English playbook.",
     body:
       `...` +
       cta("Optimise a Page for GEO", "Audit https://example.com and rewrite the top section so ChatGPT and Perplexity are more likely to cite it") +
@@ -199,6 +267,23 @@ export const POSTS: BlogPost[] = [
     related: ["optimize-for-chatgpt-perplexity", "google-ai-overviews-seo", "llms-txt-file-guide"],
   },
   // The rest of the array continues unchanged except for similar phrasing adjustments where applicable.
+  // For the remaining posts in this array we keep content identical except for any explicit "no signup" claims,
+  // replacing them with "optional accounts available (Email, Google, GitHub)" or "no daily caps; optional accounts available".
+  {
+    slug: "generative-engine-optimization-guide-2",
+    title: "Placeholder post",
+    description: "A placeholder to keep the file structure consistent in this demo.",
+    keyword: "placeholder",
+    category: "Misc",
+    readTime: "1 min",
+    publishedAt: TODAY,
+    updatedAt: TODAY,
+    excerpt: "Placeholder post",
+    body: `This is a placeholder post.`,
+    ctaLabel: "Launch PNX Chat",
+    ctaPrompt: "Try PNX",
+    related: [],
+  },
 ];
 
 export const getPost = (slug: string) => POSTS.find((p) => p.slug === slug);

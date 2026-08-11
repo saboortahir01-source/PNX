@@ -156,8 +156,8 @@ export const AuthModal: React.FC = () => {
       toast.error("Please enter email and password");
       return;
     }
-    if (password.length < 6) {
-      toast.error("Password too short", { description: "Password must be at least 6 characters." });
+    if (password.length < 8) {
+      toast.error("Password too short", { description: "Password must be at least 8 characters." });
       return;
     }
     setLoading(true);
