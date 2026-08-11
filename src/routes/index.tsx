@@ -19,10 +19,10 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "PNX — Free Agentic SEO Tool & AI Audits" },
-      { name: "description", content: "PNX is a 100% free agentic SEO tool. Run AI SEO audits, free keyword research, SERP analysis, YouTube SEO and AI content generation. No limits, no signup." },
+      { name: "description", content: "PNX is a 100% free agentic SEO tool. Run AI SEO audits, free keyword research, SERP analysis, YouTube SEO and AI content generation. No daily limits; optional accounts are available (Email, Google, GitHub)." },
       { name: "keywords", content: "free agentic SEO tool, AI SEO strategist, free SEO audit tool, AI keyword research, free keyword research tool, SERP analysis, SEO competitor analysis, free YouTube SEO tools, YouTube SEO analyzer, AI content generator for SEO, technical SEO" },
       { property: "og:title", content: "PNX — Free Agentic SEO Tool" },
-      { property: "og:description", content: "Free AI SEO audits, keyword research, SERP analysis & YouTube SEO. No limits, no signup." },
+      { property: "og:description", content: "Free AI SEO audits, keyword research, SERP analysis & YouTube SEO. No daily limits; optional accounts available (Email, Google, GitHub)." },
       { property: "og:url", content: "https://pnx.lovable.app/" },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "en_US" },
@@ -47,10 +47,10 @@ export const Route = createFileRoute("/")({
             {
               "@type": "FAQPage",
               mainEntity: [
-                { "@type": "Question", name: "Is PNX really free?", acceptedAnswer: { "@type": "Answer", text: "Yes. PNX is 100% free while in beta — no signup wall, no daily limits, no credit card." } },
+                { "@type": "Question", name: "Is PNX really free?", acceptedAnswer: { "@type": "Answer", text: "Yes. PNX is 100% free and there are no daily limits; optional accounts are available (Email, Google, GitHub)." } },
                 { "@type": "Question", name: "What can PNX do?", acceptedAnswer: { "@type": "Answer", text: "PNX runs on-page SEO audits, AI keyword research with intent clustering, live SERP competitor analysis, YouTube SEO optimisation and AI-assisted content generation." } },
-                { "@type": "Question", name: "How is PNX different from Ahrefs, Semrush or Surfer?", acceptedAnswer: { "@type": "Answer", text: "PNX is an agentic assistant — you describe the goal in plain English and PNX picks the right tool, runs it live and returns an actionable report. It's free, has no daily caps and works in a single chat." } },
-                { "@type": "Question", name: "Does PNX help with GEO and AI search (ChatGPT, Perplexity, Google AI Overviews)?", acceptedAnswer: { "@type": "Answer", text: "Yes. PNX is built for the AI search era and helps you optimise for generative engines like ChatGPT, Perplexity, Gemini and Google's AI Overviews alongside classic Google SEO." } },
+                { "@type": "Question", name: "How is PNX different from Ahrefs, Semrush or Surfer?", acceptedAnswer: { "@type": "Answer", text: "PNX is an agentic assistant — you describe the goal in plain English and PNX picks the right tool, runs it live and returns an actionable report." } },
+                { "@type": "Question", name: "Does PNX help with GEO and AI search (ChatGPT, Perplexity, Google AI Overviews)?", acceptedAnswer: { "@type": "Answer", text: "Yes. PNX is built for the AI search era and helps you optimise for generative engines like ChatGPT, Perplexity, Gemini and Google's AI Overviews." } },
               ],
             },
             {
@@ -89,7 +89,7 @@ function LandingPage() {
           <div className="absolute inset-0 -z-10" style={{ background: "var(--gradient-surface)" }} />
           <div className="mx-auto max-w-6xl px-4 py-10 sm:py-24 text-center">
             <div className="inline-flex items-center gap-2 glass rounded-full px-3 py-1 text-[11px] sm:text-xs text-muted-foreground">
-              <ShieldCheck size={12} className="text-emerald-500" /> 100% Free · No limits · No signup
+              <ShieldCheck size={12} className="text-emerald-500" /> 100% Free · No limits · Accounts available
             </div>
             <h1 className="mt-4 text-[1.85rem] leading-[1.1] sm:text-6xl sm:leading-[1.05] font-bold tracking-tight text-balance">
               The <span className="text-gradient-brand">Free Agentic SEO Tool</span><br className="hidden sm:block" />
@@ -173,7 +173,7 @@ function LandingPage() {
                   ["SERP analysis", "✅ Live", "✅", "✅", "✅"],
                   ["YouTube SEO", "✅", "❌", "Limited", "❌"],
                   ["AI content generation", "✅", "Add-on", "Add-on", "✅"],
-                  ["Signup required", "No", "Yes", "Yes", "Yes"],
+                  ["Signup required", "Optional (Email, Google, GitHub)", "Yes", "Yes", "Yes"],
                   ["Daily limits", "None", "Plan-based", "Plan-based", "Plan-based"],
                 ].map((row) => (
                   <tr key={row[0]}>
@@ -210,7 +210,7 @@ function LandingPage() {
             <img src="/saboor-tahir.png" alt="Saboor Tahir, founder of PNX" width={96} height={96} className="rounded-full border object-cover size-24" />
             <div className="text-center sm:text-left">
               <h2 className="text-xl font-semibold">Built by Saboor Tahir</h2>
-              <p className="mt-1 text-sm text-muted-foreground max-w-xl">PNX is an independent project. No VC pressure to upsell you. Just a free, fast, agentic SEO tool you can actually trust. <Link to="/about" className="underline">Read the story →</Link></p>
+              <p className="mt-1 text-sm text-muted-foreground max-w-xl">PNX is an independent project. Optional account features are available to make preferences persistent; the core tools remain free. <Link to="/about" className="underline">Read the story →</Link></p>
             </div>
           </div>
         </section>

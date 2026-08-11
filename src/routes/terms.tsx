@@ -50,7 +50,9 @@ function TermsPage() {
         <p>AI output may contain errors. Always verify critical SEO and business decisions. PNX is a tool, not professional advice.</p>
 
         <h2>4. Account</h2>
-        <p>No account is required. Chat history is stored in your browser.</p>
+        <p>
+          No account is required for core use of PNX; the chat and main tools work without signing in. By default, chat history is stored locally in your browser's storage. Optional accounts (Email, Google, GitHub) are available to save preferences and enable additional account features.
+        </p>
 
         <h2>5. Intellectual property</h2>
         <p>The PNX name, logo and content are owned by Saboor Tahir. You retain ownership of your prompts and outputs (subject to model provider terms).</p>

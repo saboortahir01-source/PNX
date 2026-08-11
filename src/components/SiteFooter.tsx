@@ -12,10 +12,10 @@ export function SiteFooter() {
           <span className="ml-auto text-[10px] font-medium uppercase tracking-widest text-muted-foreground rounded-full border px-2 py-0.5">Free</span>
         </div>
         <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">
-          Free agentic SEO co-pilot by Saboor Tahir. Audits, keyword research, SERP &amp; YouTube SEO — no signup.
+          Free agentic SEO co-pilot by Saboor Tahir. Audits, keyword research, SERP & YouTube SEO — 100% free, no daily limits; optional accounts available (Email, Google, GitHub).
         </p>
         <Link to="/chat" className="cta-glass mt-5 w-full !py-3 !text-sm justify-center" aria-label="Launch PNX Chat">
-          Launch PNX Chat →
+          Launch PNX Chat → 
         </Link>
 
         <details className="group mt-6 border-t pt-3">
@@ -34,7 +34,7 @@ export function SiteFooter() {
 
         <details className="group mt-3 border-t pt-3">
           <summary className="flex items-center justify-between text-[13px] font-semibold cursor-pointer list-none">
-            Company &amp; legal
+            Company & legal
             <span className="msym text-muted-foreground transition-transform group-open:rotate-180">expand_more</span>
           </summary>
           <ul className="mt-3 grid grid-cols-2 gap-y-2.5 gap-x-3 text-[13px] text-muted-foreground">
@@ -49,7 +49,7 @@ export function SiteFooter() {
           </ul>
         </details>
 
-        <p className="mt-6 text-[11px] text-muted-foreground/80 text-center">© {new Date().getFullYear()} PNX · Made for creators, founders &amp; SEO teams.</p>
+        <p className="mt-6 text-[11px] text-muted-foreground/80 text-center">© {new Date().getFullYear()} PNX · Made for creators, founders & SEO teams.</p>
       </div>
 
       {/* Desktop: original 4-col layout */}
@@ -62,7 +62,7 @@ export function SiteFooter() {
             </div>
             <p className="mt-3 max-w-sm text-sm text-muted-foreground">
               Free agentic SEO tool by Saboor Tahir. AI-powered SEO audits, keyword research, SERP analysis,
-              YouTube SEO and AI content generation — 100% free, no daily limits, no signup.
+              YouTube SEO and AI content generation — 100% free, no daily limits; optional accounts available (Email, Google, GitHub).
             </p>
           </div>
           <div>
@@ -86,14 +86,14 @@ export function SiteFooter() {
               <li><Link to="/privacy" className="hover:text-foreground">Privacy</Link></li>
               <li><Link to="/terms" className="hover:text-foreground">Terms</Link></li>
               <li><Link to="/disclaimer" className="hover:text-foreground">Disclaimer</Link></li>
-              <li><Link to="/google-oauth-verification" className="hover:text-foreground">Google OAuth &amp; APIs</Link></li>
+              <li><Link to="/google-oauth-verification" className="hover:text-foreground">Google OAuth & APIs</Link></li>
             </ul>
           </div>
         </div>
         <div className="border-t">
           <div className="mx-auto max-w-6xl px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
             <p>© {new Date().getFullYear()} PNX by Saboor Tahir. All rights reserved.</p>
-            <p>Made for creators, founders &amp; SEO teams. 100% free.</p>
+            <p>Made for creators, founders & SEO teams. 100% free.</p>
           </div>
         </div>
       </div>

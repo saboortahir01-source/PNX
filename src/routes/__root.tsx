@@ -81,7 +81,7 @@ const rootJsonLd = JSON.stringify({
       operatingSystem: "Web",
       url: "https://pnx.lovable.app/",
       description:
-        "PNX is a free agentic SEO tool — on-page SEO audits, technical SEO, AI keyword research and clustering, SERP competitor analysis, YouTube SEO and AI content generation. 100% free, no daily limits.",
+        "PNX is a free agentic SEO tool — on-page SEO audits, technical SEO, AI keyword research and clustering, SERP competitor analysis, YouTube SEO and AI content generation. 100% free, no daily limits; optional accounts available (Email, Google, GitHub).",
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
       featureList: [
         "Free agentic SEO tool",
