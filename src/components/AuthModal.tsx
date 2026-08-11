@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
-import { Loader2, ArrowLeft, CheckCircle2, Mail, Sparkles, User, Lock, Tag, Compass } from "lucide-react";
+import { Loader2, ArrowLeft, CheckCircle2, Mail } from "lucide-react";
 import pnxLogo from "@/assets/pnx-logo.png";
 
 // Google Logo SVG
@@ -29,20 +29,13 @@ const GoogleIcon = () => (
   </svg>
 );
 
-// Azure / Microsoft Logo SVG
+// Official Microsoft Four-Square Logo SVG
 const AzureIcon = () => (
   <svg className="size-4 shrink-0" viewBox="0 0 23 23">
-    <path fill="#f35325" d="M1 1h10v10H1z" />
-    <path fill="#81bc06" d="M12 1h10v10H1z" />
-    <path fill="#05a6f0" d="M1 12h10v10H1z" />
-    <path fill="#ffba08" d="M12 12h10v10H12z" />
-  </svg>
-);
-
-// Apple Logo SVG
-const AppleIcon = () => (
-  <svg className="size-4 fill-current shrink-0" viewBox="0 0 24 24">
-    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87 1.28 0 2.85-1.07 4.38-.91 1.29.05 2.46.52 3.28 1.45-3.01 1.77-2.48 6.13.56 7.41-.65 1.58-1.52 3.16-2.62 4.8rem-2.28-2.73 3.1-3.6 3.32-3.7-.02-.02-.68-1.02-.68-2.48 0-1.89 1.53-2.84 1.6-2.89-1.28-1.87-3.27-2.09-3.97-2.14-1.68-.13-3.28 1.02-4.14 1.02-.87 0-2.17-.99-3.57-.96-1.84.03-3.53 1.06-4.48 2.71-1.92 3.33-.49 8.26 1.38 11.08.92 1.33 1.99 2.82 3.42 2.77 1.38-.05 1.89-.88 3.56-.88 1.67 0 2.13.88 3.58.85 1.48-.03 2.41-1.35 3.32-2.67.92-1.33 1.29-2.63 1.31-2.67-.03-.01-.39-.15-1.33-.61zM15.97 5.2c.74-.9 1.24-2.15 1.1-3.4-.1.01-1.35.48-2.19 1.48-.73.87-1.37 2.14-1.2 3.36 1.23.09 2.45-.49 2.29-1.44z" />
+    <path fill="#f25022" d="M1 1h10v10H1z" />
+    <path fill="#7fba00" d="M12 1h10v10H1z" />
+    <path fill="#00a4ef" d="M1 12h10v10H1z" />
+    <path fill="#ffb900" d="M12 12h10v10H12z" />
   </svg>
 );
 
@@ -75,7 +68,6 @@ export const AuthModal: React.FC = () => {
   } = useAuth();
 
   const [loading, setLoading] = useState(false);
-  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [resetSent, setResetSent] = useState(false);
@@ -124,30 +116,6 @@ export const AuthModal: React.FC = () => {
       }
     } catch (err: any) {
       toast.error("Azure sign-in failed", { description: err.message || "Please check configuration." });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleAppleSignIn = async () => {
-    try {
-      setLoading(true);
-      const redirectTo = typeof window !== "undefined" ? window.location.origin : undefined;
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "apple",
-        options: { redirectTo },
-      });
-      if (error) {
-        if (error.message.includes("provider is not enabled") || error.message.includes("Unsupported provider")) {
-          toast.error("Apple Sign-In configuration required", {
-            description: "Turn on Apple in your Supabase Auth settings to sign in with Apple.",
-          });
-        } else {
-          toast.error("Apple sign-in failed", { description: error.message });
-        }
-      }
-    } catch (err: any) {
-      toast.error("Apple sign-in failed", { description: err.message || "Please check configuration." });
     } finally {
       setLoading(false);
     }
@@ -205,9 +173,6 @@ export const AuthModal: React.FC = () => {
         password,
         options: {
           emailRedirectTo: redirectTo,
-          data: {
-            full_name: fullName.trim() || undefined,
-          },
         },
       });
 
@@ -294,7 +259,7 @@ export const AuthModal: React.FC = () => {
 
   return (
     <Dialog open={authModalOpen} onOpenChange={(open) => !open && closeAuthModal()}>
-      <DialogContent className="w-[calc(100%-2rem)] max-w-[410px] bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 rounded-2xl sm:rounded-3xl border border-zinc-200 dark:border-zinc-800 p-5 sm:p-6 shadow-2xl max-h-[88dvh] overflow-y-auto overflow-x-hidden outline-none">
+      <DialogContent className="w-[calc(100%-2rem)] max-w-[410px] bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 rounded-2xl sm:rounded-3xl border border-zinc-200 dark:border-zinc-800 p-5 sm:p-6 shadow-2xl max-h-[88dvh] overflow-y-auto overflow-x-hidden outline-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         
         {/* Top Brand Pill Header */}
         <div className="flex flex-col items-center text-center pt-1 mb-3">
@@ -312,11 +277,11 @@ export const AuthModal: React.FC = () => {
               ? "Welcome to PNX"
               : "Welcome back to PNX"}
           </h2>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 max-w-[280px] leading-relaxed">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 max-w-[300px] leading-relaxed">
             {authModalView === "signup"
-              ? "Get free access to AI page audits, keyword clustering & SERP analysis."
+              ? "Your AI SEO workspace for research, audits and smarter decisions."
               : authModalView === "login"
-              ? "Sign in to access your SEO workspace, threads & analysis reports."
+              ? "Pick up where you left off in your PNX workspace."
               : authModalView === "onboarding"
               ? "Personalize your AI co-pilot in 10 seconds."
               : authModalView === "forgot_password"
@@ -527,22 +492,6 @@ export const AuthModal: React.FC = () => {
               onSubmit={authModalView === "signup" ? handleEmailSignUp : handleEmailSignIn}
               className="space-y-3"
             >
-              {authModalView === "signup" && (
-                <div>
-                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Saboor Tahir"
-                    className="w-full h-10 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-900/60 px-3.5 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 outline-none focus:border-purple-600 focus:bg-white dark:focus:bg-zinc-900 focus:ring-2 focus:ring-purple-600/20 transition-all"
-                  />
-                </div>
-              )}
-
               <div>
                 <label className="block text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">
                   Email
