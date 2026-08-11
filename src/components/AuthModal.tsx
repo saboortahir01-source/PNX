@@ -247,7 +247,7 @@ export const AuthModal: React.FC = () => {
     } catch {
       toast.error("Could not save preferences, but you can continue.");
       closeAuthModal();
-    } fontally {
+    } finally {
       setLoading(false);
     }
   };
