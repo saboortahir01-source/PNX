@@ -1,28 +1,41 @@
-name: Trigger auto deployment for pnx-web
+name: Deploy PNX to Azure Container Apps
 
-# When this action will be executed
 on:
-  # Automatically trigger it when detected changes in repo
   push:
-    branches: 
-      [ main ]
-    paths:
-    - '**'
-    - '.github/workflows/pnx-web-AutoDeployTrigger-5328f155-7469-429a-bf39-c76f1a87befb.yml'
+    branches:
+      - main
+  workflow_dispatch:
 
-  # Allow manual trigger 
-  workflow_dispatch:      
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+env:
+  IMAGE_NAME: ghcr.io/saboortahir01-source/pnx
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    permissions: 
-      id-token: write #This is required for requesting the OIDC JWT Token
-      contents: read #Required when GH token is used to authenticate with private repo
 
     steps:
-      - name: Checkout to the branch
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push PNX image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
       - name: Azure Login
         uses: azure/login@v2
@@ -31,19 +44,18 @@ jobs:
           tenant-id: ${{ secrets.PNXWEB_AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.PNXWEB_AZURE_SUBSCRIPTION_ID }}
 
-      - name: Build and push container image to registry
-        uses: azure/container-apps-deploy-action@v2
-        with:
-          appSourcePath: ${{ github.workspace }}
-          _dockerfilePathKey_: _dockerfilePath_
-          _targetLabelKey_: _targetLabel_
-          registryUrl: 
-          registryUsername: ${{ secrets.PNXWEB_REGISTRY_USERNAME }}
-          registryPassword: ${{ secrets.PNXWEB_REGISTRY_PASSWORD }}
-          containerAppName: pnx-web
-          resourceGroup: rg-dainny46-8104
-          imageToBuild: default/[parameters('containerAppName')]:${{ github.sha }}
-          _buildArgumentsKey_: |
-            _buildArgumentsValues_
+      - name: Configure GHCR access
+        run: |
+          az containerapp registry set \
+            --name pnx-web \
+            --resource-group rg-dainny46-8104 \
+            --server ghcr.io \
+            --username "${{ secrets.GHCR_USERNAME }}" \
+            --password "${{ secrets.GHCR_TOKEN }}"
 
-
+      - name: Deploy image to Azure Container Apps
+        run: |
+          az containerapp update \
+            --name pnx-web \
+            --resource-group rg-dainny46-8104 \
+            --image "${{ env.IMAGE_NAME }}:${{ github.sha }}"
