@@ -10,7 +10,7 @@ import {
   type UIMessage,
 } from "ai";
 import { z } from "zod";
-import { createGeminiDirectProvider, createLovableAiGatewayProvider, createZaiProvider } from "@/lib/ai-gateway";
+import { createAzureOpenAIProvider } from "@/lib/ai-gateway";
 import { imageSearch } from "@/lib/seo-tools.server";
 import {
   cannedReply,
@@ -251,33 +251,23 @@ export const Route = createFileRoute("/api/chat")({
           if (canned) return staticUiMessageStream(canned);
         }
 
-        // PNX Sonar routing (quality-first ordering):
-        //   • auto / strategic → z.ai GLM (best prose quality, free tier)
-        //   • technical        → native Gemini (structured reasoning + tools)
-        //   • fallback chain   → the other direct key, then Lovable AI Gateway
-        const geminiKey = process.env.GEMINI_API_KEY;
-        const lovableKey = process.env.LOVABLE_API_KEY;
-        const zaiKey = process.env.ZAI_API_KEY;
+        // Use a single Azure OpenAI deployment for all modes. The mode (auto/strategic/technical)
+        // controls only the system prompt and agent behaviour; it does not select a different provider.
+        const azureKey = process.env.AZURE_OPENAI_API_KEY;
+        const azureEndpoint = process.env.AZURE_OPENAI_ENDPOINT;
+        const azureDeployment = process.env.AZURE_OPENAI_DEPLOYMENT_NAME;
 
-        const zaiModel = () => createZaiProvider(zaiKey!)("glm-4.5-flash");
-        const geminiModel = () => createGeminiDirectProvider(geminiKey!)("gemini-3.5-flash");
-        const gatewayModel = () =>
-          createLovableAiGatewayProvider(lovableKey!)("google/gemini-3-flash-preview");
-
-        // Ordered candidates — first available wins, the rest are fallbacks.
-        const order =
-          mode === "technical"
-            ? [geminiKey && geminiModel, zaiKey && zaiModel, lovableKey && gatewayModel]
-            : [zaiKey && zaiModel, geminiKey && geminiModel, lovableKey && gatewayModel];
-        const candidates = order.filter(Boolean) as Array<() => ReturnType<typeof zaiModel>>;
-
-        if (candidates.length === 0) {
+        if (!azureKey || !azureEndpoint || !azureDeployment) {
           return Response.json(
-            { error: "The AI provider key isn't configured on the server. Please contact PNX support." },
+            {
+              error:
+                "Azure OpenAI is not configured. Set AZURE_OPENAI_API_KEY, AZURE_OPENAI_ENDPOINT and AZURE_OPENAI_DEPLOYMENT_NAME on the server.",
+            },
             { status: 500 },
           );
         }
-        const model = candidates[0]();
+
+        const model = createAzureOpenAIProvider(azureEndpoint, azureKey)(azureDeployment);
 
         const baseSystem =
           SYSTEM_PROMPT +
