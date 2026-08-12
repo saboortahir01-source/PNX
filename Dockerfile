@@ -21,12 +21,10 @@ COPY . .
 RUN NODE_OPTIONS="--max-old-space-size=6144" pnpm run build
 
 # Ensure client/static assets are present under .output/public for node-server runtime.
-# Some configurations (when nitro plugin wasn't applied correctly) emit client files to dist/ or dist/client.
-# Copy any generated dist public assets into .output/public so runtime serves them.
-RUN mkdir -p .output/public \
-  && if [ -d "dist/client" ]; then cp -r dist/client/* .output/public/ || true; fi \
-  && if [ -d "dist" ] && [ ! -d "dist/client" ]; then cp -r dist/* .output/public/ || true; fi \
-  && if [ -d "public" ]; then cp -r public/* .output/public/ || true; fi
+# Use a deterministic asset collection script that fails the build if required assets are missing.
+RUN chmod +x ./scripts/collect-assets.sh \
+  && ./scripts/collect-assets.sh \
+  && node ./scripts/verify-build.js
 
 # Final image
 FROM node:22-bullseye-slim AS runner
