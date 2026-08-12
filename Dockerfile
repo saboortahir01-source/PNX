@@ -18,7 +18,7 @@ RUN pnpm install --no-frozen-lockfile
 COPY . .
 
 # Build SSR + client assets (vite build -> postbuild -> nitro build)
-RUN pnpm run build
+RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm run build
 
 # Final image
 FROM node:22-bullseye-slim AS runner
