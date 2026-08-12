@@ -1,9 +1,12 @@
-import { defineConfig } from "@lovable.dev/vite-tanstack-config";
-import netlify from "@netlify/vite-plugin-tanstack-start";
-import nitro from "nitro/vite";
+import { defineConfig } from "@Lovable.dev/vite-tanstack-config";
+import { nitro } from "nitro/vite";
 
 export default defineConfig({
-  plugins: [netlify(), nitro({ preset: 'node-server', output: { dir: '.output' } })],
+  plugins: [
+    nitro({
+      preset: "node-server",
+    }),
+  ],
   tanstackStart: {
     server: { entry: "src/server.ts" },
   },
