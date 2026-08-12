@@ -33,7 +33,7 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
 
 # Install only production dependencies needed at runtime
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm install --prod --no-frozen-lockfile
 
 ENV NODE_ENV=production
 # Default port for Azure Container Apps; Azure will override PORT at runtime
