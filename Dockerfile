@@ -17,8 +17,8 @@ RUN pnpm install --frozen-lockfile
 # Copy rest of source
 COPY . .
 
-# Build SSR + client assets
-RUN pnpm run build:prod
+# Build SSR + client assets (vite build -> postbuild -> nitro build)
+RUN pnpm run build
 
 # Final image
 FROM node:22-bullseye-slim AS runner
@@ -27,9 +27,8 @@ WORKDIR /app
 # Enable pnpm in runtime (not strictly necessary but keeps env consistent)
 RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
 
-# Copy server runtime and built assets
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/server.mjs ./server.mjs
+# Copy Nitro output and package files
+COPY --from=builder /app/.output ./.output
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
 
@@ -37,6 +36,10 @@ COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
 RUN pnpm install --prod --frozen-lockfile
 
 ENV NODE_ENV=production
+# Default port for Azure Container Apps; Azure will override PORT at runtime
+ENV PORT=8080
+# Ensure Nitro binds externally
+ENV NITRO_HOST=0.0.0.0
 EXPOSE 8080
 
-CMD ["node", "--enable-source-maps", "server.mjs"]
+CMD ["node", "--enable-source-maps", ".output/server/index.mjs"]
