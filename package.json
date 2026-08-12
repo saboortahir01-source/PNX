@@ -18,7 +18,9 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "build:prod": "vite build --ssr",
+    "start:prod": "node --enable-source-maps server.mjs"
   },
   "dependencies": {
     "@ai-sdk/google": "^3",
