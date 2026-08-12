@@ -20,7 +20,6 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "build:prod": "vite build --ssr",
-    "postbuild": "nitro build",
     "start:prod": "node --enable-source-maps .output/server/index.mjs"
   },
   "dependencies": {
