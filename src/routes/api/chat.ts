@@ -244,11 +244,33 @@ export const Route = createFileRoute("/api/chat")({
 
         // ── Zero-API fast path ────────────────────────────────────────────
         // Budget guard: trivial turns (greetings, thanks, "what is PNX")
-        // are answered locally with no model call at all.
+        // are answered locally with no model call at all. Extend with the
+        // PNX Self-Knowledge Engine so verified product questions are answered
+        // deterministically without hitting the external model provider.
         const lastUserText = lastUserMessageText(messages);
         if (messages.length <= 2) {
           const canned = cannedReply(lastUserText);
           if (canned) return staticUiMessageStream(canned);
+        }
+
+        // PNX Self-Knowledge Engine (local-first factual router)
+        try {
+          const { queryKnowledge } = await import("@/lib/pnx/knowledge");
+          const q = queryKnowledge(lastUserText);
+          if (q.type === "direct") {
+            // Direct factual answer — stream it back with no external model call.
+            return staticUiMessageStream(q.text);
+          }
+          if (q.type === "context") {
+            // Contextual info: inject into the system prompt (small & factual)
+            // by appending a short note to the baseSystem later. We stash it on
+            // the request object so it can be picked up before model invocation.
+            // Attach to the request via a symbol-safe header-like variable.
+            (request as any).__pnxLocalContext = q.context;
+          }
+        } catch (err) {
+          // Fail safe: any error here must not break the chat flow — just log.
+          console.error("[pnx-knowledge] query failed", (err as Error).message);
         }
 
         // Use a single Azure OpenAI deployment for all modes. The mode (auto/strategic/technical)
@@ -269,10 +291,13 @@ export const Route = createFileRoute("/api/chat")({
 
         const model = createAzureOpenAIProvider(azureEndpoint, azureKey)(azureDeployment);
 
+        // Append any small, verified local context gathered by the knowledge layer.
+        const localCtx = (request as any).__pnxLocalContext ?? "";
         const baseSystem =
           SYSTEM_PROMPT +
           `\n\n## Freshness (strict)\nToday is ${new Date().toISOString().slice(0, 10)}. SEO changes fast — always research and cite the newest available material.\n- Prefer sources published in the last 12 months; treat anything older than ~18 months as background only, and say so if you use it.\n- Never present 2024-or-older guidance as current. If a search returns stale pages, run another search adding the current year (or "latest"/"update") and prefer the fresher result.\n- When you name a study, algorithm update, or statistic, include its date.\n` +
           (mode === "technical" ? SONAR_TECHNICAL_ADDON : mode === "strategic" ? SONAR_STRATEGIC_ADDON : "") +
+          (localCtx ? `\n\n## Verified PNX facts (local)\n${localCtx}\n` : "") +
           recommendationContext(lastUserText) +
           connectorContext;
 
