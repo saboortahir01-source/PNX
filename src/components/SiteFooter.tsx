@@ -4,7 +4,6 @@ import pnxLogo from "@/assets/pnx-logo.png";
 export function SiteFooter() {
   return (
     <footer className="mt-16 border-t bg-background/60">
-      {/* Mobile: premium, compact, scannable. Brand + CTA hero, then two collapsible groups. */}
       <div className="md:hidden px-5 pt-8 pb-4">
         <div className="flex items-center gap-2.5">
           <img src={pnxLogo} alt="PNX AI SEO platform" width={28} height={28} className="rounded-md" />
@@ -12,16 +11,16 @@ export function SiteFooter() {
           <span className="ml-auto text-[10px] font-medium uppercase tracking-widest text-muted-foreground rounded-full border px-2 py-0.5">Free</span>
         </div>
         <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">
-          Free agentic SEO co-pilot by Saboor Tahir. Audits, keyword research, SERP & YouTube SEO — 100% free, no daily limits; optional accounts available (Email, Google, GitHub).
+          Free agentic SEO co-pilot by Saboor Tahir. Audits, keyword research, SERP & YouTube SEO — 100% free, no daily limits.
         </p>
         <Link to="/chat" className="cta-glass mt-5 w-full !py-3 !text-sm justify-center" aria-label="Launch PNX Chat">
-          Launch PNX Chat → 
+          Launch PNX Chat →
         </Link>
 
         <details className="group mt-6 border-t pt-3">
-          <summary className="flex items-center justify-between text-[13px] font-semibold cursor-pointer list-none">
+          <summary className="cursor-pointer font-semibold list-none flex justify-between items-center">
             Tools
-            <span className="msym text-muted-foreground transition-transform group-open:rotate-180">expand_more</span>
+            <span className="text-muted-foreground group-open:rotate-45 transition-transform">+</span>
           </summary>
           <ul className="mt-3 grid grid-cols-2 gap-y-2.5 gap-x-3 text-[13px] text-muted-foreground">
             <li><Link to="/blog/$slug" params={{ slug: "free-ai-seo-audit-tool" }}>SEO Audit</Link></li>
@@ -33,9 +32,9 @@ export function SiteFooter() {
         </details>
 
         <details className="group mt-3 border-t pt-3">
-          <summary className="flex items-center justify-between text-[13px] font-semibold cursor-pointer list-none">
+          <summary className="cursor-pointer font-semibold list-none flex justify-between items-center">
             Company & legal
-            <span className="msym text-muted-foreground transition-transform group-open:rotate-180">expand_more</span>
+            <span className="text-muted-foreground group-open:rotate-45 transition-transform">+</span>
           </summary>
           <ul className="mt-3 grid grid-cols-2 gap-y-2.5 gap-x-3 text-[13px] text-muted-foreground">
             <li><Link to="/about">About</Link></li>
@@ -52,7 +51,6 @@ export function SiteFooter() {
         <p className="mt-6 text-[11px] text-muted-foreground/80 text-center">© {new Date().getFullYear()} PNX · Made for creators, founders & SEO teams.</p>
       </div>
 
-      {/* Desktop: original 4-col layout */}
       <div className="hidden md:block">
         <div className="mx-auto max-w-6xl px-4 py-12 grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
@@ -61,8 +59,7 @@ export function SiteFooter() {
               PNX
             </div>
             <p className="mt-3 max-w-sm text-sm text-muted-foreground">
-              Free agentic SEO tool by Saboor Tahir. AI-powered SEO audits, keyword research, SERP analysis,
-              YouTube SEO and AI content generation — 100% free, no daily limits; optional accounts available (Email, Google, GitHub).
+              Free agentic SEO tool by Saboor Tahir. AI-powered SEO audits, keyword research, SERP analysis, YouTube SEO and AI content generation — 100% free, no daily limits.
             </p>
           </div>
           <div>

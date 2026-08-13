@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import pnxLogo from "@/assets/pnx-logo.png";
-import { UserMenu } from "@/components/UserMenu";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -26,12 +25,8 @@ export function SiteHeader() {
             <Link key={n.to} to={n.to} className="px-3 py-1.5 rounded-md hover:bg-accent text-foreground/80 hover:text-foreground" activeProps={{ className: "px-3 py-1.5 rounded-md bg-accent text-foreground font-medium" }}>{n.label}</Link>
           ))}
           <Link to="/chat" className="ml-2 cta-glass !py-1.5 !px-4 !text-sm" aria-label="Launch PNX Chat — free AI SEO agent">Launch PNX Chat</Link>
-          <div className="ml-2 pl-2 border-l border-border/60">
-            <UserMenu />
-          </div>
         </nav>
         <div className="flex items-center gap-2 md:hidden">
-          <UserMenu />
           <button className="p-2 -mr-2" onClick={() => setOpen((v) => !v)} aria-label="Menu">
             <span className="msym text-[22px]">{open ? "close" : "menu"}</span>
           </button>

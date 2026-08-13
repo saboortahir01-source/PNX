@@ -38,7 +38,6 @@ import { ArrowUpRight, Gauge, Search, PenLine, Paperclip, Plus, X, Copy, Refresh
 import { cn } from "@/lib/utils";
 import pnxLogo from "@/assets/pnx-logo.png";
 import { ConversationTimeline } from "@/components/ConversationTimeline";
-import { useAuth } from "@/lib/auth-context";
 
 const YoutubeIcon = (props: LucideProps) => (
   <svg
@@ -87,7 +86,6 @@ const SUGGESTIONS: { icon: React.ComponentType<{ className?: string; size?: numb
 ];
 
 export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Props) {
-  const { user, openAuthModal, pendingPrompt, clearPendingPrompt } = useAuth();
   type SonarMode = "auto" | "technical" | "strategic";
   const [mode, setMode] = useState<SonarMode>("auto");
   const modeRef = useRef<SonarMode>(mode);
@@ -104,6 +102,7 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
   }, []);
 
   const planApprovedRef = useRef(false);
+
   const { messages, sendMessage, status, regenerate } = useChat({
     id: threadId,
     messages: initialMessages,
@@ -130,7 +129,7 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
       } else if (raw.includes("bad request") || raw.includes("400")) {
         info = { title: "That request confused the model", hint: "Usually a stray character or empty tool result. Rephrase your prompt or try again — the fix is almost always a retry." };
       } else if (raw.includes("unauthor") || raw.includes("401") || raw.includes("403") || raw.includes("key")) {
-        info = { title: "The AI provider key needs attention", hint: "PNX couldn't authenticate with its model provider. If you're the owner, check GEMINI_API_KEY / ZAI_API_KEY / LOVABLE_API_KEY in Cloud secrets." };
+        info = { title: "The AI provider key needs attention", hint: "PNX couldn't authenticate with its model provider. If you're the owner, check AZURE_OPENAI_API_KEY, AZURE_OPENAI_ENDPOINT and AZURE_OPENAI_DEPLOYMENT_NAME in your environment/secret store." };
       } else if (raw.includes("network") || raw.includes("fetch") || raw.includes("timeout")) {
         info = { title: "Network hiccup between you and PNX", hint: "Check your connection and hit retry — your message is still here." };
       }
@@ -157,31 +156,14 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
     if (!isTouch) textareaRef.current?.focus();
   }, [status, threadId]);
 
-  // Handle auto-submitting pending prompt after authentication
-  useEffect(() => {
-    if (user && pendingPrompt) {
-      const promptToRun = clearPendingPrompt();
-      if (promptToRun) {
-        toast.success("Signed in! Sending your prompt…");
-        sendMessage({ text: promptToRun });
-      }
-    }
-  }, [user, pendingPrompt, clearPendingPrompt, sendMessage]);
+  // planApprovedRef is set by the UI when user approves, then consumed in transport.body
 
   const handleSubmit = (msg: PromptInputMessage) => {
     const text = msg.text?.trim();
     const files = msg.files ?? [];
     if (!text && files.length === 0) return;
 
-    // AUTH INTERCEPTION REQUIREMENT
-    if (!user) {
-      openAuthModal("signup", text || "");
-      toast.info("Please sign in or create an account to start your AI prompt.", {
-        description: "Your prompt has been saved and will run automatically after authentication.",
-      });
-      return;
-    }
-
+    // Anonymous flow: send immediately
     sendMessage({ text: text ?? "", files });
     if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
       textareaRef.current?.blur();
@@ -189,21 +171,10 @@ export function ChatWindow({ threadId, initialMessages, onMessagesChange }: Prop
   };
 
   const handleSuggestion = (text: string) => {
-    if (!user) {
-      openAuthModal("signup", text);
-      toast.info("Please sign in or create an account to start your AI prompt.", {
-        description: "Your prompt has been saved and will run automatically after authentication.",
-      });
-      return;
-    }
     sendMessage({ text });
   };
 
   const handleApprovePlan = () => {
-    if (!user) {
-      openAuthModal("signup", "Yes — run that plan.");
-      return;
-    }
     planApprovedRef.current = true;
     sendMessage({ text: "Yes — run that plan." });
   };
