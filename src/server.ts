@@ -1,3 +1,4 @@
+import "./lib/azure-monitor.server";
 import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
