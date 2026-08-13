@@ -268,6 +268,18 @@ export const Route = createFileRoute("/api/chat")({
             // Attach to the request via a symbol-safe header-like variable.
             (request as any).__pnxLocalContext = q.context;
           }
+
+          // If the user asked a PNX-specific question but we have no verified record,
+          // do NOT call the external model to guess. Return a conservative not-found
+          // response so the assistant never invents unverified product facts.
+          if (q.type === "notfound") {
+            const asksAboutPnx = /\b(pnx|sonar|saboor|pnx seo|pnx agent|pnx tools|pnx connectors)\b/i.test(lastUserText);
+            if (asksAboutPnx) {
+              const text = `This information is not available in PNX's verified public knowledge yet. I won't guess — if you can point me to a public page or blog post that verifies this, paste it and I'll check.`;
+              return staticUiMessageStream(text);
+            }
+          }
+
         } catch (err) {
           // Fail safe: any error here must not break the chat flow — just log.
           console.error("[pnx-knowledge] query failed", (err as Error).message);
