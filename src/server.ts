@@ -166,7 +166,7 @@ async function tryServeStatic(request: Request): Promise<Response | null> {
       }
 
       const data = await fs.readFile(resolved);
-      return new Response(data, { status: 200, headers });
+      return new Response(Uint8Array.from(data), { status: 200, headers });
     } catch (err) {
       // swallow and try next candidate directory
       continue;
