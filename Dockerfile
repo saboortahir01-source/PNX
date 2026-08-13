@@ -20,11 +20,11 @@ COPY . .
 # Build SSR + client assets (vite build -> nitro build)
 RUN NODE_OPTIONS="--max-old-space-size=6144" pnpm run build
 
-# Ensure client/static assets are present under .output/public for node-server runtime.
-# Use a deterministic asset collection script that fails the build if required assets are missing.
-RUN chmod +x ./scripts/collect-assets.sh \
-  && ./scripts/collect-assets.sh \
-  && node ./scripts/verify-build.js
+# Verify HTTP asset serving from the built server. This starts the built
+# node-server in the build container and performs HTTP checks against / and
+# the discovered client/public assets. Fail the build if any required asset
+# requests return non-200 or wrong content-type.
+RUN node ./scripts/verify-http.js
 
 # Final image
 FROM node:22-bullseye-slim AS runner
