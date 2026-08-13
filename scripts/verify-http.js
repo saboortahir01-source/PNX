@@ -26,7 +26,7 @@ async function main() {
 
   log('Starting production server for verification...');
 
-  const child = spawn(process.execPath, ['--enable-source-maps', SERVER_ENTRY], {
+  const child = spawn(process.execPath, ['--enable-source-maps', '--import', '@azure/monitor-opentelemetry/loader', 'bootstrap.mjs'], {
     env: { ...process.env, PORT, NODE_ENV: 'production', NITRO_HOST: '0.0.0.0' },
     stdio: ['ignore', 'pipe', 'pipe'],
   });

@@ -38,6 +38,9 @@ COPY --from=builder /app/.output ./.output
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
 
+# Copy bootstrap so the runner can import it before Nitro
+COPY --from=builder /app/bootstrap.mjs ./bootstrap.mjs
+
 # Install only production dependencies needed at runtime
 RUN pnpm install --prod --no-frozen-lockfile
 
@@ -48,4 +51,4 @@ ENV PORT=8080
 ENV NITRO_HOST=0.0.0.0
 EXPOSE 8080
 
-CMD ["node", "--enable-source-maps", ".output/server/index.mjs"]
+CMD ["node", "--enable-source-maps", "--import", "@azure/monitor-opentelemetry/loader", "bootstrap.mjs"]
