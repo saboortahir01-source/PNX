@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="56" viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Semrush logo">
+  <title>Semrush</title>
+  <!-- Simplified Semrush mark + wordmark. Colors follow Semrush orange. -->
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#FF6B00"/>
+      <stop offset="1" stop-color="#FF3E00"/>
+    </linearGradient>
+  </defs>
+  <!-- comet/flame-ish mark -->
+  <g transform="translate(8,6)">
+    <path d="M22 2c-6 2-11 7-14 13-3 6-3 13 1 19 4 6 11 9 17 9 2 0 4 0 6-1 3-1 6-3 8-6 3-4 4-9 3-14-2-9-10-18-21-20z" fill="url(#g)" />
+  </g>
+  <!-- wordmark as text approximation -->
+  <g transform="translate(72,36)">
+    <text x="0" y="0" font-family="Inter, Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#111">Semrush</text>
+  </g>
+</svg>
