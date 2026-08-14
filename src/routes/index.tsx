@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { POSTS } from "@/lib/blog-posts";
 import pnxLogo from "@/assets/pnx-logo.png";
 import { Gauge, Search, Sparkles, BarChart3, Play, PenLine, Bot, ShieldCheck, Zap, Globe } from "lucide-react";
+import ComparisonSection from "@/components/ComparisonSection";
 
 const TOOLS = [
   { icon: Gauge, title: "Free SEO Audit Tool", desc: "Full on-page & technical SEO audit in 30 seconds.", href: "/blog/free-ai-seo-audit-tool" },
@@ -89,6 +90,17 @@ function LandingPage() {
                 <p className="mt-1 text-[12px] sm:text-sm text-muted-foreground leading-snug">{t.desc}</p>
               </a>
             ))}
+          </div>
+        </section>
+
+        {/* Comparison section (ChatGPT vs PNX) */}
+        <section className="mx-auto max-w-6xl px-4 py-8 sm:py-12">
+          <div className="text-center mb-6">
+            <h2 className="text-xl sm:text-2xl font-semibold">How ChatGPT compares to PNX</h2>
+            <p className="mt-2 text-sm text-muted-foreground">Same prompt — two perspectives. Useful, fair, and focused on next steps.</p>
+          </div>
+          <div className="mt-6">
+            <ComparisonSection />
           </div>
         </section>
 
