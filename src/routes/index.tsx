@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { POSTS } from "@/lib/blog-posts";
 import pnxLogo from "@/assets/pnx-logo.png";
+import agentViz from "@/assets/agent-visual-anim.svg";
 import { Gauge, Search, Sparkles, BarChart3, Play, PenLine, Bot, ShieldCheck, Zap, Globe } from "lucide-react";
 import ComparisonSection from "@/components/ComparisonSection";
 
@@ -21,11 +22,11 @@ export const Route = createFileRoute("/")({
   component: LandingPage,
   head: () => ({
     meta: [
-      { title: "PNX — Free Agentic SEO Tool & AI Audits" },
-      { name: "description", content: "PNX is a 100% free agentic SEO tool. Run AI SEO audits, keyword research, SERP analysis, YouTube SEO and AI content generation. No daily limits." },
-      { name: "keywords", content: "free agentic SEO tool, AI SEO strategist, free SEO audit tool, AI keyword research, free keyword research tool, SERP analysis, SEO competitor analysis, free YouTube SEO tools, YouTube SEO analyzer, AI content generator for SEO, technical SEO" },
-      { property: "og:title", content: "PNX — Free Agentic SEO Tool" },
-      { property: "og:description", content: "Free AI SEO audits, keyword research, SERP analysis & YouTube SEO. No daily limits." },
+      { title: "PNX — Your SEO agent" },
+      { name: "description", content: "PNX is an AI SEO agent: ask a question, provide a URL or topic, and PNX handles research, auditing and optimization with grounded evidence." },
+      { name: "keywords", content: "AI SEO agent, SEO audit, keyword research, SERP analysis, content optimization" },
+      { property: "og:title", content: "PNX — Your SEO agent" },
+      { property: "og:description", content: "Ask PNX an SEO question and get prioritized, evidence-backed work you can act on." },
       { property: "og:url", content: "https://pnx.lovable.app/" },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "en_US" },
@@ -33,13 +34,6 @@ export const Route = createFileRoute("/")({
     links: [
       { rel: "canonical", href: "https://pnx.lovable.app/" },
       { rel: "preload", as: "image", href: "/favicon.png", fetchpriority: "high" },
-      { rel: "alternate", hrefLang: "x-default", href: "https://pnx.lovable.app/" },
-      { rel: "alternate", hrefLang: "en", href: "https://pnx.lovable.app/" },
-      { rel: "alternate", hrefLang: "en-US", href: "https://pnx.lovable.app/" },
-      { rel: "alternate", hrefLang: "en-GB", href: "https://pnx.lovable.app/" },
-      { rel: "alternate", hrefLang: "en-CA", href: "https://pnx.lovable.app/" },
-      { rel: "alternate", hrefLang: "en-AU", href: "https://pnx.lovable.app/" },
-      { rel: "alternate", hrefLang: "en-IN", href: "https://pnx.lovable.app/" },
     ],
   }),
 });
@@ -50,31 +44,45 @@ function LandingPage() {
     <div className="min-h-[100dvh] flex flex-col">
       <SiteHeader />
       <main>
-        {/* Hero */}
+        {/* Hero - redesigned */}
         <section className="relative overflow-hidden">
-          <div className="absolute inset-0 -z-10" style={{ background: "var(--gradient-surface)" }} />
-          <div className="mx-auto max-w-6xl px-4 py-10 sm:py-24 text-center">
-            <div className="inline-flex items-center gap-2 glass rounded-full px-3 py-1 text-[11px] sm:text-xs text-muted-foreground">
-              <ShieldCheck size={12} className="text-emerald-500" /> 100% Free · No limits
+          <div className="absolute inset-0 -z-10 bg-[color:var(--bg-surface)]" />
+          <div className="mx-auto max-w-6xl px-4 py-12 sm:py-20 flex flex-col lg:flex-row items-center gap-8">
+            <div className="flex-1 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 glass rounded-full px-3 py-1 text-[11px] sm:text-xs text-muted-foreground">
+                <ShieldCheck size={12} className="text-emerald-500" /> 100% Free · No limits
+              </div>
+
+              <h1 className="mt-6 text-3xl sm:text-5xl leading-tight font-bold tracking-tight text-balance">
+                Your SEO work. <span className="text-gradient-brand">One intelligent agent.</span>
+              </h1>
+
+              <p className="mt-4 max-w-2xl text-sm sm:text-base text-muted-foreground">
+                Research, analyze, audit and optimize — hand an SEO question, URL or topic to PNX and it does the work with evidence-backed recommendations.
+              </p>
+
+              <div className="mt-6 flex flex-col sm:flex-row items-center justify-start gap-3">
+                <Link to="/chat" className="cta-glass !py-3 !px-5 rounded-full font-semibold">Start with a URL</Link>
+                <Link to="#demo" className="text-sm text-muted-foreground underline">See demo</Link>
+              </div>
+
+              <div className="mt-6 flex flex-wrap gap-2 max-w-xl">
+                <button className="chip">Why is this page not ranking?</button>
+                <button className="chip">Find keyword opportunities</button>
+                <button className="chip">Audit this page and prioritize fixes</button>
+              </div>
             </div>
-            <h1 className="mt-4 text-[1.85rem] leading-[1.1] sm:text-6xl sm:leading-[1.05] font-bold tracking-tight text-balance">
-              The <span className="text-gradient-brand">Free Agentic SEO Tool</span><br className="hidden sm:block" />
-              built for founders, writers & small teams
-            </h1>
-            <p className="mt-4 max-w-2xl mx-auto text-[14px] leading-relaxed sm:text-lg text-muted-foreground">
-              PNX is a new, independent AI SEO agent — free while in beta. Audits, keyword research, SERP analysis, YouTube SEO and AI content — all in one chat.
-            </p>
-            <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3">
-              <Link to="/chat" className="cta-glass w-full sm:w-auto justify-center !py-3 sm:!py-3 !text-sm" aria-label="Launch PNX Chat — free AI SEO agent">Launch PNX Chat →</Link>
-              <Link to="/blog" className="w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-full text-sm font-medium border hover:bg-accent text-center">Read the SEO blog</Link>
-            </div>
-            <div className="mt-8 sm:mt-10 flex justify-center">
-              <img src={pnxLogo} alt="PNX agentic SEO tool" width={96} height={96} fetchPriority="high" decoding="async" className="size-20 sm:size-[120px] rounded-3xl glass p-3" />
+
+            <div className="flex-1 w-full max-w-[640px]">
+              {/* Agent visual - inline for animations */}
+              <div className="rounded-2xl overflow-hidden shadow-lg bg-white p-4">
+                <img src={agentViz} alt="PNX agent visual" className="w-full h-auto" />
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Tools grid */}
+        {/* Tools grid - unchanged but kept */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
           <div className="text-center mb-7 sm:mb-10">
             <h2 className="text-2xl sm:text-4xl font-bold tracking-tight">All your SEO tools, in one free agent</h2>
@@ -104,10 +112,10 @@ function LandingPage() {
           </div>
         </section>
 
-        {/* ... rest unchanged ... */}
-
       </main>
       <SiteFooter />
     </div>
   );
 }
+
+export default LandingPage;
