@@ -528,13 +528,32 @@ export const Route = createFileRoute("/api/chat")({
               },
             });
 
-            writer.merge(result.toUIMessageStream({ sendStart: false, sendFinish: false }));
+            // Defensive merge: if creating or merging the UI stream fails
+            // emit a structured error chunk so the client receives a valid
+            // error message rather than a raw parse/transport exception.
+            try {
+              const uiStream = result.toUIMessageStream({ sendStart: false, sendFinish: false });
+              writer.merge(uiStream);
+            } catch (err) {
+              console.error('[chat] failed to merge UI stream', err);
+              try {
+                writer.write({ type: 'error', errorText: 'Model stream failed to start — see server logs.' });
+              } catch (e) {
+                console.error('[chat] failed to write error chunk', e);
+              }
+              return;
+            }
 
             let finalText = "";
             try {
               finalText = await result.text;
-            } catch {
-              /* onError already surfaced this to the UI */
+            } catch (err) {
+              console.error('[chat] result.text failed', err);
+              try {
+                writer.write({ type: 'error', errorText: 'Model generation failed — partial result may be available.' });
+              } catch (e) {
+                console.error('[chat] failed to write error chunk after result.text failure', e);
+              }
             }
 
             // Steps 7–9 — verification signal, cache write-back, learning log.
