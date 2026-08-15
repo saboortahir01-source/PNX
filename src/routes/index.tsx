@@ -3,10 +3,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import HeroV2 from "@/components/HeroV2";
 import { POSTS } from "@/lib/blog-posts";
-import pnxLogo from "@/assets/pnx-logo.png";
-import agentViz from "@/assets/agent-visual-anim.svg";
-import { Gauge, Search, Sparkles, BarChart3, Play, PenLine, Bot, ShieldCheck, Zap, Globe } from "lucide-react";
+import { Gauge, Search, Sparkles, BarChart3, Play, PenLine, Bot, ShieldCheck } from "lucide-react";
 import ComparisonSection from "@/components/ComparisonSection";
 
 const TOOLS = [
@@ -44,43 +43,7 @@ function LandingPage() {
     <div className="min-h-[100dvh] flex flex-col">
       <SiteHeader />
       <main>
-        {/* Hero - redesigned */}
-        <section className="relative overflow-hidden">
-          <div className="absolute inset-0 -z-10 bg-[color:var(--bg-surface)]" />
-          <div className="mx-auto max-w-6xl px-4 py-12 sm:py-20 flex flex-col lg:flex-row items-center gap-8">
-            <div className="flex-1 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 glass rounded-full px-3 py-1 text-[11px] sm:text-xs text-muted-foreground">
-                <ShieldCheck size={12} className="text-emerald-500" /> 100% Free · No limits
-              </div>
-
-              <h1 className="mt-6 text-3xl sm:text-5xl leading-tight font-bold tracking-tight text-balance">
-                Your SEO work. <span className="text-gradient-brand">One intelligent agent.</span>
-              </h1>
-
-              <p className="mt-4 max-w-2xl text-sm sm:text-base text-muted-foreground">
-                Research, analyze, audit and optimize — hand an SEO question, URL or topic to PNX and it does the work with evidence-backed recommendations.
-              </p>
-
-              <div className="mt-6 flex flex-col sm:flex-row items-center justify-start gap-3">
-                <Link to="/chat" className="cta-glass !py-3 !px-5 rounded-full font-semibold">Start with a URL</Link>
-                <Link to="#demo" className="text-sm text-muted-foreground underline">See demo</Link>
-              </div>
-
-              <div className="mt-6 flex flex-wrap gap-2 max-w-xl">
-                <button className="chip">Why is this page not ranking?</button>
-                <button className="chip">Find keyword opportunities</button>
-                <button className="chip">Audit this page and prioritize fixes</button>
-              </div>
-            </div>
-
-            <div className="flex-1 w-full max-w-[640px]">
-              {/* Agent visual - inline for animations */}
-              <div className="rounded-2xl overflow-hidden shadow-lg bg-white p-4">
-                <img src={agentViz} alt="PNX agent visual" className="w-full h-auto" />
-              </div>
-            </div>
-          </div>
-        </section>
+        <HeroV2 />
 
         {/* Tools grid - unchanged but kept */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
