@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="t d">
+<title id="t">PNX agent visual animated</title>
+<desc id="d">Animated flow lines and subtle PNX pulse, respects reduced-motion</desc>
+<defs>
+  <linearGradient id="gp" x1="0" x2="1"><stop offset="0" stop-color="#4A7CF7"/><stop offset="1" stop-color="#7C61FF"/></linearGradient>
+  <linearGradient id="gf" x1="0" x2="1"><stop offset="0" stop-color="#4A7CF7" stop-opacity=".14"/><stop offset="1" stop-color="#1CC7A6" stop-opacity=".08"/></linearGradient>
+  <filter id="s" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="12" stdDeviation="30" flood-color="#0b1220" flood-opacity=".06"/></filter>
+</defs>
+<style>
+  .flow{fill:none;stroke:url(#gf);stroke-linecap:round;stroke-width:6;stroke-dasharray:400;stroke-dashoffset:400;animation:flow 4.5s linear infinite}
+  .chip{transform-origin:0 0;animation:chipMove 5s ease-in-out infinite}
+  .pnx{transform-origin:50% 50%;animation:pnxPulse 3.6s ease-in-out infinite}
+  @keyframes flow{to{stroke-dashoffset:0}}
+  @keyframes chipMove{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
+  @keyframes pnxPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+  @media (prefers-reduced-motion: reduce){.flow,.chip,.pnx{animation:none}}
+</style>
+<rect width="100%" height="100%" fill="#fff"/>
+<g transform="translate(80,120)">
+  <rect x="0" y="0" rx="12" width="220" height="56" fill="#FBFDFF" stroke="rgba(11,18,32,0.04)" class="chip"/>
+  <text x="18" y="36" font-family="Inter,Arial,sans-serif" font-size="14" fill="#0B1220">Website</text>
+  <rect x="0" y="76" rx="12" width="200" height="48" fill="#fff" stroke="rgba(11,18,32,0.04)" class="chip"/>
+  <text x="18" y="106" font-family="Inter,Arial,sans-serif" font-size="14" fill="#0B1220">Keywords</text>
+  <rect x="0" y="136" rx="12" width="180" height="44" fill="#fff" stroke="rgba(11,18,32,0.04)" class="chip"/>
+  <text x="18" y="162" font-family="Inter,Arial,sans-serif" font-size="14" fill="#0B1220">SERP</text>
+  <rect x="0" y="196" rx="12" width="200" height="44" fill="#fff" stroke="rgba(11,18,32,0.04)" class="chip"/>
+  <text x="18" y="222" font-family="Inter,Arial,sans-serif" font-size="14" fill="#0B1220">Content</text>
+  <rect x="0" y="256" rx="12" width="220" height="44" fill="#fff" stroke="rgba(11,18,32,0.04)" class="chip"/>
+  <text x="18" y="282" font-family="Inter,Arial,sans-serif" font-size="14" fill="#0B1220">Competitors</text>
+  <rect x="0" y="316" rx="12" width="160" height="44" fill="#fff" stroke="rgba(11,18,32,0.04)" class="chip"/>
+  <text x="18" y="342" font-family="Inter,Arial,sans-serif" font-size="14" fill="#0B1220">Technical SEO</text>
+</g>
+<g class="flows" fill="none">
+  <path class="flow" d="M300 170 C460 150,520 220,610 270"/>
+  <path class="flow" d="M300 230 C470 240,540 300,640 335" style="animation-delay:.6s"/>
+  <path class="flow" d="M300 330 C480 320,560 360,700 380" style="animation-delay:1.2s"/>
+</g>
+<g transform="translate(560,200)">
+  <g filter="url(#s)"><rect x="-120" y="-90" width="360" height="220" rx="26" fill="url(#gp)" opacity=".06"/></g>
+  <g class="pnx"><rect x="-40" y="-56" width="240" height="160" rx="20" fill="#fff" opacity=".82" stroke="rgba(11,18,32,0.06)"/></g>
+  <g transform="translate(80,24)" text-anchor="middle" font-family="Inter,Arial,sans-serif">
+    <text x="-80" y="-6" font-size="22" font-weight="700" fill="url(#gp)">PNX</text>
+    <text x="-80" y="22" font-size="13" fill="rgba(11,18,32,0.6)">Working — analyzing sources</text>
+  </g>
+</g>
+<g transform="translate(820,160)">
+  <g transform="translate(0,0)" filter="url(#s)"><rect x="0" y="0" width="320" height="84" rx="14" fill="#fff" stroke="rgba(11,18,32,0.04)"/><text x="18" y="26" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="700" fill="#0B1220">Top fix</text><text x="18" y="48" font-family="Inter,Arial,sans-serif" font-size="13" fill="rgba(11,18,32,0.7)">Improve H1 to match 'commuter bike' intent</text></g>
+  <g transform="translate(0,110)" filter="url(#s)"><rect x="0" y="0" width="320" height="84" rx="14" fill="#fff" stroke="rgba(11,18,32,0.04)"/><text x="18" y="26" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="700" fill="#0B1220">Keyword</text><text x="18" y="48" font-family="Inter,Arial,sans-serif" font-size="13" fill="rgba(11,18,32,0.7)">Opportunity: "best commuter ebike" — KD 22</text></g>
+  <g transform="translate(0,220)" filter="url(#s)"><rect x="0" y="0" width="320" height="84" rx="14" fill="#fff" stroke="rgba(11,18,32,0.04)"/><text x="18" y="26" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="700" fill="#0B1220">SERP Insight</text><text x="18" y="48" font-family="Inter,Arial,sans-serif" font-size="13" fill="rgba(11,18,32,0.7)">Top pages favor longer how-to sections.</text></g>
+</g>
+</svg>

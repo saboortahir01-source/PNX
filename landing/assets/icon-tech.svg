@@ -1,0 +1,12 @@
+<!-- landing/assets/icon-tech.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img">
+  <title>Technical SEO icon</title>
+  <desc>Gear + code bracket</desc>
+  <g fill="none" stroke="#0B1220" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M24 14a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/>
+    <path d="M16 20l-4 0"/>
+    <path d="M32 28l4 0"/>
+    <path d="M18 30l-2 4"/>
+    <path d="M30 18l2-4"/>
+  </g>
+</svg>
